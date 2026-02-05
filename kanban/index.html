@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanban Board</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2129;
+    --border: #30363d;
+    --border-light: #484f58;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent-hover: #79c0ff;
+    --high: #f85149;
+    --med: #d29922;
+    --low: #3fb950;
+    --tag-infra: #388bfd33;
+    --tag-infra-text: #58a6ff;
+    --tag-research: #a371f733;
+    --tag-research-text: #bc8cff;
+    --tag-content: #f7883533;
+    --tag-content-text: #ffa657;
+    --tag-coding: #3fb95033;
+    --tag-coding-text: #56d364;
+    --tag-org: #d2992233;
+    --tag-org-text: #e3b341;
+    --tag-default: #30363d;
+    --tag-default-text: #8b949e;
+    --column-backlog: #388bfd;
+    --column-progress: #d29922;
+    --column-done: #3fb950;
+    --shadow: 0 3px 12px rgba(0,0,0,.4);
+    --radius: 8px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header h1 span { font-size: 22px; }
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+  .card-count {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-right: 8px;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { border-color: var(--border-light); background: #262c36; }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-danger {
+    background: transparent;
+    border-color: var(--high);
+    color: var(--high);
+  }
+  .btn-danger:hover { background: #f8514922; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  /* Board */
+  .board {
+    display: flex;
+    gap: 20px;
+    padding: 24px;
+    min-height: calc(100vh - 65px);
+    align-items: flex-start;
+  }
+
+  /* Columns */
+  .column {
+    flex: 1;
+    min-width: 320px;
+    max-width: 420px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 110px);
+  }
+  .column-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .column-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .column-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .column[data-col="backlog"] .column-dot { background: var(--column-backlog); }
+  .column[data-col="progress"] .column-dot { background: var(--column-progress); }
+  .column[data-col="done"] .column-dot { background: var(--column-done); }
+  .column-count {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  .column-cards {
+    padding: 12px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 60px;
+  }
+  .column-cards::-webkit-scrollbar { width: 6px; }
+  .column-cards::-webkit-scrollbar-track { background: transparent; }
+  .column-cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Drop zone */
+  .column-cards.drag-over {
+    background: rgba(88,166,255,.06);
+    border-radius: var(--radius-sm);
+  }
+  .drop-indicator {
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin: -5px 0;
+    transition: opacity .1s;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    cursor: grab;
+    transition: all .15s;
+    position: relative;
+  }
+  .card.priority-high-card { border-left-color: var(--high); }
+  .card.priority-medium-card { border-left-color: var(--med); }
+  .card.priority-low-card { border-left-color: var(--low); }
+  .card:hover {
+    border-color: var(--border-light);
+    border-left-color: inherit;
+    box-shadow: var(--shadow);
+  }
+  .card.priority-high-card:hover { border-left-color: var(--high); }
+  .card.priority-medium-card:hover { border-left-color: var(--med); }
+  .card.priority-low-card:hover { border-left-color: var(--low); }
+  .card:active { cursor: grabbing; }
+  .card.dragging {
+    opacity: .4;
+    transform: scale(.97);
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.35;
+    padding-right: 28px;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.45;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .priority-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .priority-badge.high { background: #f8514922; color: var(--high); }
+  .priority-badge.medium { background: #d2992222; color: var(--med); }
+  .priority-badge.low { background: #3fb95022; color: var(--low); }
+  .tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .tag-infrastructure { background: var(--tag-infra); color: var(--tag-infra-text); }
+  .tag-research { background: var(--tag-research); color: var(--tag-research-text); }
+  .tag-content { background: var(--tag-content); color: var(--tag-content-text); }
+  .tag-coding { background: var(--tag-coding); color: var(--tag-coding-text); }
+  .tag-organization { background: var(--tag-org); color: var(--tag-org-text); }
+  .tag-default { background: var(--tag-default); color: var(--tag-default-text); }
+  .card-edit-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+    opacity: 0;
+  }
+  .card-edit-btn:hover { background: var(--border); color: var(--text); }
+  .card:hover .card-edit-btn { opacity: 1; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    padding: 24px;
+    box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(-12px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color .15s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+  .form-group select { cursor: pointer; }
+  .form-group select option { background: var(--bg); }
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .modal-actions-right { display: flex; gap: 10px; }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    padding: 4px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-chip:hover { border-color: var(--border-light); color: var(--text); }
+  .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* Mobile tab nav (hidden on desktop) */
+  .mobile-tabs {
+    display: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    position: sticky;
+    top: 57px;
+    z-index: 99;
+  }
+  .mobile-tabs-inner {
+    display: flex;
+    width: 100%;
+  }
+  .mobile-tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .mobile-tab.active { color: var(--text); }
+  .mobile-tab[data-tab="backlog"].active { border-bottom-color: var(--column-backlog); }
+  .mobile-tab[data-tab="progress"].active { border-bottom-color: var(--column-progress); }
+  .mobile-tab[data-tab="done"].active { border-bottom-color: var(--column-done); }
+  .mobile-tab-count {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 500;
+    min-width: 20px;
+  }
+  .sync-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--low);
+    margin-left: 6px;
+    vertical-align: middle;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .sync-dot.active { opacity: 1; background: var(--accent); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .board { flex-direction: column; align-items: stretch; }
+    .column { max-width: none; max-height: none; }
+  }
+
+  @media (max-width: 680px) {
+    /* Header compact */
+    .header {
+      padding: 10px 14px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .header h1 { font-size: 16px; }
+    .header h1 span { font-size: 18px; }
+    .header-actions {
+      display: none;
+    }
+    .card-count { display: none; }
+
+    /* Filter chips: move into mobile tabs area — rendered below tabs */
+    .mobile-filter-row {
+      display: flex;
+      gap: 4px;
+      padding: 8px 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip { white-space: nowrap; font-size: 11px; padding: 3px 10px; }
+
+    /* Show mobile tabs */
+    .mobile-tabs { display: block; }
+
+    /* Hide desktop filter bar */
+    .filter-bar { display: none; }
+
+    /* Board: stack, hide non-active columns */
+    .board {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 10px;
+      gap: 0;
+      min-height: calc(100vh - 130px);
+    }
+    .column {
+      max-width: none;
+      max-height: none;
+      display: none;
+      border: none;
+      background: transparent;
+    }
+    .column.mobile-active { display: flex; }
+    .column-header { display: none; }
+    .column-cards { padding: 4px 0; gap: 8px; }
+
+    /* Cards: touch-optimized */
+    .card {
+      padding: 16px 18px;
+      border-left-width: 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card-title { font-size: 17px; padding-right: 36px; }
+    .card-desc { font-size: 15px; -webkit-line-clamp: 2; line-height: 1.5; }
+    .card-meta { gap: 8px; }
+    .priority-badge { font-size: 12px; padding: 3px 9px; }
+    .tag { font-size: 12px; padding: 3px 9px; }
+    .card-edit-btn {
+      opacity: .5;
+      width: 34px;
+      height: 34px;
+      top: 12px;
+      right: 10px;
+      font-size: 15px;
+    }
+
+    /* Header */
+    .header h1 { font-size: 18px; }
+
+    /* Tabs */
+    .mobile-tab { font-size: 15px; padding: 14px 8px; }
+    .mobile-tab-count { font-size: 13px; }
+
+    /* Filters */
+    .filter-chip { font-size: 13px; padding: 5px 12px; }
+
+    /* Modal: full screen on mobile */
+    .modal-overlay { align-items: flex-end; }
+    .modal {
+      max-width: none;
+      border-radius: 16px 16px 0 0;
+      padding: 20px 16px 32px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h2 { font-size: 16px; margin-bottom: 16px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select { font-size: 16px; padding: 12px; }
+    .modal-actions { flex-direction: column; gap: 8px; }
+    .modal-actions-right { justify-content: stretch; }
+    .modal-actions-right .btn { flex: 1; justify-content: center; }
+
+    /* FAB for new card */
+    .btn-primary.header-add {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      padding: 0;
+      font-size: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.5);
+      z-index: 90;
+      justify-content: center;
+    }
+    .btn-primary.header-add .btn-text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>📋</span> Kanban Board</h1>
+  <div class="header-actions">
+    <div class="filter-bar" id="filterBar"></div>
+    <span class="card-count" id="cardCount"></span>
+    <button class="btn btn-primary header-add" onclick="openModal()">＋<span class="btn-text"> New Card</span></button>
+  </div>
+</div>
+
+<div class="mobile-tabs" id="mobileTabs">
+  <div class="mobile-tabs-inner">
+    <button class="mobile-tab active" data-tab="backlog" onclick="switchTab('backlog')">
+      Backlog <span class="mobile-tab-count" data-mcount="backlog">0</span>
+    </button>
+    <button class="mobile-tab" data-tab="progress" onclick="switchTab('progress')">
+      Active <span class="mobile-tab-count" data-mcount="progress">0</span>
+    </button>
+    <button class="mobile-tab" data-tab="done" onclick="switchTab('done')">
+      Done <span class="mobile-tab-count" data-mcount="done">0</span>
+    </button>
+  </div>
+  <div class="mobile-filter-row" id="mobileFilterBar"></div>
+</div>
+
+<div class="board" id="board">
+  <div class="column" data-col="backlog">
+    <div class="column-header">
+      <div class="column-title"><div class="column-dot"></div>Backlog</div>
+      <span class="column-count" data-count="backlog">0</span>
+    </div>
+    <div class="column-cards" id="col-backlog"></div>
+  </div>
+  <div class="column" data-col="progress">
+    <div class="column-header">
+      <div class="column-title"><div class="column-dot"></div>In Progress</div>
+      <span class="column-count" data-count="progress">0</span>
+    </div>
+    <div class="column-cards" id="col-progress"></div>
+  </div>
+  <div class="column" data-col="done">
+    <div class="column-header">
+      <div class="column-title"><div class="column-dot"></div>Done</div>
+      <span class="column-count" data-count="done">0</span>
+    </div>
+    <div class="column-cards" id="col-done"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <h2 id="modalTitle">New Card</h2>
+    <div class="form-group">
+      <label for="cardTitleInput">Title</label>
+      <input type="text" id="cardTitleInput" placeholder="Card title..." autofocus>
+    </div>
+    <div class="form-group">
+      <label for="cardDescInput">Description</label>
+      <textarea id="cardDescInput" placeholder="Brief description..."></textarea>
+    </div>
+    <div class="form-group">
+      <label for="cardPriorityInput">Priority</label>
+      <select id="cardPriorityInput">
+        <option value="high">🔴 High</option>
+        <option value="medium" selected>🟡 Medium</option>
+        <option value="low">🟢 Low</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="cardTagInput">Tag</label>
+      <input type="text" id="cardTagInput" placeholder="e.g. infrastructure, content, research">
+    </div>
+    <div class="form-group">
+      <label for="cardColumnInput">Column</label>
+      <select id="cardColumnInput">
+        <option value="backlog">Backlog</option>
+        <option value="progress">In Progress</option>
+        <option value="done">Done</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <div>
+        <button class="btn btn-danger btn-sm" id="deleteBtn" onclick="deleteCard()" style="display:none">Delete</button>
+      </div>
+      <div class="modal-actions-right">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCard()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'kanban-board-data';
+const SYNC_URL = 'https://jsonblob.com/api/jsonBlob/019c2ea0-0631-7096-bbf0-b078900c4550';
+let cards = [];
+let editingId = null;
+let draggedId = null;
+let activeFilter = null;
+let syncing = false;
+let lastSyncHash = '';
+let activeTab = 'backlog';
+
+// ── Default data ──
+const DEFAULT_CARDS = [
+  // ── BACKLOG: Infrastructure ──
+  { id: uid(), col: 'backlog', title: 'Signal Standalone Setup', desc: "Complete standalone Signal registration for Lena's number +16027679517", priority: 'medium', tag: 'infrastructure', order: 0 },
+  { id: uid(), col: 'backlog', title: 'Browser Auth — X + TikTok', desc: 'Get authenticated browser sessions for X.com and TikTok scraping', priority: 'high', tag: 'infrastructure', order: 1 },
+  { id: uid(), col: 'backlog', title: 'Proton Email Setup', desc: 'Set up Proton Mail Bridge (IMAP/SMTP) so Cole can read/send email. Brian to provide credentials.', priority: 'high', tag: 'infrastructure', order: 2 },
+  { id: uid(), col: 'backlog', title: 'Deploy Kanban to Netlify', desc: 'Deploy kanban board as static site on Netlify for phone access + webchat', priority: 'high', tag: 'infrastructure', order: 3 },
+  { id: uid(), col: 'backlog', title: 'Grok Imagine API Setup', desc: 'Connect to xAI Grok Imagine API (grok-imagine-image + grok-imagine-video). Brian to provide XAI_API_KEY.', priority: 'high', tag: 'infrastructure', order: 4 },
+  { id: uid(), col: 'backlog', title: 'OpenArt.ai Integration', desc: 'BRIAN: Open OpenArt.ai plan for image/video generation. Provide access credentials to Cole.', priority: 'medium', tag: 'infrastructure', order: 5 },
+  { id: uid(), col: 'backlog', title: 'Suno.com Integration', desc: 'BRIAN: Open Suno.com account for music/lyrics generation. Provide access credentials to Cole.', priority: 'medium', tag: 'infrastructure', order: 6 },
+
+  // ── BACKLOG: Content Pipeline ──
+  { id: uid(), col: 'backlog', title: 'TikTok→X Content Pipeline', desc: 'Build automated workflow: scan TikTok for TPUSA/Kirk/Bowyer/Kolvet/McCoy content (last 72h) → download → prep for X repost', priority: 'high', tag: 'content', order: 7 },
+  { id: uid(), col: 'backlog', title: 'X Account Analysis', desc: 'Analyze @swordtruth posting patterns, best-performing content, optimal posting times', priority: 'medium', tag: 'content', order: 8 },
+  { id: uid(), col: 'backlog', title: 'Grok Imagine Video Prompts', desc: 'Create library of 10-second video prompt templates for Grok Imagine (political content)', priority: 'medium', tag: 'content', order: 9 },
+  { id: uid(), col: 'backlog', title: 'Viral X Post Drafts', desc: 'Draft viral posts with video concepts for @swordtruth — Brian reviews before posting', priority: 'medium', tag: 'content', order: 10 },
+  { id: uid(), col: 'backlog', title: 'Political Song Lyrics', desc: 'Create political song lyrics for Brian. Check if Claude skill from his account can be accessed, or build custom lyrics workflow.', priority: 'medium', tag: 'content', order: 11 },
+
+  // ── BACKLOG: Research ──
+  { id: uid(), col: 'backlog', title: 'TPUSA Deep Research', desc: 'Ongoing intel gathering on TPUSA corruption — Erica Kirk, Tyler Bowyer, Andrew Kolvet, Mikey McCoy, Charlie Kirk', priority: 'high', tag: 'research', order: 12 },
+  { id: uid(), col: 'backlog', title: 'Lena: March Scholarship Wave', desc: 'Prep applications for AICPA ($5K-$10K, due 3/15), AWSCPA women ($5K, due 3/15), Larry Ludden (due 3/1), EFWA (due 3/30)', priority: 'high', tag: 'research', order: 13 },
+  { id: uid(), col: 'backlog', title: 'Lena: Verify W.P. Carey Deadline', desc: 'Email wpcareyscholar@asu.edu — check if Feb 1 general app has grace period. Focus on MERIT scholarships (not low-income).', priority: 'high', tag: 'research', order: 14 },
+
+  // ── BACKLOG: Security ──
+  { id: uid(), col: 'backlog', title: 'Hostile Security Audit', desc: 'BRIAN: Provide hostile security audit prompts. Cole to apply against all builds and infrastructure. Ongoing security hardening.', priority: 'high', tag: 'infrastructure', order: 15 },
+  { id: uid(), col: 'backlog', title: 'Privacy Review — All Builds', desc: 'Audit all projects/deployments for privacy leaks, hardcoded secrets, exposed endpoints. Apply fixes proactively.', priority: 'high', tag: 'infrastructure', order: 16 },
+
+  // ── BACKLOG: Coding/Nightly ──
+  { id: uid(), col: 'backlog', title: 'Nightly Build: Cool Project', desc: 'Each night, build something cool for Brian. Surprise builds — tools, visualizations, automations, creative projects.', priority: 'medium', tag: 'coding', order: 17 },
+  { id: uid(), col: 'backlog', title: 'Explore ClawHub Skills', desc: 'Browse clawhub.com for useful skills to install — 700+ available. Find content, security, and productivity skills.', priority: 'low', tag: 'research', order: 18 },
+
+  // ── IN PROGRESS ──
+  { id: uid(), col: 'progress', title: 'AI Community Research', desc: 'Research OpenClaw community chatter, new features (v2026.2.2), Moltbook social network, security improvements, onchain integrations. Monitor for things Brian can leverage as AI PM.', priority: 'high', tag: 'research', order: 0 },
+  { id: uid(), col: 'progress', title: 'Kanban Board — Populate & Deploy', desc: 'Fill kanban with real backlog, deploy to Netlify for phone access', priority: 'high', tag: 'coding', order: 1 },
+
+  // ── DONE ──
+  { id: uid(), col: 'done', title: 'Initial Setup', desc: 'Identity, memory, SOUL.md, USER.md, AGENTS.md created', priority: 'high', tag: 'infrastructure', order: 0 },
+  { id: uid(), col: 'done', title: 'Brave Search API', desc: 'Configured and working', priority: 'high', tag: 'infrastructure', order: 1 },
+  { id: uid(), col: 'done', title: 'Signal Linked Device', desc: "Linked to Brian's number +16027518117", priority: 'medium', tag: 'infrastructure', order: 2 },
+  { id: uid(), col: 'done', title: 'ASU Scholarship Research', desc: '30+ scholarships researched, deadline calendar built, action items prioritized. Focus on merit + women-specific (not low-income).', priority: 'high', tag: 'research', order: 3 },
+  { id: uid(), col: 'done', title: 'Second Brain Structure', desc: 'Folder structure: content/, research/, projects/, drafts/, memory/, reference/', priority: 'medium', tag: 'organization', order: 4 },
+  { id: uid(), col: 'done', title: 'Content Folders Created', desc: 'x-drafts/, video-prompts/, tiktok-finds/, lyrics/ — all ready', priority: 'low', tag: 'organization', order: 5 },
+  { id: uid(), col: 'done', title: 'Morning Briefing Cron', desc: 'Daily 8:00 AM MST briefing scheduled', priority: 'medium', tag: 'infrastructure', order: 6 },
+  { id: uid(), col: 'done', title: 'Kanban Board Built', desc: 'Dark theme, drag-and-drop, localStorage persistence, filtering, mobile-responsive', priority: 'high', tag: 'coding', order: 7 },
+];
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 9); }
+
+// ── Persistence + Cloud Sync ──
+function hashCards(c) { return JSON.stringify(c.map(x => x.id + x.col + x.title + (x.order||0)).sort()); }
+
+async function syncPull() {
+  try {
+    const res = await fetch(SYNC_URL, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) return false;
+    const remote = await res.json();
+    if (Array.isArray(remote) && remote.length > 0) {
+      const remoteHash = hashCards(remote);
+      if (remoteHash !== lastSyncHash) {
+        cards = remote;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+        lastSyncHash = remoteHash;
+        return true;
+      }
+    }
+    return false;
+  } catch(e) { return false; }
+}
+
+async function syncPush() {
+  if (syncing) return;
+  syncing = true;
+  try {
+    await fetch(SYNC_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(cards)
+    });
+    lastSyncHash = hashCards(cards);
+  } catch(e) { /* silent fail, localStorage is the fallback */ }
+  syncing = false;
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) { cards = JSON.parse(raw); return; }
+  } catch(e) {}
+  cards = DEFAULT_CARDS;
+  save();
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+  syncPush(); // async push to cloud
+}
+
+// ── Render ──
+function render() {
+  ['backlog','progress','done'].forEach(col => {
+    const container = document.getElementById('col-' + col);
+    const colCards = cards
+      .filter(c => c.col === col)
+      .filter(c => !activeFilter || c.tag === activeFilter)
+      .sort((a,b) => (a.order||0) - (b.order||0));
+
+    container.innerHTML = '';
+    colCards.forEach(c => container.appendChild(createCardEl(c)));
+
+    const allInCol = cards.filter(c2 => c2.col === col).length;
+    document.querySelector(`[data-count="${col}"]`).textContent = allInCol;
+  });
+
+  const total = cards.length;
+  const done = cards.filter(c => c.col === 'done').length;
+  document.getElementById('cardCount').textContent = `${done}/${total} done`;
+
+  // Update mobile tab counts
+  ['backlog','progress','done'].forEach(col => {
+    const mcount = document.querySelector(`[data-mcount="${col}"]`);
+    if (mcount) mcount.textContent = cards.filter(c => c.col === col).length;
+  });
+
+  // Mobile: show only active tab column
+  updateMobileColumns();
+  renderFilters();
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.mobile-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  updateMobileColumns();
+}
+
+function updateMobileColumns() {
+  document.querySelectorAll('.column').forEach(col => {
+    col.classList.toggle('mobile-active', col.dataset.col === activeTab);
+  });
+}
+
+function createCardEl(c) {
+  const el = document.createElement('div');
+  el.className = `card priority-${c.priority}-card`;
+  el.draggable = true;
+  el.dataset.id = c.id;
+
+  const tagClass = getTagClass(c.tag);
+  el.innerHTML = `
+    <button class="card-edit-btn" onclick="event.stopPropagation(); openModal('${c.id}')" aria-label="Edit">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L3.463 11.098a.25.25 0 00-.064.108l-.631 2.208 2.208-.63a.25.25 0 00.108-.064l8.61-8.61a.25.25 0 000-.355l-1.086-1.086z"/></svg>
+    </button>
+    <div class="card-title">${esc(c.title)}</div>
+    ${c.desc ? `<div class="card-desc">${esc(c.desc)}</div>` : ''}
+    <div class="card-meta">
+      <span class="priority-badge ${c.priority}">${c.priority}</span>
+      ${c.tag ? `<span class="tag ${tagClass}">${esc(c.tag)}</span>` : ''}
+    </div>
+  `;
+
+  el.addEventListener('click', () => openModal(c.id));
+  el.addEventListener('dragstart', onDragStart);
+  el.addEventListener('dragend', onDragEnd);
+  return el;
+}
+
+function getTagClass(tag) {
+  const map = { infrastructure:'tag-infrastructure', research:'tag-research', content:'tag-content', coding:'tag-coding', organization:'tag-organization' };
+  return map[tag] || 'tag-default';
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ── Filters ──
+function renderFilters() {
+  const tags = [...new Set(cards.map(c => c.tag).filter(Boolean))].sort();
+
+  // Render into both desktop and mobile filter bars
+  ['filterBar', 'mobileFilterBar'].forEach(barId => {
+    const bar = document.getElementById(barId);
+    if (!bar) return;
+    bar.innerHTML = '';
+    if (tags.length <= 1) { bar.style.display = 'none'; return; }
+    bar.style.display = '';
+
+    const allChip = document.createElement('button');
+    allChip.className = 'filter-chip' + (!activeFilter ? ' active' : '');
+    allChip.textContent = 'All';
+    allChip.onclick = () => { activeFilter = null; render(); };
+    bar.appendChild(allChip);
+
+    tags.forEach(t => {
+      const chip = document.createElement('button');
+      chip.className = 'filter-chip' + (activeFilter === t ? ' active' : '');
+      chip.textContent = t;
+      chip.onclick = () => { activeFilter = activeFilter === t ? null : t; render(); };
+      bar.appendChild(chip);
+    });
+  });
+}
+
+// ── Drag & Drop ──
+function onDragStart(e) {
+  draggedId = e.target.dataset.id;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', draggedId);
+}
+
+function onDragEnd(e) {
+  e.target.classList.remove('dragging');
+  draggedId = null;
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
+}
+
+document.querySelectorAll('.column-cards').forEach(col => {
+  col.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    col.classList.add('drag-over');
+
+    // Position indicator
+    const afterEl = getDragAfterElement(col, e.clientY);
+    const existing = col.querySelector('.drop-indicator');
+    if (existing) existing.remove();
+    const indicator = document.createElement('div');
+    indicator.className = 'drop-indicator';
+    if (afterEl) col.insertBefore(indicator, afterEl);
+    else col.appendChild(indicator);
+  });
+
+  col.addEventListener('dragleave', e => {
+    if (!col.contains(e.relatedTarget)) {
+      col.classList.remove('drag-over');
+      const ind = col.querySelector('.drop-indicator');
+      if (ind) ind.remove();
+    }
+  });
+
+  col.addEventListener('drop', e => {
+    e.preventDefault();
+    col.classList.remove('drag-over');
+    const ind = col.querySelector('.drop-indicator');
+    if (ind) ind.remove();
+
+    const id = e.dataTransfer.getData('text/plain');
+    const card = cards.find(c => c.id === id);
+    if (!card) return;
+
+    const newCol = col.id.replace('col-','');
+    const afterEl = getDragAfterElement(col, e.clientY);
+    const afterId = afterEl ? afterEl.dataset.id : null;
+
+    // Get cards in this column
+    const colCards = cards.filter(c => c.col === newCol && c.id !== id).sort((a,b) => (a.order||0) - (b.order||0));
+
+    card.col = newCol;
+
+    if (afterId) {
+      const idx = colCards.findIndex(c => c.id === afterId);
+      colCards.splice(idx, 0, card);
+    } else {
+      colCards.push(card);
+    }
+
+    colCards.forEach((c, i) => c.order = i);
+    save();
+    render();
+  });
+});
+
+function getDragAfterElement(container, y) {
+  const els = [...container.querySelectorAll('.card:not(.dragging)')];
+  let closest = null;
+  let closestOffset = Number.NEGATIVE_INFINITY;
+
+  els.forEach(el => {
+    const box = el.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closestOffset) {
+      closestOffset = offset;
+      closest = el;
+    }
+  });
+
+  return closest;
+}
+
+// ── Modal ──
+function openModal(id) {
+  editingId = id || null;
+  const modal = document.getElementById('modalOverlay');
+  const titleEl = document.getElementById('modalTitle');
+  const deleteBtn = document.getElementById('deleteBtn');
+
+  if (id) {
+    const card = cards.find(c => c.id === id);
+    if (!card) return;
+    titleEl.textContent = 'Edit Card';
+    document.getElementById('cardTitleInput').value = card.title;
+    document.getElementById('cardDescInput').value = card.desc || '';
+    document.getElementById('cardPriorityInput').value = card.priority;
+    document.getElementById('cardTagInput').value = card.tag || '';
+    document.getElementById('cardColumnInput').value = card.col;
+    deleteBtn.style.display = '';
+  } else {
+    titleEl.textContent = 'New Card';
+    document.getElementById('cardTitleInput').value = '';
+    document.getElementById('cardDescInput').value = '';
+    document.getElementById('cardPriorityInput').value = 'medium';
+    document.getElementById('cardTagInput').value = '';
+    document.getElementById('cardColumnInput').value = 'backlog';
+    deleteBtn.style.display = 'none';
+  }
+
+  modal.classList.add('active');
+  setTimeout(() => document.getElementById('cardTitleInput').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  editingId = null;
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function saveCard() {
+  const title = document.getElementById('cardTitleInput').value.trim();
+  if (!title) { document.getElementById('cardTitleInput').focus(); return; }
+
+  const desc = document.getElementById('cardDescInput').value.trim();
+  const priority = document.getElementById('cardPriorityInput').value;
+  const tag = document.getElementById('cardTagInput').value.trim().toLowerCase();
+  const col = document.getElementById('cardColumnInput').value;
+
+  if (editingId) {
+    const card = cards.find(c => c.id === editingId);
+    if (card) {
+      const oldCol = card.col;
+      card.title = title;
+      card.desc = desc;
+      card.priority = priority;
+      card.tag = tag;
+      if (card.col !== col) {
+        card.col = col;
+        const colCards = cards.filter(c => c.col === col);
+        card.order = colCards.length;
+      }
+    }
+  } else {
+    const colCards = cards.filter(c => c.col === col);
+    cards.push({ id: uid(), col, title, desc, priority, tag, order: colCards.length });
+  }
+
+  save();
+  render();
+  closeModal();
+}
+
+function deleteCard() {
+  if (!editingId) return;
+  if (!confirm('Delete this card?')) return;
+  cards = cards.filter(c => c.id !== editingId);
+  save();
+  render();
+  closeModal();
+}
+
+// ── Keyboard ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && e.ctrlKey && document.getElementById('modalOverlay').classList.contains('active')) saveCard();
+});
+
+// ── Touch swipe for mobile tabs ──
+let touchStartX = 0;
+let touchEndX = 0;
+const SWIPE_THRESHOLD = 60;
+const tabOrder = ['backlog', 'progress', 'done'];
+
+document.getElementById('board').addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.getElementById('board').addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) < SWIPE_THRESHOLD) return;
+  const idx = tabOrder.indexOf(activeTab);
+  if (diff > 0 && idx < tabOrder.length - 1) switchTab(tabOrder[idx + 1]); // swipe left
+  if (diff < 0 && idx > 0) switchTab(tabOrder[idx - 1]); // swipe right
+}, { passive: true });
+
+// ── Init ──
+load();
+// Set first tab with items as active on mobile
+const firstWithCards = tabOrder.find(t => cards.some(c => c.col === t)) || 'backlog';
+activeTab = firstWithCards;
+document.querySelectorAll('.mobile-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
+render();
+
+// Pull from cloud on load, merge if newer
+syncPull().then(changed => { if (changed) { render(); } });
+
+// Poll for remote changes every 30s (cheap — single GET)
+setInterval(async () => {
+  const changed = await syncPull();
+  if (changed) render();
+}, 30000);
+</script>
+</body>
+</html>

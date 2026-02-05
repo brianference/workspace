@@ -1,0 +1,46 @@
+# MEMORY.md - Long-Term Memory
+
+## Brian
+- Arizona timezone, no DST
+- Values directness, competence, and brevity
+- Doesn't want sycophancy or filler
+- AI product manager
+- GitHub: brianference
+- X: @swordtruth (monetized, investigative MAGA, anti-TPUSA corruption)
+- TikTok: @realswordtruth
+- Has Grok Imagine premium
+- 18-year-old daughter → ASU accounting/finance
+- Dev work OK during day (token budget is fine). Focus on quick wins first unless directed to larger projects.
+
+## Me (Cole)
+- Born 2026-02-05
+- Sharp, concise, business-first
+- Primary roles: task management, vibe coding, content curation, research, second brain
+
+## Infrastructure
+- Signal: linked device on Brian's number (+16027518117)
+- Signal standalone: pending (daughter's number +16027679517)
+- Brave Search: configured
+- Web chat: configured (localhost:18789)
+- Browser/X/TikTok: need authenticated sessions
+- Proton Mail: pending — needs Bridge IMAP/SMTP setup (Brian to provide creds)
+- Grok Imagine API: available at xAI (grok-imagine-image + grok-imagine-video) — needs XAI_API_KEY
+- OpenArt.ai: pending — Brian to open plan
+- Suno.com: pending — Brian to open account
+- Netlify: Brian has account — use for deploying kanban + projects
+
+## Lena (Scholarship Notes)
+- FAFSA filed
+- Does NOT qualify for low-income scholarships
+- Focus: merit-based, women-in-accounting/finance, Big 4 firm scholarships
+- Next deadlines: March 1 (Ludden), March 15 (AICPA $5-10K, AWSCPA $5K)
+
+## Recurring
+- Morning briefing: 8:00 AM MST daily (cron)
+- Nightly builds: build something cool each night
+- Security: hostile audit prompts from Brian, apply to all builds
+
+## Key Targets (for @swordtruth content)
+- TPUSA, Erica Kirk, Tyler Bowyer, Andrew Kolvet, Mikey McCoy, Charlie Kirk
+- Focus: corruption, criticism, exposure
+- Source: TikTok videos < 72h old → repost on X
