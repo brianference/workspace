@@ -4,10 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kanban Board</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📋</text></svg>">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Light mode (default) */
   :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --surface2: #ffffff;
+    --border: #d8dce2;
+    --border-light: #c0c5cc;
+    --text: #1a1d21;
+    --text-dim: #5a6270;
+    --accent: #2563eb;
+    --accent-hover: #3b82f6;
+    --high: #dc2626;
+    --med: #ca8a04;
+    --low: #16a34a;
+    --tag-infra: #dbeafe;
+    --tag-infra-text: #1d4ed8;
+    --tag-research: #ede9fe;
+    --tag-research-text: #7c3aed;
+    --tag-content: #ffedd5;
+    --tag-content-text: #c2410c;
+    --tag-coding: #dcfce7;
+    --tag-coding-text: #15803d;
+    --tag-org: #fef9c3;
+    --tag-org-text: #a16207;
+    --tag-default: #e5e7eb;
+    --tag-default-text: #6b7280;
+    --column-backlog: #2563eb;
+    --column-progress: #ca8a04;
+    --column-done: #16a34a;
+    --shadow: 0 2px 8px rgba(0,0,0,.08);
+    --radius: 10px;
+    --radius-sm: 8px;
+  }
+
+  /* Dark mode */
+  [data-theme="dark"] {
     --bg: #0d1117;
     --surface: #161b22;
     --surface2: #1c2129;
@@ -370,6 +406,7 @@
   .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
   /* Mobile tab nav (hidden on desktop) */
+  .mobile-theme-toggle { display: none; }
   .mobile-tabs {
     display: none;
     background: var(--surface);
@@ -462,8 +499,9 @@
     .mobile-filter-row::-webkit-scrollbar { display: none; }
     .filter-chip { white-space: nowrap; font-size: 11px; padding: 3px 10px; }
 
-    /* Show mobile tabs */
+    /* Show mobile tabs + theme toggle */
     .mobile-tabs { display: block; }
+    .mobile-theme-toggle { display: flex; }
 
     /* Hide desktop filter bar */
     .filter-bar { display: none; }
@@ -493,11 +531,11 @@
       border-left-width: 4px;
       -webkit-tap-highlight-color: transparent;
     }
-    .card-title { font-size: 17px; padding-right: 36px; }
-    .card-desc { font-size: 15px; -webkit-line-clamp: 2; line-height: 1.5; }
-    .card-meta { gap: 8px; }
-    .priority-badge { font-size: 12px; padding: 3px 9px; }
-    .tag { font-size: 12px; padding: 3px 9px; }
+    .card-title { font-size: 18px; padding-right: 40px; line-height: 1.4; }
+    .card-desc { font-size: 16px; -webkit-line-clamp: 2; line-height: 1.5; }
+    .card-meta { gap: 8px; margin-top: 2px; }
+    .priority-badge { font-size: 13px; padding: 4px 10px; }
+    .tag { font-size: 13px; padding: 4px 10px; }
     .card-edit-btn {
       opacity: .5;
       width: 34px;
@@ -508,14 +546,34 @@
     }
 
     /* Header */
-    .header h1 { font-size: 18px; }
+    .header h1 { font-size: 20px; }
 
     /* Tabs */
-    .mobile-tab { font-size: 15px; padding: 14px 8px; }
-    .mobile-tab-count { font-size: 13px; }
+    .mobile-tab { font-size: 16px; padding: 14px 8px; font-weight: 700; }
+    .mobile-tab-count { font-size: 14px; padding: 1px 8px; }
 
     /* Filters */
-    .filter-chip { font-size: 13px; padding: 5px 12px; }
+    .filter-chip { font-size: 14px; padding: 6px 14px; }
+    
+    /* Theme toggle on mobile */
+    .mobile-theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     /* Modal: full screen on mobile */
     .modal-overlay { align-items: flex-end; }
@@ -551,15 +609,101 @@
     }
     .btn-primary.header-add .btn-text { display: none; }
   }
+  /* Lock Screen */
+  .lock-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .lock-screen.hidden { display: none; }
+  .lock-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .lock-box h2 { font-size: 20px; margin-bottom: 6px; }
+  .lock-box p { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
+  .lock-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 18px;
+    font-family: inherit;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 2px;
+    transition: border-color .2s;
+  }
+  .lock-input:focus { outline: none; border-color: var(--accent); }
+  .lock-input.error { border-color: var(--high); animation: shake .4s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-8px); }
+    40%,80% { transform: translateX(8px); }
+  }
+  .lock-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .lock-btn:hover { background: var(--accent-hover); }
+  .lock-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .lock-error {
+    color: var(--high);
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 20px;
+  }
+  .lock-icon { font-size: 40px; margin-bottom: 16px; }
+  .lock-setup-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 16px;
+  }
 </style>
 </head>
 <body>
+
+<!-- Lock Screen -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-box">
+    <div class="lock-icon">🔒</div>
+    <h2 id="lockTitle">Enter Passphrase</h2>
+    <p id="lockSubtitle">This board is encrypted</p>
+    <input type="password" class="lock-input" id="lockInput" placeholder="passphrase" autocomplete="off" autofocus>
+    <button class="lock-btn" id="lockBtn" onclick="handleAuth()">Unlock</button>
+    <div class="lock-error" id="lockError"></div>
+    <div class="lock-setup-note" id="lockNote"></div>
+  </div>
+</div>
 
 <div class="header">
   <h1><span>📋</span> Kanban Board</h1>
   <div class="header-actions">
     <div class="filter-bar" id="filterBar"></div>
     <span class="card-count" id="cardCount"></span>
+    <button class="btn btn-sm" onclick="toggleTheme()" id="themeBtn">🌙</button>
     <button class="btn btn-primary header-add" onclick="openModal()">＋<span class="btn-text"> New Card</span></button>
   </div>
 </div>
@@ -602,6 +746,8 @@
     <div class="column-cards" id="col-done"></div>
   </div>
 </div>
+
+<button class="mobile-theme-toggle" id="mobileThemeBtn" onclick="toggleTheme()">🌙</button>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
@@ -648,6 +794,175 @@
 </div>
 
 <script>
+// ══════════════════════════════════════
+// CRYPTO ENGINE — AES-256-GCM + PBKDF2
+// ══════════════════════════════════════
+const CRYPTO_SALT_KEY = 'kanban-salt';
+const CRYPTO_VERIFY_KEY = 'kanban-verify';
+const CRYPTO_CACHED_KEY = 'kanban-ck';
+const PBKDF2_ITERATIONS = 600000;
+let cryptoKey = null;
+
+async function deriveKey(passphrase, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptData(key, data) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const enc = new TextEncoder();
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(data)));
+  const buf = new Uint8Array(iv.length + ct.byteLength);
+  buf.set(iv);
+  buf.set(new Uint8Array(ct), iv.length);
+  return btoa(String.fromCharCode(...buf));
+}
+
+async function decryptData(key, b64) {
+  try {
+    const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const iv = raw.slice(0, 12);
+    const ct = raw.slice(12);
+    const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+    return JSON.parse(new TextDecoder().decode(dec));
+  } catch(e) { return null; }
+}
+
+async function createVerifier(key) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const enc = new TextEncoder();
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode('KANBAN_VERIFIED'));
+  const buf = new Uint8Array(iv.length + ct.byteLength);
+  buf.set(iv);
+  buf.set(new Uint8Array(ct), iv.length);
+  return btoa(String.fromCharCode(...buf));
+}
+
+async function checkVerifier(key, b64) {
+  try {
+    const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const iv = raw.slice(0, 12);
+    const ct = raw.slice(12);
+    const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+    return new TextDecoder().decode(dec) === 'KANBAN_VERIFIED';
+  } catch(e) { return false; }
+}
+
+// Brute force protection
+let failedAttempts = 0;
+let lockoutUntil = 0;
+
+function getLockoutSeconds() {
+  if (failedAttempts < 3) return 0;
+  return Math.min(Math.pow(2, failedAttempts - 2), 300); // max 5 min
+}
+
+async function handleAuth() {
+  const now = Date.now();
+  if (now < lockoutUntil) {
+    const secs = Math.ceil((lockoutUntil - now) / 1000);
+    document.getElementById('lockError').textContent = 'Too many attempts. Wait ' + secs + 's';
+    return;
+  }
+
+  const input = document.getElementById('lockInput');
+  const passphrase = input.value.trim();
+  if (!passphrase) { input.focus(); return; }
+
+  const btn = document.getElementById('lockBtn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  const storedSalt = localStorage.getItem(CRYPTO_SALT_KEY);
+  const storedVerify = localStorage.getItem(CRYPTO_VERIFY_KEY);
+
+  if (!storedSalt || !storedVerify) {
+    // First-time setup — create salt and verifier
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const key = await deriveKey(passphrase, salt);
+    const verifier = await createVerifier(key);
+    localStorage.setItem(CRYPTO_SALT_KEY, btoa(String.fromCharCode(...salt)));
+    localStorage.setItem(CRYPTO_VERIFY_KEY, verifier);
+    cryptoKey = key;
+    // Migrate existing unencrypted data
+    await migrateToEncrypted();
+    unlockBoard();
+  } else {
+    // Verify passphrase
+    const salt = Uint8Array.from(atob(storedSalt), c => c.charCodeAt(0));
+    const key = await deriveKey(passphrase, salt);
+    const valid = await checkVerifier(key, storedVerify);
+    if (valid) {
+      cryptoKey = key;
+      failedAttempts = 0;
+      unlockBoard();
+    } else {
+      failedAttempts++;
+      const lockSecs = getLockoutSeconds();
+      if (lockSecs > 0) lockoutUntil = Date.now() + lockSecs * 1000;
+      input.classList.add('error');
+      document.getElementById('lockError').textContent = 'Wrong passphrase' + (lockSecs ? '. Locked for ' + lockSecs + 's' : '');
+      setTimeout(() => input.classList.remove('error'), 400);
+      btn.disabled = false;
+      btn.textContent = 'Unlock';
+    }
+  }
+}
+
+async function migrateToEncrypted() {
+  // Pull current plaintext from cloud, encrypt and push back
+  try {
+    const res = await fetch(SYNC_URL, { headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const encrypted = await encryptData(cryptoKey, data);
+        await fetch(SYNC_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ encrypted: true, payload: encrypted })
+        });
+        cards = data;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+        return;
+      }
+    }
+  } catch(e) {}
+}
+
+function unlockBoard() {
+  document.getElementById('lockScreen').classList.add('hidden');
+  document.getElementById('lockBtn').disabled = false;
+  document.getElementById('lockBtn').textContent = 'Unlock';
+  initBoard();
+}
+
+// Lock screen enter key
+document.getElementById('lockInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleAuth();
+});
+
+// Show setup vs unlock mode
+(function() {
+  const hasSalt = localStorage.getItem(CRYPTO_SALT_KEY);
+  if (!hasSalt) {
+    document.getElementById('lockTitle').textContent = 'Set Passphrase';
+    document.getElementById('lockSubtitle').textContent = 'Choose a passphrase to encrypt your board';
+    document.getElementById('lockBtn').textContent = 'Set Up';
+    document.getElementById('lockNote').textContent = 'This passphrase encrypts all your data. Remember it — it cannot be recovered.';
+  }
+})();
+
+// ══════════════════════════════════════
+// BOARD CODE
+// ══════════════════════════════════════
 const STORAGE_KEY = 'kanban-board-data';
 const SYNC_URL = 'https://jsonblob.com/api/jsonBlob/019c2ea0-0631-7096-bbf0-b078900c4550';
 let cards = [];
@@ -714,6 +1029,23 @@ async function syncPull() {
     const res = await fetch(SYNC_URL, { headers: { 'Accept': 'application/json' } });
     if (!res.ok) return false;
     const remote = await res.json();
+    
+    // Handle encrypted data
+    if (remote && remote.encrypted && remote.payload && cryptoKey) {
+      const decrypted = await decryptData(cryptoKey, remote.payload);
+      if (decrypted && Array.isArray(decrypted) && decrypted.length > 0) {
+        const remoteHash = hashCards(decrypted);
+        if (remoteHash !== lastSyncHash) {
+          cards = decrypted;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+          lastSyncHash = remoteHash;
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    // Handle legacy unencrypted data
     if (Array.isArray(remote) && remote.length > 0) {
       const remoteHash = hashCards(remote);
       if (remoteHash !== lastSyncHash) {
@@ -728,13 +1060,14 @@ async function syncPull() {
 }
 
 async function syncPush() {
-  if (syncing) return;
+  if (syncing || !cryptoKey) return;
   syncing = true;
   try {
+    const encrypted = await encryptData(cryptoKey, cards);
     await fetch(SYNC_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(cards)
+      body: JSON.stringify({ encrypted: true, payload: encrypted })
     });
     lastSyncHash = hashCards(cards);
   } catch(e) { /* silent fail, localStorage is the fallback */ }
@@ -1040,6 +1373,28 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.ctrlKey && document.getElementById('modalOverlay').classList.contains('active')) saveCard();
 });
 
+// ── Theme toggle ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('kanban-theme', isDark ? 'light' : 'dark');
+  updateThemeBtn();
+}
+function updateThemeBtn() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  const mBtn = document.getElementById('mobileThemeBtn');
+  if (mBtn) mBtn.textContent = isDark ? '☀️' : '🌙';
+}
+// Load saved theme (default: light)
+(function() {
+  const saved = localStorage.getItem('kanban-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  updateThemeBtn();
+})();
+
 // ── Touch swipe for mobile tabs ──
 let touchStartX = 0;
 let touchEndX = 0;
@@ -1059,22 +1414,22 @@ document.getElementById('board').addEventListener('touchend', e => {
   if (diff < 0 && idx > 0) switchTab(tabOrder[idx - 1]); // swipe right
 }, { passive: true });
 
-// ── Init ──
-load();
-// Set first tab with items as active on mobile
-const firstWithCards = tabOrder.find(t => cards.some(c => c.col === t)) || 'backlog';
-activeTab = firstWithCards;
-document.querySelectorAll('.mobile-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
-render();
+// ── Init (called after auth) ──
+function initBoard() {
+  load();
+  const firstWithCards = tabOrder.find(t => cards.some(c => c.col === t)) || 'backlog';
+  activeTab = firstWithCards;
+  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
+  render();
 
-// Pull from cloud on load, merge if newer
-syncPull().then(changed => { if (changed) { render(); } });
+  syncPull().then(changed => { if (changed) render(); });
 
-// Poll for remote changes every 30s (cheap — single GET)
-setInterval(async () => {
-  const changed = await syncPull();
-  if (changed) render();
-}, 30000);
+  setInterval(async () => {
+    const changed = await syncPull();
+    if (changed) render();
+  }, 30000);
+}
+// Board does NOT auto-init — waits for unlockBoard()
 </script>
 </body>
 </html>

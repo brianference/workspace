@@ -40,6 +40,21 @@
 - Nightly builds: build something cool each night
 - Security: hostile audit prompts from Brian, apply to all builds
 
+## Security Rules
+- ALL public-facing builds get security by default — no exceptions
+- Encrypt data at rest for any cloud-stored user data
+- Auth gate on anything with a public URL
+- PBKDF2/bcrypt for password hashing (anti-brute-force)
+- Rate limiting on auth attempts
+- Brian will provide hostile security audit prompts — apply to everything
+
+## Communication Preferences
+- Send messages in chunks, don't leave long typing indicators
+- Interruption protocol: quick tasks → just do them. Longer work → pause and ask
+- Proactively add tasks to kanban from conversations
+- Quick wins first, bigger projects when directed
+- Dev work OK during day (token budget is fine)
+
 ## Key Targets (for @swordtruth content)
 - TPUSA, Erica Kirk, Tyler Bowyer, Andrew Kolvet, Mikey McCoy, Charlie Kirk
 - Focus: corruption, criticism, exposure
