@@ -292,9 +292,21 @@
       "tags": [
         "coding"
       ],
-      "status": "active",
+      "status": "done",
       "createdAt": "2026-02-06T19:55:19.235Z",
-      "updatedAt": "2026-02-06T19:55:19.235Z"
+      "updatedAt": "2026-02-06T19:57:07.283Z"
+    },
+    {
+      "id": "task-023",
+      "title": "TPUSA Intel + Scholarship Hunt UI Redesign",
+      "description": "Add light mode, modern mobile-first design from mobbin/competitors - glassmorphism, better spacing, animations",
+      "priority": "high",
+      "tags": [
+        "coding"
+      ],
+      "status": "active",
+      "createdAt": "2026-02-06T19:57:52.845Z",
+      "updatedAt": "2026-02-06T19:57:52.845Z"
     }
   ]
 }
