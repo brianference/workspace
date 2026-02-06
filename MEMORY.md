@@ -53,7 +53,8 @@
 
 ## Recurring
 - Morning briefing: 8:00 AM MST daily (cron)
-- Nightly autonomous builds: 2:00 AM MST (cron) — build something cool, apply security, deploy, document
+- Nightly autonomous builds: 10:30 PM MST (cron) — build something cool, apply security, deploy, document
+- **Kanban monitoring** — check backlog + in-progress every heartbeat, execute autonomously
 - Heartbeat checks: rotate email/calendar/weather/X mentions/TikTok/kanban 2-4x daily
 - Security: hostile audit prompts from Brian, apply to all builds
 

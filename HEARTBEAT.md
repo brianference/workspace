@@ -13,10 +13,13 @@ Check `memory/heartbeat-state.json` for last check timestamps. Rotate through:
 - [ ] X mentions — @swordtruth notifications
 
 ### Evening (5-7 PM)
-- [ ] Kanban — any overdue tasks?
+- [ ] **Kanban check** — backlog items to prioritize and execute?
+- [ ] **Kanban in-progress** — any items needing work?
 - [ ] TikTok scan — new TPUSA content < 72h (when browser configured)
 
-### Late Night (11 PM - 1 AM)
+### Late Night (9-11 PM)
+- [ ] **Kanban backlog** — execute top priority tasks autonomously
+- [ ] **Kanban in-progress** — work on items Brian added
 - [ ] Memory review — update MEMORY.md from recent daily files
 - [ ] Git status — uncommitted changes to push?
 - [ ] Second brain — organize files, clean up workspace

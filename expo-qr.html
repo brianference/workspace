@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expo QR Code</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #0a0e27;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+  }
+  .container {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #8b92a8;
+    margin-bottom: 40px;
+  }
+  .qr-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+  }
+  .url {
+    font-size: 16px;
+    color: #4a9eff;
+    background: #1a1f3a;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    margin-top: 20px;
+    word-break: break-all;
+    max-width: 90%;
+  }
+  .instructions {
+    margin-top: 30px;
+    font-size: 14px;
+    color: #8b92a8;
+    max-width: 400px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📱 OpenClaw Mobile</h1>
+  <p class="subtitle">Scan with Expo Go</p>
+  
+  <div class="qr-container">
+    <div id="qrcode"></div>
+  </div>
+  
+  <div class="url" id="url">Loading...</div>
+  
+  <div class="instructions">
+    Open <strong>Expo Go</strong> app on your phone and scan the QR code above
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+const url = 'exp://oftxebq-anonymous-8081.exp.direct';
+document.getElementById('url').textContent = url;
+
+QRCode.toCanvas(url, {
+  errorCorrectionLevel: 'M',
+  width: 300,
+  margin: 2,
+  color: {
+    dark: '#000000',
+    light: '#ffffff'
+  }
+}, function (err, canvas) {
+  if (err) {
+    console.error(err);
+    document.getElementById('qrcode').innerHTML = '<p style="color:#f85149">QR generation failed</p>';
+    return;
+  }
+  document.getElementById('qrcode').appendChild(canvas);
+});
+</script>
+</body>
+</html>
