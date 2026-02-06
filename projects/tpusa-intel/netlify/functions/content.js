@@ -1,7 +1,5 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const DATA_FILE = path.join(__dirname, '../../data/intel-data.json');
+// In-memory content store (MVP - migrate to database later)
+let contentStore = [];
 
 exports.handler = async (event, context) => {
   // CORS headers
@@ -27,10 +25,6 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Read data file
-    const data = await fs.readFile(DATA_FILE, 'utf8');
-    const intel = JSON.parse(data);
-
     // Parse query params
     const params = event.queryStringParameters || {};
     const target = params.target;
@@ -38,7 +32,7 @@ exports.handler = async (event, context) => {
     const limit = parseInt(params.limit) || 50;
 
     // Filter content
-    let content = intel.content || [];
+    let content = contentStore;
     
     if (target) {
       content = content.filter(item => item.targetId === target);

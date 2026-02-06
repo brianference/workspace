@@ -1,7 +1,41 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const DATA_FILE = path.join(__dirname, '../../data/intel-data.json');
+// Default data (in-memory for MVP)
+const DEFAULT_DATA = {
+  targets: [
+    {
+      id: "erica-kirk",
+      name: "Erica Kirk",
+      platform: "tiktok",
+      handle: "@ericakirk",
+      lastScanned: null,
+      contentCount: 0
+    },
+    {
+      id: "tyler-bowyer",
+      name: "Tyler Bowyer",
+      platform: "tiktok",
+      handle: "@tylerbowyer",
+      lastScanned: null,
+      contentCount: 0
+    },
+    {
+      id: "andrew-kolvet",
+      name: "Andrew Kolvet",
+      platform: "tiktok",
+      handle: "@andrewkolvet",
+      lastScanned: null,
+      contentCount: 0
+    },
+    {
+      id: "charlie-kirk",
+      name: "Charlie Kirk",
+      platform: "tiktok",
+      handle: "@charliekirk",
+      lastScanned: null,
+      contentCount: 0
+    }
+  ],
+  content: []
+};
 
 exports.handler = async (event, context) => {
   // CORS headers
@@ -27,20 +61,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Read data file
-    const data = await fs.readFile(DATA_FILE, 'utf8');
-    const intel = JSON.parse(data);
-
+    // Use in-memory data (MVP - migrate to database later)
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        targets: intel.targets,
+        targets: DEFAULT_DATA.targets,
         timestamp: new Date().toISOString()
       })
     };
   } catch (error) {
-    console.error('Error reading targets:', error);
+    console.error('Error loading targets:', error);
     return {
       statusCode: 500,
       headers,

@@ -1,10 +1,17 @@
-const fs = require('fs').promises;
-const path = require('path');
 const { exec } = require('child_process');
 const { promisify } = require('util');
 
 const execPromise = promisify(exec);
-const DATA_FILE = path.join(__dirname, '../../data/intel-data.json');
+
+// In-memory data store (MVP - migrate to database later)
+const DEFAULT_TARGETS = [
+  { id: "erica-kirk", name: "Erica Kirk", platform: "tiktok", handle: "@ericakirk", lastScanned: null, contentCount: 0 },
+  { id: "tyler-bowyer", name: "Tyler Bowyer", platform: "tiktok", handle: "@tylerbowyer", lastScanned: null, contentCount: 0 },
+  { id: "andrew-kolvet", name: "Andrew Kolvet", platform: "tiktok", handle: "@andrewkolvet", lastScanned: null, contentCount: 0 },
+  { id: "charlie-kirk", name: "Charlie Kirk", platform: "tiktok", handle: "@charliekirk", lastScanned: null, contentCount: 0 }
+];
+
+let contentStore = [];
 
 // Rate limiting
 const scanQueue = new Map();
@@ -121,12 +128,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Read current data
-    const data = await fs.readFile(DATA_FILE, 'utf8');
-    const intel = JSON.parse(data);
-
     // Find target
-    const target = intel.targets.find(t => t.id === targetId);
+    const target = DEFAULT_TARGETS.find(t => t.id === targetId);
     if (!target) {
       return {
         statusCode: 404,
@@ -150,13 +153,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Update intel data
-    intel.content = [...intel.content, ...newContent];
+    // Update intel data in-memory
+    contentStore = [...contentStore, ...newContent];
     target.lastScanned = new Date().toISOString();
     target.contentCount += newContent.length;
-
-    // Save updated data
-    await fs.writeFile(DATA_FILE, JSON.stringify(intel, null, 2));
+    
+    // Note: In-memory storage means data resets on cold starts
+    // Migrate to Supabase/database for persistence
 
     // Update rate limit
     scanQueue.set(queueKey, Date.now());

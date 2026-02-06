@@ -1,7 +1,12 @@
-const fs = require('fs').promises;
-const path = require('path');
+// In-memory data store (MVP - migrate to database later)
+const DEFAULT_TARGETS = [
+  { id: "erica-kirk", name: "Erica Kirk", platform: "tiktok", handle: "@ericakirk", lastScanned: null, contentCount: 0 },
+  { id: "tyler-bowyer", name: "Tyler Bowyer", platform: "tiktok", handle: "@tylerbowyer", lastScanned: null, contentCount: 0 },
+  { id: "andrew-kolvet", name: "Andrew Kolvet", platform: "tiktok", handle: "@andrewkolvet", lastScanned: null, contentCount: 0 },
+  { id: "charlie-kirk", name: "Charlie Kirk", platform: "tiktok", handle: "@charliekirk", lastScanned: null, contentCount: 0 }
+];
 
-const DATA_FILE = path.join(__dirname, '../../data/intel-data.json');
+let contentStore = [];
 
 exports.handler = async (event, context) => {
   // CORS headers
@@ -27,13 +32,9 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Read data file
-    const data = await fs.readFile(DATA_FILE, 'utf8');
-    const intel = JSON.parse(data);
-
     // Calculate stats
-    const content = intel.content || [];
-    const targets = intel.targets || [];
+    const content = contentStore;
+    const targets = DEFAULT_TARGETS;
 
     // Total engagement
     const totalEngagement = content.reduce((sum, item) => {
