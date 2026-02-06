@@ -54,8 +54,8 @@
     },
     {
       "id": "task-003",
-      "title": "TPUSA Intel Aggregator",
-      "description": "TikTok/X content scanner for TPUSA criticism",
+      "title": "done",
+      "description": "--description",
       "priority": "high",
       "tags": [
         "coding",
@@ -63,7 +63,7 @@
       ],
       "status": "done",
       "createdAt": "2026-02-06T15:15:00Z",
-      "updatedAt": "2026-02-06T17:49:24.394Z"
+      "updatedAt": "2026-02-06T20:51:23.684Z"
     },
     {
       "id": "task-004",
