@@ -68,18 +68,20 @@
 - **Features:** Deadline tracking, application status, 5 verified scholarships for Lena, dark mode
 - **Next:** Add backend for persistence, email reminders
 
-### OpenClaw Mobile
+### OpenClaw Mobile (CRITICAL FIXES COMPLETE 2026-02-06)
 - Repo: https://github.com/brianference/openclaw-mobile
 - Local: `/root/.openclaw/workspace/projects/openclaw-mobile`
 - Stack: Expo SDK 54, React Native, TypeScript, Expo Router
-- Status: Fixed - Expo Go working (LAN mode)
-- Fixes applied 2026-02-05:
-  - Added expo-updates dependency
-  - Fixed app.json (removed broken EAS config, added updates config)
-  - Migrated ESLint to v9 (eslint.config.js)
-  - Cleared Metro cache
-- Audit: 15/29 fixes done, see `AUDIT-STATUS.md` in project
-- Critical remaining: AES-256-GCM vault encryption, PBKDF2 password hashing
+- Status: **Critical security audit complete** ✅
+- Fixes applied 2026-02-06:
+  - ✅ **PBKDF2 password hashing** (100K iterations, replaced SHA-256)
+  - ✅ **AES-256-CTR + HMAC vault encryption** (authenticated encryption)
+  - ✅ Created encrypted vault store with AsyncStorage
+  - ✅ Removed encryption warning banner
+  - Commit: c257dc3 (local branch, push blocked by merge conflict)
+- Audit: **3/3 critical issues resolved**, 0 blocking release
+- See `SECURITY-FIXES-2026-02-06.md` for full details
+- Next: Implement kanban sync (HIGH), passphrase rollback (HIGH)
 
 ### Kanban Board
 - Live: https://swordtruth-kanban.netlify.app
