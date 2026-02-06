@@ -1,6 +1,6 @@
-# Modern UI Design - 2026 Standards
+# Modern UI Design - 2026 Standards (iOS HIG + Mobbin)
 
-**Purpose:** Apply modern mobile-first design patterns to web apps using 2026 best practices from mobbin.com, Banani, Lapa Ninja, and competitors.
+**Purpose:** Apply modern mobile-first design patterns to web apps using 2026 best practices from iOS Human Interface Guidelines, Mobbin.com, and Modern Mobile Design System v1.0.
 
 ---
 
@@ -13,243 +13,209 @@ Trigger words:
 - "redesign the UI"
 - "apply modern design concepts"
 - "reference mobbin"
+- "iOS design"
 
 ---
 
-## Design Principles (2026)
+## Design Principles (2026 - iOS HIG)
+
+### Core Principles (Apple)
+1. **Clarity** - Text is legible, icons are precise, functionality is obvious
+2. **Deference** - Content is king, UI doesn't compete
+3. **Depth** - Layering and motion provide hierarchy
+4. **Consistency** - Familiar standards throughout
 
 ### 1. Mobile-First Always
 - Design for 320px width minimum
-- Touch targets: minimum 44px × 44px
+- **Touch targets: MINIMUM 44px × 44px** (Apple HIG standard)
 - Bottom navigation for primary actions
 - Sticky headers with blur effects
-- iOS safe area support
+- iOS safe area support: `env(safe-area-inset-*)`
 
-### 2. Glassmorphism
+### 2. Glassmorphism & Liquid Glass (iOS 26 Trend)
 - Frosted glass effects with `backdrop-filter: blur(20px)`
-- Semi-transparent surfaces: `rgba(255, 255, 255, 0.1)`
+- Semi-transparent surfaces: `rgba(255, 255, 255, 0.7)`
 - Layered depth with shadows
-- Subtle borders: `rgba(255, 255, 255, 0.2)`
+- Liquid Glass: gradient backgrounds + saturate(200%)
+- Tab bars: `rgba(255, 255, 255, 0.85)` + blur
 
-### 3. Gradients
-- Purple/blue: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
-- Success: `linear-gradient(135deg, #48bb78 0%, #38a169 100%)`
-- Danger: `linear-gradient(135deg, #f56565 0%, #e53e3e 100%)`
-- Text gradients with `-webkit-background-clip: text`
+### 3. Typography (iOS Standard)
+- **System Font:** SF Pro Display/Text, Inter fallback
+- **Scale:** 11pt-34pt (0.6875rem - 2.125rem)
+- **Body default:** 17pt (1.0625rem)
+- **Large Title:** 34pt (2.125rem)
+- **Line height:** 1.2-1.6
+- **Tracking:** -0.02em for titles
 
-### 4. Spacing & Typography
-- Base spacing: 4px grid (8px, 12px, 16px, 20px, 24px)
-- Font sizes: 12px (label), 14px (body), 16px (heading), 20px (title), 32px (hero)
-- Line height: 1.5-1.6 for readability
-- Font weight: 400 (normal), 600 (semibold), 700 (bold)
+### 4. Spacing (4px Grid)
+- Base spacing: 4px, 8px, 12px, 16px, 20px, 24px, 32px
+- Screen margins: 16px default, 20px large phones
+- Card padding: 16-24px
+- Section spacing: 24px
 
-### 5. Animations
-- Transitions: `all 0.2s ease` or `all 0.3s ease`
-- Hover: `transform: translateY(-2px)` + shadow
-- Active: `transform: scale(0.98)`
-- Loading: Spinner with `animation: spin 0.8s linear infinite`
-
-### 6. Light/Dark Mode
-- Default: Light mode (better accessibility)
-- Toggle: Top right or bottom nav
-- CSS variables for theming
-- Smooth transitions: `transition: background 0.3s, color 0.3s`
-- Persist choice in `localStorage`
-
-### 7. Cards & Surfaces
-- Border radius: 12px-20px (generous curves)
-- Shadows: `0 10px 40px rgba(0, 0, 0, 0.15)`
-- Padding: 16px-24px
-- Hover effects on interactive cards
-
-### 8. Empty States
-- Large icon: 64px, opacity 0.5
-- Friendly message: "No items yet"
-- Optional CTA button
-
-### 9. Status Indicators
-- Badges with rounded pills
-- Color-coded: success (green), warning (orange), danger (red)
-- Pulse animations for live status
-
-### 10. Touch-Friendly
-- Button height: minimum 44px
-- Generous padding: 12px 20px
-- No hover-only interactions
-- Pull-to-refresh where appropriate
-
----
-
-## Color Palettes (2026)
-
-### Primary Gradients
+### 5. Touch Targets (CRITICAL)
 ```css
---purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
---blue-gradient: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
---green-gradient: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
---red-gradient: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
---orange-gradient: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-```
+/* Apple HIG: Minimum 44x44 points */
+--touch-min: 44px;          /* Absolute minimum */
+--touch-comfortable: 48px;  /* Recommended */
+--touch-large: 56px;        /* Hero CTAs */
 
-### Light Mode
-```css
-:root {
-  --bg: #f7fafc;
-  --surface: rgba(255, 255, 255, 0.95);
-  --text: #1a202c;
-  --text-dim: #718096;
-  --border: rgba(0, 0, 0, 0.1);
-}
-```
-
-### Dark Mode
-```css
-[data-theme="dark"] {
-  --bg: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-  --surface: rgba(45, 55, 72, 0.95);
-  --text: #f7fafc;
-  --text-dim: #a0aec0;
-  --border: rgba(255, 255, 255, 0.1);
-}
-```
-
----
-
-## Component Patterns
-
-### Glassmorphic Card
-```css
-.card {
-  background: var(--surface);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  padding: 24px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-```
-
-### Gradient Button
-```css
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:active {
-  transform: scale(0.98);
-}
-```
-
-### Status Badge
-```css
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.badge-success {
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
-}
-```
-
-### Bottom Navigation
-```css
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding: 12px 20px;
+/* Always wrap icons in touch targets */
+.icon-button {
+  width: 44px;
+  height: 44px;
   display: flex;
-  justify-content: space-around;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 16px;
-  border-radius: 12px;
-  color: var(--text-dim);
-  transition: all 0.2s ease;
-}
-
-.nav-item.active {
-  color: var(--primary);
-  background: rgba(102, 126, 234, 0.1);
+  justify-content: center;
 }
 ```
 
----
+### 6. Color Palettes (5 Options)
 
-## Responsive Breakpoints
-
+#### Palette A: Ocean Calm (Professional/Finance)
 ```css
-/* Mobile first (default) */
-/* 320px - 767px */
+--primary: #0A84FF;           /* iOS Blue */
+--secondary: #30D158;         /* Success Green */
+--surface: #FFFFFF;
+--surface-secondary: #F2F2F7; /* iOS Light Gray */
+--text-primary: #1C1C1E;
+--text-secondary: #3C3C43;
+```
 
-/* Tablet */
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+#### Palette B: Sunset Vibrant (Social/Consumer)
+```css
+--gradient-start: #FF6B6B;    /* Coral */
+--gradient-end: #FFE66D;      /* Yellow */
+--primary: #FF6B6B;
+--secondary: #4ECDC4;         /* Teal */
+--accent: #9B5DE5;            /* Purple */
+```
 
-/* Desktop */
-@media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-}
+#### Palette C: Midnight Premium (Pro Tools)
+```css
+--primary: #6366F1;           /* Indigo */
+--secondary: #EC4899;         /* Pink */
+--surface: #0F0F0F;
+--surface-elevated: #1A1A1A;
+--text-primary: #FAFAFA;
+```
+
+#### Palette D: Nature Soft (Health/Wellness)
+```css
+--primary: #86A789;           /* Sage Green */
+--secondary: #D2E3C8;
+--surface: #FFFDF8;           /* Warm White */
+```
+
+#### Palette E: Monochrome Minimal (News/Editorial)
+```css
+--primary: #000000;
+--accent: #FF4444;            /* Single accent */
+--surface: #FFFFFF;
+```
+
+### 7. Border Radius
+```css
+--radius-sm: 6px;     /* Small chips */
+--radius-md: 8px;     /* Buttons, inputs */
+--radius-lg: 12px;    /* Cards */
+--radius-xl: 16px;    /* Large cards */
+--radius-2xl: 20px;   /* Modals */
+--radius-3xl: 24px;   /* Bottom sheets */
+--radius-full: 9999px; /* Pills, avatars */
+```
+
+### 8. Shadows
+```css
+/* Light Mode */
+--shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+/* Dark Mode */
+--shadow-dark-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+--glow-primary: 0 0 20px rgba(99, 102, 241, 0.3);
 ```
 
 ---
 
-## Inspiration Sources
+## Component Templates (iOS Style)
 
-1. **mobbin.com** - 1000+ iOS/web apps, 500K+ screens
-2. **banani.co** - Free mobbin alternative
-3. **lapa.ninja** - Landing page inspiration
-4. **uxarchive.com** - User flow patterns
-5. **refero.design** - Component patterns
-6. **dribbble.com** - Visual design trends
+### Buttons
+```html
+<!-- Primary Button (44px minimum) -->
+<button class="h-11 px-6 bg-primary text-white font-semibold rounded-xl active:scale-[0.98] transition-transform">
+  Action
+</button>
+
+<!-- Secondary -->
+<button class="h-11 px-6 bg-surface-secondary text-primary font-semibold rounded-xl active:bg-surface-tertiary">
+  Secondary
+</button>
+
+<!-- Icon Button (44x44 touch target) -->
+<button class="w-11 h-11 flex items-center justify-center rounded-xl active:bg-surface-secondary">
+  <Icon className="w-6 h-6" />
+</button>
+```
+
+### Cards
+```html
+<!-- Standard Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm border border-border">
+  Content
+</div>
+
+<!-- Glass Card -->
+<div class="rounded-2xl p-5 glass">
+  Content
+</div>
+
+<style>
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+</style>
+```
+
+### Input Fields
+```html
+<!-- Standard Input (48px height recommended) -->
+<input 
+  class="w-full h-12 px-4 bg-surface-secondary rounded-xl text-text-primary focus:ring-2 focus:ring-primary"
+  placeholder="Enter text"
+/>
+
+<!-- Search Input -->
+<div class="relative">
+  <Icon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-tertiary" />
+  <input class="w-full h-10 pl-10 pr-4 bg-surface-secondary rounded-full" />
+</div>
+```
+
+### Bottom Tab Bar (iOS Style)
+```html
+<nav class="fixed bottom-0 inset-x-0 h-[84px] bg-white/90 backdrop-blur-xl border-t border-black/5 flex justify-around items-start pt-2 pb-[env(safe-area-inset-bottom)]">
+  <button class="flex flex-col items-center gap-0.5 text-primary w-16">
+    <Icon class="w-6 h-6" />
+    <span class="text-xs font-medium">Home</span>
+  </button>
+  <!-- More tabs -->
+</nav>
+```
+
+---
+
+## App-Specific Palette Recommendations
+
+| App | Palette | Reason |
+|-----|---------|--------|
+| **AI Control Tower** | Midnight Premium | Pro tools, technical |
+| **TPUSA Intel** | Ocean Calm | Professional, investigative |
+| **Scholarship Hunt** | Nature Soft | Wellness, calming, supportive |
+| **Kanban Board** | Monochrome Minimal | Productivity, focus |
 
 ---
 
@@ -257,54 +223,50 @@ Trigger words:
 
 When redesigning an app:
 
-- [ ] Add light/dark mode toggle
-- [ ] Apply glassmorphism to cards
-- [ ] Use gradient accents
-- [ ] Increase touch target sizes (44px min)
-- [ ] Add bottom navigation
-- [ ] Implement smooth animations
-- [ ] Create empty states with icons
-- [ ] Add status indicators with pulse
-- [ ] Ensure responsive grid
-- [ ] Add iOS safe area support
-- [ ] Test on mobile (320px width)
-- [ ] Add loading states with spinners
-- [ ] Persist theme choice
-- [ ] Use modern border radius (12px-20px)
-- [ ] Apply proper spacing (4px grid)
+- [ ] Choose appropriate color palette
+- [ ] Ensure **44px minimum touch targets** (buttons, icons)
+- [ ] Apply glassmorphism to headers/tab bars
+- [ ] Use SF Pro Text or Inter for typography
+- [ ] Implement 4px spacing grid
+- [ ] Add iOS safe area support (`env()` values)
+- [ ] Use 12-20px border radius (generous curves)
+- [ ] Implement light + dark mode
+- [ ] Test on 320px width (smallest mobile)
+- [ ] Add smooth animations (0.2-0.3s ease)
+- [ ] Ensure WCAG 2.1 AA color contrast (4.5:1 minimum)
+
+---
+
+## Reference Files
+
+**Full Design System:** `/root/.openclaw/workspace/MODERN-MOBILE-DESIGN-SYSTEM.md`
+
+**Sections:**
+- Color palettes (5 complete sets)
+- Typography scales
+- Component library (buttons, cards, inputs, navigation)
+- Layout patterns (Feed, Detail, Settings, Onboarding)
+- Glassmorphism & Liquid Glass
+- Accessibility (WCAG 2.1)
+- Animation timing functions
 
 ---
 
 ## Anti-Patterns (Avoid)
 
+❌ Touch targets < 44px  
 ❌ Dark-only mode (always include light)  
-❌ Small touch targets (<44px)  
-❌ Harsh shadows (use soft, large shadows)  
-❌ Sharp corners (use generous radius)  
-❌ Flat colors only (use gradients for depth)  
+❌ Sharp corners (use 12px+ radius)  
+❌ Flat colors only (use gradients + glassmorphism)  
 ❌ Tiny fonts on mobile (<14px body text)  
 ❌ Hover-only interactions (use :active for touch)  
-❌ No empty states (always show friendly message)  
+❌ Ignoring safe areas (notches, home indicators)  
+❌ No empty states  
 ❌ Cluttered spacing (use generous whitespace)  
-❌ No animations (add smooth transitions)  
-
----
-
-## Quick Reference: Modern vs Old
-
-| Old Style | Modern Style |
-|-----------|--------------|
-| Dark backgrounds | Light default + dark mode |
-| Flat colors | Gradients |
-| Sharp corners | Rounded (12-20px) |
-| Solid backgrounds | Glassmorphism |
-| Small padding | Generous spacing |
-| No animations | Smooth transitions |
-| Desktop-first | Mobile-first |
-| Tiny touch targets | 44px minimum |
 
 ---
 
 **Last Updated:** 2026-02-06  
+**Source:** iOS Human Interface Guidelines, Mobbin.com, Modern Mobile Design System v1.0  
 **Applies to:** All web apps built by Cole AI  
-**Mandatory:** Yes - all new apps must follow these patterns
+**Mandatory:** Yes - all apps must follow iOS HIG standards
