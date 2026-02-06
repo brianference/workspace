@@ -32,27 +32,35 @@
       "title": "Kanban JSON Backend",
       "description": "Build JSON data layer for kanban programmatic updates",
       "priority": "critical",
-      "tags": ["infrastructure", "coding"],
-      "status": "active",
+      "tags": [
+        "infrastructure",
+        "coding"
+      ],
+      "status": "done",
       "createdAt": "2026-02-06T15:15:00Z",
-      "updatedAt": "2026-02-06T15:15:00Z"
+      "updatedAt": "2026-02-06T16:29:31.692Z"
     },
     {
       "id": "task-002",
       "title": "AI Agent Control Tower",
       "description": "Session/task management UI for OpenClaw agents",
       "priority": "high",
-      "tags": ["coding"],
-      "status": "next-up",
+      "tags": [
+        "coding"
+      ],
+      "status": "active",
       "createdAt": "2026-02-06T15:15:00Z",
-      "updatedAt": "2026-02-06T15:15:00Z"
+      "updatedAt": "2026-02-06T16:29:36.404Z"
     },
     {
       "id": "task-003",
       "title": "TPUSA Intel Aggregator",
       "description": "TikTok/X content scanner for TPUSA criticism",
       "priority": "high",
-      "tags": ["coding", "content"],
+      "tags": [
+        "coding",
+        "content"
+      ],
       "status": "next-up",
       "createdAt": "2026-02-06T15:15:00Z",
       "updatedAt": "2026-02-06T15:15:00Z"
@@ -62,10 +70,36 @@
       "title": "Scholarship Hunt Pro",
       "description": "Deadline tracker + filter for Lena's scholarships",
       "priority": "high",
-      "tags": ["coding"],
+      "tags": [
+        "coding"
+      ],
       "status": "next-up",
       "createdAt": "2026-02-06T15:15:00Z",
       "updatedAt": "2026-02-06T15:15:00Z"
+    },
+    {
+      "id": "task-005",
+      "title": "Kanban Board — Populate & Deploy",
+      "description": "Fill kanban with real backlog, deploy to Netlify for phone access",
+      "priority": "high",
+      "tags": [
+        "coding"
+      ],
+      "status": "done",
+      "createdAt": "2026-02-06T16:36:07.108Z",
+      "updatedAt": "2026-02-06T16:36:07.108Z"
+    },
+    {
+      "id": "task-006",
+      "title": "Deploy Kanban to Netlify",
+      "description": "Deploy kanban board as static site on Netlify for phone access + webchat",
+      "priority": "high",
+      "tags": [
+        "infrastructure"
+      ],
+      "status": "done",
+      "createdAt": "2026-02-06T16:36:11.351Z",
+      "updatedAt": "2026-02-06T16:36:11.351Z"
     }
   ]
 }
