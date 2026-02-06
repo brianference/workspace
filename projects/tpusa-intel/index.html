@@ -2,242 +2,487 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TPUSA Intel Aggregator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TPUSA Intel</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg-gradient: linear-gradient(135deg, #fef6e4 0%, #f3d2c1 100%);
+  --surface: rgba(255, 255, 255, 0.95);
+  --surface-glass: rgba(255, 255, 255, 0.1);
+  --text: #1a202c;
+  --text-dim: #718096;
+  --border: rgba(0, 0, 0, 0.1);
+  --primary: #ef4444;
+  --primary-hover: #dc2626;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  --radius: 20px;
+}
+
+[data-theme="dark"] {
+  --bg-gradient: linear-gradient(135deg, #0f0f0f 0%, #1a1d29 100%);
+  --surface: rgba(26, 29, 41, 0.95);
+  --surface-glass: rgba(255, 255, 255, 0.05);
+  --text: #e8eaed;
+  --text-dim: #8b949e;
+  --border: rgba(255, 255, 255, 0.1);
+}
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #0f0f0f;
-  color: #e8eaed;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  overflow-x: hidden;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  background: var(--surface-glass);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
 }
 
-.header {
-  background: linear-gradient(135deg, #1a1d29 0%, #0f1419 100%);
+.search-section {
+  background: var(--surface);
+  border-radius: var(--radius);
   padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.search-bar {
+  width: 100%;
+  padding: 14px 20px;
   border-radius: 12px;
-  margin-bottom: 24px;
-  border: 1px solid #2d3139;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
 }
 
-.header h1 {
-  font-size: 28px;
-  color: #ff6b6b;
-  margin-bottom: 8px;
+.search-bar:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
-.header p {
-  color: #8b949e;
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: 10px 18px;
+  border-radius: 12px;
   font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  transition: all 0.2s ease;
 }
 
-.grid {
+.filter-chip:active {
+  transform: scale(0.98);
+}
+
+.filter-chip.active {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
   margin-bottom: 20px;
 }
 
-@media (max-width: 768px) {
-  .grid { grid-template-columns: 1fr; }
-}
-
-.card {
-  background: #1a1d29;
-  border: 1px solid #2d3139;
-  border-radius: 12px;
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
   padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
 }
 
-.card h2 {
+.stat-card:active {
+  transform: scale(0.98);
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary) 0%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.section {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.section-title {
   font-size: 18px;
-  color: #ff6b6b;
+  font-weight: 700;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  color: var(--text);
 }
 
-.source-list {
+.targets-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.target-badge {
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: var(--primary);
+  transition: all 0.2s ease;
+}
+
+.target-badge:active {
+  transform: scale(0.98);
+}
+
+.content-feed {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.source-item {
-  background: #0f1419;
-  border: 1px solid #2d3139;
-  border-left: 3px solid #ff6b6b;
-  border-radius: 8px;
-  padding: 12px;
+.content-card {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.3s ease;
 }
 
-.source-header {
+.content-card:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
+}
+
+.content-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.source-author {
-  font-weight: 600;
-  color: #e8eaed;
+.content-author {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text);
 }
 
-.source-platform {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  background: #da3633;
-  color: #fff;
-}
-
-.source-content {
-  font-size: 13px;
-  color: #8b949e;
-  margin-bottom: 8px;
-}
-
-.source-meta {
-  font-size: 12px;
-  color: #6e7681;
-  display: flex;
-  gap: 12px;
-}
-
-.filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.filter-chip {
+.platform-badge {
   padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid #2d3139;
-  background: #0f1419;
-  color: #8b949e;
-  transition: all 0.2s;
-}
-
-.filter-chip:hover {
-  border-color: #ff6b6b;
-  color: #ff6b6b;
-}
-
-.filter-chip.active {
-  background: #ff6b6b;
-  border-color: #ff6b6b;
-  color: #fff;
-}
-
-.search-bar {
-  width: 100%;
-  padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #2d3139;
-  background: #0f1419;
-  color: #e8eaed;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.platform-tiktok {
+  background: linear-gradient(135deg, #000000 0%, #ff0050 100%);
+  color: white;
+}
+
+.platform-twitter {
+  background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
+  color: white;
+}
+
+.platform-pending {
+  background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+  color: white;
+}
+
+.content-text {
   font-size: 14px;
-  margin-bottom: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 10px;
 }
 
-.search-bar:focus {
-  outline: none;
-  border-color: #ff6b6b;
-}
-
-.btn {
-  background: #da3633;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.btn:hover {
-  background: #ff4444;
-}
-
-.targets {
+.content-meta {
   display: flex;
-  gap: 8px;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-dim);
   flex-wrap: wrap;
 }
 
-.target-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  background: #2d1f1f;
-  border: 1px solid #ff6b6b;
-  color: #ff6b6b;
+.content-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   margin-top: 16px;
 }
 
-.stat {
-  background: #0f1419;
-  border: 1px solid #2d3139;
-  border-radius: 8px;
-  padding: 12px;
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.empty-state {
   text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
 }
 
-.stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: #ff6b6b;
-  display: block;
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
 }
 
-.stat-label {
+.empty-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-dim);
   font-size: 12px;
-  color: #6e7681;
-  margin-top: 4px;
+  font-weight: 600;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-item.active {
+  color: var(--primary);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.nav-icon {
+  font-size: 24px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .filters {
+    font-size: 12px;
+  }
+}
+
+@supports (padding: max(0px)) {
+  body {
+    padding-bottom: max(80px, env(safe-area-inset-bottom));
+  }
+  
+  .bottom-nav {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>🎯 TPUSA Intel Aggregator</h1>
-  <p>Tracking criticism and exposures of TPUSA corruption across TikTok and X</p>
-</div>
-
-<div class="card" style="margin-bottom: 20px;">
-  <h2>🔍 Search & Filter</h2>
-  <input type="text" class="search-bar" placeholder="Search by keyword, author, or content...">
-  <div class="filters">
-    <div class="filter-chip active">All Sources</div>
-    <div class="filter-chip">TikTok</div>
-    <div class="filter-chip">X (Twitter)</div>
-    <div class="filter-chip">Last 24h</div>
-    <div class="filter-chip">Last 72h</div>
+<header class="app-header">
+  <div class="header-content">
+    <div class="logo">
+      <div class="logo-icon">🎯</div>
+      <span>TPUSA Intel</span>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    </div>
   </div>
-</div>
+</header>
 
-<div class="grid">
-  <!-- Target Tracking -->
-  <div class="card">
-    <h2>🎯 Tracked Targets</h2>
-    <div class="targets">
+<div class="container">
+  <!-- Search & Filter -->
+  <div class="search-section">
+    <input type="text" class="search-bar" placeholder="Search by keyword, author, or content...">
+    <div class="filters">
+      <div class="filter-chip active">All Sources</div>
+      <div class="filter-chip">TikTok</div>
+      <div class="filter-chip">X (Twitter)</div>
+      <div class="filter-chip">Last 24h</div>
+      <div class="filter-chip">Last 72h</div>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">0</div>
+      <div class="stat-label">Today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">0</div>
+      <div class="stat-label">This Week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+  </div>
+
+  <!-- Tracked Targets -->
+  <div class="section">
+    <div class="section-title">
+      <span>🎯</span>
+      <span>Tracked Targets</span>
+    </div>
+    <div class="targets-grid">
       <div class="target-badge">Erica Kirk</div>
       <div class="target-badge">Tyler Bowyer</div>
       <div class="target-badge">Andrew Kolvet</div>
@@ -245,66 +490,87 @@ body {
       <div class="target-badge">Charlie Kirk</div>
       <div class="target-badge">TPUSA</div>
     </div>
-    <div class="stats">
-      <div class="stat">
-        <span class="stat-value">0</span>
-        <span class="stat-label">New Today</span>
-      </div>
-      <div class="stat">
-        <span class="stat-value">0</span>
-        <span class="stat-label">This Week</span>
-      </div>
-      <div class="stat">
-        <span class="stat-value">0</span>
-        <span class="stat-label">Total</span>
-      </div>
-    </div>
   </div>
 
   <!-- Platform Status -->
-  <div class="card">
-    <h2>📊 Platform Status</h2>
-    <div class="source-list">
-      <div class="source-item">
-        <div class="source-header">
-          <span class="source-author">TikTok Scanner</span>
-          <span class="source-platform" style="background: #6e7681;">Pending Auth</span>
+  <div class="section">
+    <div class="section-title">
+      <span>📊</span>
+      <span>Platform Status</span>
+    </div>
+    <div class="content-feed">
+      <div class="content-card">
+        <div class="content-header">
+          <div class="content-author">TikTok Scanner</div>
+          <div class="platform-badge platform-pending">Pending Auth</div>
         </div>
-        <div class="source-content">Browser authentication needed</div>
+        <div class="content-text">Browser authentication needed to scan TikTok</div>
       </div>
-      <div class="source-item">
-        <div class="source-header">
-          <span class="source-author">X (Twitter) Scanner</span>
-          <span class="source-platform" style="background: #6e7681;">Pending Auth</span>
+      <div class="content-card">
+        <div class="content-header">
+          <div class="content-author">X (Twitter) Scanner</div>
+          <div class="platform-badge platform-pending">Pending Auth</div>
         </div>
-        <div class="source-content">Browser authentication needed</div>
+        <div class="content-text">Browser authentication needed to scan Twitter/X</div>
       </div>
     </div>
-    <button class="btn" style="width: 100%; margin-top: 16px;">Configure Authentication</button>
+    <button class="btn-primary">Configure Authentication</button>
+  </div>
+
+  <!-- Content Feed -->
+  <div class="section">
+    <div class="section-title">
+      <span>📰</span>
+      <span>Recent Content (Last 72h)</span>
+    </div>
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-text">No content yet</div>
+      <p style="margin-top: 8px;">Authenticate to start scanning</p>
+    </div>
   </div>
 </div>
 
-<!-- Content Feed -->
-<div class="card">
-  <h2>📰 Recent Content (Last 72h)</h2>
-  <div class="source-list">
-    <div class="source-item">
-      <div class="source-header">
-        <span class="source-author">@example_creator</span>
-        <span class="source-platform">TikTok</span>
-      </div>
-      <div class="source-content">[Example placeholder] Criticism content would appear here after authentication...</div>
-      <div class="source-meta">
-        <span>👁️ 0 views</span>
-        <span>❤️ 0 likes</span>
-        <span>📅 Pending scan</span>
-      </div>
-    </div>
+<nav class="bottom-nav">
+  <div class="nav-item active">
+    <div class="nav-icon">🏠</div>
+    <span>Feed</span>
   </div>
-</div>
+  <div class="nav-item">
+    <div class="nav-icon">🎯</div>
+    <span>Targets</span>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">⚙️</div>
+    <span>Settings</span>
+  </div>
+</nav>
 
 <script>
-console.log('TPUSA Intel Aggregator v1.0 - Ready for browser authentication');
+// Filter chip interaction
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', function() {
+    this.classList.toggle('active');
+  });
+});
+
+// Theme toggle
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('tpusa-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// Load saved theme
+(function() {
+  const saved = localStorage.getItem('tpusa-theme') || 'light';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
+})();
+
+console.log('TPUSA Intel v2.0 - Modern UI with light/dark mode');
 </script>
 
 </body>

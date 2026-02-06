@@ -298,15 +298,27 @@
     },
     {
       "id": "task-023",
-      "title": "TPUSA Intel + Scholarship Hunt UI Redesign",
-      "description": "Add light mode, modern mobile-first design from mobbin/competitors - glassmorphism, better spacing, animations",
+      "title": "TPUSA Intel + Scholarship Hunt + Kanban UI Redesign",
+      "description": "Add light mode, modern mobile-first design from mobbin/competitors - glassmorphism, better spacing, animations. Apply to all 3 apps.",
       "priority": "high",
       "tags": [
         "coding"
       ],
       "status": "active",
       "createdAt": "2026-02-06T19:57:52.845Z",
-      "updatedAt": "2026-02-06T19:57:52.845Z"
+      "updatedAt": "2026-02-06T20:10:05.243Z"
+    },
+    {
+      "id": "task-024",
+      "title": "Control Tower Backend Deployed",
+      "description": "Netlify Functions backend live with OpenClaw API integration",
+      "priority": "high",
+      "tags": [
+        "coding"
+      ],
+      "status": "done",
+      "createdAt": "2026-02-06T20:08:18.473Z",
+      "updatedAt": "2026-02-06T20:08:18.473Z"
     }
   ]
 }
