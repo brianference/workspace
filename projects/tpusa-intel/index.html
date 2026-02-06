@@ -523,6 +523,7 @@ html {
       <span>📰</span>
       <span>Recent Content (Last 72h)</span>
     </div>
+    <div class="content-feed" style="display: none;"></div>
     <div class="empty-state">
       <div class="empty-icon">🔍</div>
       <div class="empty-text">No content yet</div>
@@ -532,15 +533,15 @@ html {
 </div>
 
 <nav class="bottom-nav">
-  <div class="nav-item active">
+  <div class="nav-item active" onclick="switchTab('feed')">
     <div class="nav-icon">🏠</div>
     <span>Feed</span>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" onclick="switchTab('targets')">
     <div class="nav-icon">🎯</div>
     <span>Targets</span>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" onclick="switchTab('settings')">
     <div class="nav-icon">⚙️</div>
     <span>Settings</span>
   </div>
@@ -715,6 +716,22 @@ function applyFilters() {
   
   // Time filters would need backend support
   loadContent(filters);
+}
+
+// Tab switching
+function switchTab(tab) {
+  // Update active state on nav items
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  event.target.closest('.nav-item').classList.add('active');
+  
+  // Show placeholder for non-feed tabs
+  if (tab === 'targets') {
+    alert('Targets management coming soon!\n\nCurrent targets:\n• Erica Kirk\n• Tyler Bowyer\n• Andrew Kolvet\n• Charlie Kirk');
+  } else if (tab === 'settings') {
+    alert('Settings coming soon!\n\nFeatures:\n• Browser authentication\n• Scan frequency\n• Notification preferences');
+  }
 }
 
 // Theme toggle
