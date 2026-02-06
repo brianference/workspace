@@ -104,8 +104,16 @@
 - `weather` - Use for weather checks
 - `tmux` - Use for interactive CLI control
 - `vibe-coding-patterns` - Use for security audits and production-ready code
+- `build-verify-deploy` - **MANDATORY before claiming any build status** - Forces evidence before saying "done"
 
 **Never create a skill and then forget to use it.**
+
+**Build-Verify-Deploy Protocol (Created 2026-02-06 11:11 AM):**
+- Prevents "saying building but not building" failures
+- 4 phases: BUILD → VERIFY → DEPLOY → UPDATE
+- Requires evidence at every step (files, URLs, commits)
+- Tested and working (test.sh passes)
+- **Read this BEFORE starting any build task**
 
 ## Operational Improvements (2026-02-05)
 - **Batch commits** — group related changes, fewer pushes
