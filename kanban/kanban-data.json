@@ -234,6 +234,30 @@
       "status": "backlog",
       "createdAt": "2026-02-06T16:54:05.308Z",
       "updatedAt": "2026-02-06T16:54:05.309Z"
+    },
+    {
+      "id": "task-018",
+      "title": "Automated Testing Suite",
+      "description": "Add Jest/Vitest unit tests + E2E tests for critical paths",
+      "priority": "medium",
+      "tags": [
+        "coding"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:54:37.168Z",
+      "updatedAt": "2026-02-06T16:54:37.168Z"
+    },
+    {
+      "id": "task-019",
+      "title": "Monitoring & Logging",
+      "description": "Set up error tracking (Sentry) + performance monitoring",
+      "priority": "low",
+      "tags": [
+        "infrastructure"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:54:41.400Z",
+      "updatedAt": "2026-02-06T16:54:41.401Z"
     }
   ]
 }
