@@ -37,7 +37,12 @@
 - Repo: https://github.com/brianference/openclaw-mobile
 - Local: `/root/.openclaw/workspace/projects/openclaw-mobile`
 - Stack: Expo SDK 54, React Native, TypeScript, Expo Router
-- Status: Built, needs tunnel testing (`npm install @expo/ngrok@^4.1.0` then `npx expo start --tunnel`)
+- Status: Fixed - Expo Go working (LAN mode)
+- Fixes applied 2026-02-05:
+  - Added expo-updates dependency
+  - Fixed app.json (removed broken EAS config, added updates config)
+  - Migrated ESLint to v9 (eslint.config.js)
+  - Cleared Metro cache
 - Audit: 15/29 fixes done, see `AUDIT-STATUS.md` in project
 - Critical remaining: AES-256-GCM vault encryption, PBKDF2 password hashing
 
