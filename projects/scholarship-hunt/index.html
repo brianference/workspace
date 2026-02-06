@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scholarship Hunt Pro - Lena's Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #6366f1;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #334155;
+  --text: #f1f5f9;
+  --text-dim: #94a3b8;
+  --border: #334155;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.header p {
+  opacity: 0.9;
+  font-size: 15px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.stat-value.success { color: var(--success); }
+.stat-value.warning { color: var(--warning); }
+.stat-value.danger { color: var(--danger); }
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 968px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.card h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.deadline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deadline-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+
+.deadline-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.deadline-item.critical { border-left-color: var(--danger); }
+.deadline-item.warning { border-left-color: var(--warning); }
+.deadline-item.success { border-left-color: var(--success); }
+
+.deadline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.deadline-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.deadline-countdown {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.deadline-countdown.critical {
+  background: var(--danger);
+  color: white;
+}
+
+.deadline-countdown.warning {
+  background: var(--warning);
+  color: white;
+}
+
+.deadline-countdown.success {
+  background: var(--success);
+  color: white;
+}
+
+.deadline-info {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.deadline-amount {
+  font-weight: 700;
+  color: var(--success);
+  font-size: 18px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--success));
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+}
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.tab:hover:not(.active) {
+  background: var(--border);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s;
+}
+
+.add-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+}
+
+.profile-section {
+  background: var(--surface2);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  font-size: 14px;
+}
+
+.profile-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-label {
+  color: var(--text-dim);
+}
+
+.profile-value {
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎓 Scholarship Hunt Pro</h1>
+  <p>Lena's ASU Accounting/Finance Scholarship Tracker</p>
+</div>
+
+<div class="stats">
+  <div class="stat-card">
+    <span class="stat-value danger" id="urgentCount">3</span>
+    <span class="stat-label">Urgent (<7 Days)</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-value warning" id="upcomingCount">2</span>
+    <span class="stat-label">Upcoming (<14 Days)</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-value success" id="appliedCount">0</span>
+    <span class="stat-label">Applied</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-value" style="color: var(--primary);" id="potentialAmount">$45K+</span>
+    <span class="stat-label">Potential Awards</span>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Left Column: Deadlines -->
+  <div class="card" style="grid-column: span 2;">
+    <h2>📅 Upcoming Deadlines</h2>
+    
+    <div class="filter-tabs">
+      <div class="tab active" onclick="filterDeadlines('all')">All</div>
+      <div class="tab" onclick="filterDeadlines('urgent')">Urgent</div>
+      <div class="tab" onclick="filterDeadlines('upcoming')">Upcoming</div>
+      <div class="tab" onclick="filterDeadlines('applied')">Applied</div>
+    </div>
+
+    <div class="deadline-list" id="deadlineList">
+      <!-- AICPA -->
+      <div class="deadline-item critical" data-category="urgent">
+        <div class="deadline-header">
+          <div class="deadline-title">AICPA Accounting Scholars Program</div>
+          <div class="deadline-countdown critical">9 days left</div>
+        </div>
+        <div class="deadline-info">
+          <span>📍 March 15, 2026</span>
+          <span>🎯 Accounting Major</span>
+          <span>👤 Women</span>
+        </div>
+        <div class="deadline-amount">$5,000 - $10,000</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 20%"></div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary">Start Application</button>
+          <button class="btn btn-secondary">View Details</button>
+        </div>
+      </div>
+
+      <!-- AWSCPA -->
+      <div class="deadline-item critical" data-category="urgent">
+        <div class="deadline-header">
+          <div class="deadline-title">AWSCPA Women in Accounting Scholarship</div>
+          <div class="deadline-countdown critical">9 days left</div>
+        </div>
+        <div class="deadline-info">
+          <span>📍 March 15, 2026</span>
+          <span>🎯 Accounting/Finance</span>
+          <span>👤 Women</span>
+        </div>
+        <div class="deadline-amount">$5,000</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 10%"></div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary">Start Application</button>
+          <button class="btn btn-secondary">View Details</button>
+        </div>
+      </div>
+
+      <!-- Deloitte -->
+      <div class="deadline-item warning" data-category="upcoming">
+        <div class="deadline-header">
+          <div class="deadline-title">Deloitte Scholars Program</div>
+          <div class="deadline-countdown warning">24 days left</div>
+        </div>
+        <div class="deadline-info">
+          <span>📍 March 31, 2026</span>
+          <span>🎯 Accounting</span>
+          <span>💼 Big 4 Internship Path</span>
+        </div>
+        <div class="deadline-amount">$10,000</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 5%"></div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary">Start Application</button>
+          <button class="btn btn-secondary">View Details</button>
+        </div>
+      </div>
+
+      <!-- PwC -->
+      <div class="deadline-item warning" data-category="upcoming">
+        <div class="deadline-header">
+          <div class="deadline-title">PwC Pathways to Accounting Scholarship</div>
+          <div class="deadline-countdown warning">39 days left</div>
+        </div>
+        <div class="deadline-info">
+          <span>📍 April 15, 2026</span>
+          <span>🎯 Accounting</span>
+          <span>💼 Big 4</span>
+        </div>
+        <div class="deadline-amount">$7,500</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary">Start Application</button>
+          <button class="btn btn-secondary">View Details</button>
+        </div>
+      </div>
+
+      <!-- ASU -->
+      <div class="deadline-item success" data-category="upcoming">
+        <div class="deadline-header">
+          <div class="deadline-title">ASU W.P. Carey Excellence Scholarship</div>
+          <div class="deadline-countdown success">54 days left</div>
+        </div>
+        <div class="deadline-info">
+          <span>📍 April 30, 2026</span>
+          <span>🎯 W.P. Carey Business</span>
+          <span>🏫 ASU Only</span>
+        </div>
+        <div class="deadline-amount">$2,500 - $5,000</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary">Start Application</button>
+          <button class="btn btn-secondary">View Details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Card -->
+  <div class="card" style="display: none;">
+    <h2>👤 Lena's Profile</h2>
+    <div class="profile-section">
+      <div class="profile-grid">
+        <div class="profile-item">
+          <span class="profile-label">Age:</span>
+          <span class="profile-value">18</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">School:</span>
+          <span class="profile-value">ASU (incoming)</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Major:</span>
+          <span class="profile-value">Accounting/Finance</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Gender:</span>
+          <span class="profile-value">Female</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Location:</span>
+          <span class="profile-value">Cave Creek, AZ</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">FAFSA:</span>
+          <span class="profile-value">Filed ✅</span>
+        </div>
+      </div>
+    </div>
+    <p style="font-size: 13px; color: var(--text-dim); margin-top: 12px;">
+      Pre-filtered scholarships match Lena's profile. Focus: Merit-based, women in accounting/finance, Big 4 firms.
+    </p>
+  </div>
+</div>
+
+<button class="add-button" onclick="alert('Add new scholarship feature coming soon!')">+</button>
+
+<script>
+function filterDeadlines(category) {
+  const items = document.querySelectorAll('.deadline-item');
+  const tabs = document.querySelectorAll('.tab');
+  
+  tabs.forEach(tab => tab.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  items.forEach(item => {
+    if (category === 'all' || item.dataset.category === category) {
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+// Update countdown timers
+function updateCountdowns() {
+  const countdowns = document.querySelectorAll('.deadline-countdown');
+  countdowns.forEach(el => {
+    const text = el.textContent;
+    // Placeholder - would calculate real days remaining
+    console.log('Countdown:', text);
+  });
+}
+
+updateCountdowns();
+setInterval(updateCountdowns, 60000); // Update every minute
+
+console.log('Scholarship Hunt Pro v1.0 - Lena Mode Activated');
+</script>
+
+</body>
+</html>
