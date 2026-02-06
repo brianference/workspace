@@ -1,9 +1,37 @@
+# QR Code Generation Skill
+
+## Purpose
+Generate QR codes for URLs, text, or data. Outputs PNG file and optional HTML viewer.
+
+## Usage
+When Brian needs a QR code for sharing links, especially for mobile apps (Expo, etc.)
+
+## Dependencies
+- `qrencode` (pre-installed)
+- Python 3 HTTP server for viewing
+
+## Generate QR Code
+
+```bash
+# Basic PNG generation
+qrencode -s 10 -o output.png "URL_OR_TEXT_HERE"
+
+# With custom size (scale factor)
+qrencode -s 15 -o output.png "text"
+
+# High error correction (L/M/Q/H)
+qrencode -l H -s 10 -o output.png "text"
+```
+
+## HTML Viewer Template
+
+```html
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Expo QR Code</title>
+<title>QR Code</title>
 <style>
   body {
     margin: 0;
@@ -17,20 +45,9 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #fff;
   }
-  .container {
-    text-align: center;
-    padding: 40px 20px;
-  }
-  h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
-  .subtitle {
-    font-size: 14px;
-    color: #8b92a8;
-    margin-bottom: 40px;
-  }
+  .container { text-align: center; padding: 40px 20px; }
+  h1 { font-size: 24px; margin-bottom: 10px; font-weight: 600; }
+  .subtitle { font-size: 14px; color: #8b92a8; margin-bottom: 40px; }
   .qr-container {
     background: #fff;
     padding: 30px;
@@ -61,8 +78,8 @@
 </head>
 <body>
 <div class="container">
-  <h1>📱 OpenClaw Mobile</h1>
-  <p class="subtitle">Scan with Expo Go</p>
+  <h1>📱 QR Code</h1>
+  <p class="subtitle">Scan to open</p>
   
   <div class="qr-container">
     <div id="qrcode"></div>
@@ -71,13 +88,13 @@
   <div class="url" id="url">Loading...</div>
   
   <div class="instructions">
-    Open <strong>Expo Go</strong> app on your phone and scan the QR code above
+    Point your camera at the QR code to scan
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
-const url = 'exp://oftxebq-anonymous-8081.exp.direct';
+const url = 'REPLACE_WITH_URL';
 document.getElementById('url').textContent = url;
 
 QRCode.toCanvas(url, {
@@ -99,3 +116,23 @@ QRCode.toCanvas(url, {
 </script>
 </body>
 </html>
+```
+
+## Quick Workflow
+
+```bash
+# Generate QR code
+qrencode -s 10 -o qr.png "https://example.com"
+
+# Start local server to view
+cd $(dirname qr.png)
+python3 -m http.server 8765 --bind 0.0.0.0 &
+
+# Access at http://localhost:8765/qr.png
+```
+
+## Tips
+- Size `-s 10` works well for most uses
+- Error correction `M` (default) balances size and reliability
+- For Expo URLs, use `exp://` scheme
+- Always test scan with actual device before sharing
