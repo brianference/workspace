@@ -136,6 +136,104 @@
       "status": "backlog",
       "createdAt": "2026-02-06T16:47:51.791Z",
       "updatedAt": "2026-02-06T16:47:51.791Z"
+    },
+    {
+      "id": "task-010",
+      "title": "OpenClaw Mobile Security Audit",
+      "description": "Complete remaining 14/29 security fixes from hostile audit - AES-256-GCM vault, PBKDF2 password hashing",
+      "priority": "high",
+      "tags": [
+        "coding",
+        "infra"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:51:37.907Z",
+      "updatedAt": "2026-02-06T16:51:37.908Z"
+    },
+    {
+      "id": "task-011",
+      "title": "Browser Relay Setup",
+      "description": "Configure Chrome extension for X, TikTok, Grok, Proton Mail, Suno access",
+      "priority": "medium",
+      "tags": [
+        "infrastructure"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:52:02.236Z",
+      "updatedAt": "2026-02-06T16:52:02.236Z"
+    },
+    {
+      "id": "task-012",
+      "title": "Kanban API Backend",
+      "description": "Build REST API with database for kanban sync (replace JSON file)",
+      "priority": "high",
+      "tags": [
+        "coding",
+        "infrastructure"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:53:42.440Z",
+      "updatedAt": "2026-02-06T16:53:42.440Z"
+    },
+    {
+      "id": "task-013",
+      "title": "Database Integration",
+      "description": "Set up PostgreSQL/SQLite for persistent kanban storage with migrations",
+      "priority": "medium",
+      "tags": [
+        "infrastructure"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:53:47.193Z",
+      "updatedAt": "2026-02-06T16:53:47.193Z"
+    },
+    {
+      "id": "task-014",
+      "title": "File Upload System",
+      "description": "Add file attachments to kanban cards (S3 or local storage)",
+      "priority": "medium",
+      "tags": [
+        "coding"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:53:51.299Z",
+      "updatedAt": "2026-02-06T16:53:51.299Z"
+    },
+    {
+      "id": "task-015",
+      "title": "User Authentication",
+      "description": "Add login/signup system with JWT tokens",
+      "priority": "medium",
+      "tags": [
+        "coding"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:53:56.538Z",
+      "updatedAt": "2026-02-06T16:53:56.538Z"
+    },
+    {
+      "id": "task-016",
+      "title": "API Documentation",
+      "description": "Generate OpenAPI/Swagger docs for kanban API endpoints",
+      "priority": "low",
+      "tags": [
+        "research"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:54:00.252Z",
+      "updatedAt": "2026-02-06T16:54:00.252Z"
+    },
+    {
+      "id": "task-017",
+      "title": "Real-time Sync (WebSockets)",
+      "description": "Add WebSocket support for live multi-user kanban updates",
+      "priority": "medium",
+      "tags": [
+        "coding"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:54:05.308Z",
+      "updatedAt": "2026-02-06T16:54:05.309Z"
     }
   ]
 }
