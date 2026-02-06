@@ -146,9 +146,9 @@
         "coding",
         "infra"
       ],
-      "status": "active",
+      "status": "done",
       "createdAt": "2026-02-06T16:51:37.907Z",
-      "updatedAt": "2026-02-06T19:44:06.664Z"
+      "updatedAt": "2026-02-06T20:55:52.682Z"
     },
     {
       "id": "task-011",
@@ -304,9 +304,9 @@
       "tags": [
         "coding"
       ],
-      "status": "active",
+      "status": "done",
       "createdAt": "2026-02-06T19:57:52.845Z",
-      "updatedAt": "2026-02-06T20:25:09.352Z"
+      "updatedAt": "2026-02-06T20:52:17.649Z"
     },
     {
       "id": "task-024",
