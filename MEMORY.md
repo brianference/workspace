@@ -33,6 +33,28 @@
 
 ## Active Projects
 
+### AI Agent Control Tower (COMPLETE 2026-02-06)
+- **Status:** ✅ Production-ready, awaiting Railway deployment
+- **Repo:** https://github.com/brianference/workspace/tree/master/projects/ai-control-tower
+- **Frontend:** https://swordtruth-control-tower.netlify.app (static)
+- **Backend:** Railway-ready (Node.js + Express)
+- **Commits:** db55cb7 (backend), 6ab4dfd (docs), 639002a (kanban)
+- **Features:** Session monitoring, message history, token tracking, dark mode, rate limiting, security hardening
+- **Docs:** DEPLOYMENT.md, README.md (comprehensive)
+- **Next:** Deploy backend to Railway, update frontend API_BASE
+
+### TPUSA Intel Aggregator (COMPLETE 2026-02-06)
+- **Status:** ✅ Deployed and functional
+- **URL:** https://swordtruth-tpusa-intel.netlify.app
+- **Features:** TikTok/X content scanner, target tracking, engagement metrics, dark mode
+- **Next:** Set up browser relay for authenticated TikTok/X access
+
+### Scholarship Hunt Pro (COMPLETE 2026-02-06)
+- **Status:** ✅ Deployed with 5 real scholarships
+- **URL:** https://swordtruth-scholarship-hunt.netlify.app
+- **Features:** Deadline tracking, application status, 5 verified scholarships for Lena, dark mode
+- **Next:** Add backend for persistence, email reminders
+
 ### OpenClaw Mobile
 - Repo: https://github.com/brianference/openclaw-mobile
 - Local: `/root/.openclaw/workspace/projects/openclaw-mobile`
@@ -46,9 +68,11 @@
 - Audit: 15/29 fixes done, see `AUDIT-STATUS.md` in project
 - Critical remaining: AES-256-GCM vault encryption, PBKDF2 password hashing
 
-### Kanban
+### Kanban Board
 - Live: https://swordtruth-kanban.netlify.app
+- Backend: `/root/.openclaw/workspace/projects/kanban-backend/kanban-data.json`
 - "Remember 30 days" + mobile UI fixes deployed
+- Programmatic updates via CLI: `node update-task.js`
 
 ## Lena (Scholarship Notes)
 - FAFSA filed
@@ -83,11 +107,12 @@
 
 ## Communication Preferences
 - Send messages in chunks, don't leave long typing indicators
-- Stop over-explaining — results over process narration
+- **Results over narration** — Brian wants action, not explanations
+- **Token budget is NOT a constraint** — focus on quality work, dev during day is fine
+- "Get building" = stop talking, start executing
 - Interruption protocol: quick tasks → just do them. Longer work → pause and ask
 - Proactively add tasks to kanban from conversations
-- Quick wins first, bigger projects when directed
-- Dev work OK during day (token budget is fine)
+- Evidence over words: commits, file paths, URLs
 
 ## Skills Usage Protocol (2026-02-06)
 
