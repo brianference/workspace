@@ -37,6 +37,39 @@
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
 }
 
+/* Light Mode */
+[data-theme="light"] {
+  --surface: #FFFFFF;
+  --surface-elevated: #F9FAFB;
+  --surface-card: #FFFFFF;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --border: #E5E7EB;
+  --glow-primary: 0 0 20px rgba(99, 102, 241, 0.15);
+  --glow-secondary: 0 0 20px rgba(236, 72, 153, 0.15);
+  --glow-accent: 0 0 15px rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="light"] .command-bar {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
+  border-bottom: 2px solid var(--primary);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .terminal-feed {
+  background: #F3F4F6;
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .terminal-timestamp {
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .terminal-content {
+  color: var(--text-primary);
+}
+
 body {
   font-family: var(--font-display);
   background: var(--surface);
@@ -134,8 +167,8 @@ body {
 /* Hexagonal Stats Grid */
 .hex-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -468,9 +501,14 @@ body {
     <div class="command-logo-icon">⚡</div>
     <div class="command-logo-text">Control Tower</div>
   </div>
-  <div class="command-status">
-    <div class="status-indicator"></div>
-    <span id="statusText">SYSTEM ONLINE</span>
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <button id="themeToggle" style="width: 44px; height: 44px; border-radius: 50%; background: var(--surface-card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.25rem; transition: all 0.2s;">
+      <span id="themeIcon">☀️</span>
+    </button>
+    <div class="command-status">
+      <div class="status-indicator"></div>
+      <span id="statusText">SYSTEM ONLINE</span>
+    </div>
   </div>
 </div>
 
@@ -677,6 +715,22 @@ async function refreshSessions() {
   renderSessionGrid(sessions);
   updateStats(sessions);
 }
+
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const body = document.body;
+
+let currentTheme = localStorage.getItem('controlTowerTheme') || 'dark';
+body.setAttribute('data-theme', currentTheme);
+themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  body.setAttribute('data-theme', currentTheme);
+  themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('controlTowerTheme', currentTheme);
+});
 
 // Initial Load
 (async function init() {
