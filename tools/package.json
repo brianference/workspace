@@ -1,0 +1,15 @@
+{
+  "name": "openclaw-workspace-tools",
+  "version": "1.0.0",
+  "description": "Utility tools for OpenClaw workspace",
+  "scripts": {
+    "screenshot": "node screenshot.js",
+    "test-screenshots": "npm run test:control-tower && npm run test:tpusa && npm run test:scholarship",
+    "test:control-tower": "node screenshot.js https://swordtruth-control-tower.netlify.app ../screenshots/control-tower.png",
+    "test:tpusa": "node screenshot.js https://swordtruth-tpusa-intel.netlify.app ../screenshots/tpusa-intel.png",
+    "test:scholarship": "node screenshot.js https://swordtruth-scholarship-hunt.netlify.app ../screenshots/scholarship-hunt.png"
+  },
+  "dependencies": {
+    "playwright": "^1.58.0"
+  }
+}
