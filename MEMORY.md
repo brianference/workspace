@@ -25,7 +25,8 @@
 - Browser/X/TikTok: need authenticated sessions
 - Proton Mail: pending — needs Bridge IMAP/SMTP setup (Brian to provide creds)
 - Grok Imagine API: available at xAI (grok-imagine-image + grok-imagine-video) — needs XAI_API_KEY
-- OpenArt.ai: pending — Brian to open plan
+- OpenArt.ai: Current Plan Infinite (active) — Visual Stories only, ComfyUI workflows sunset Jan 2026
+- Pixazo.ai: Flux Schnell API configured (free tier, 10 req/min, skill created)
 - Suno.com: pending — Brian to open account
 - Netlify: Brian has account — use for deploying kanban + projects
 - Secrets file: `/root/.openclaw/secrets/keys.env` (chmod 600)
@@ -70,6 +71,7 @@
 - Created operational docs: PLAYBOOK.md, OPERATING-CHECKLIST.md, SELF-IMPROVEMENT-PLAN.md
 - Skills should be security-scanned before use (clawhub scan)
 - **DO NOT enable hooks** — caused hours of troubleshooting (2026-02-05)
+- **GitHub token rotated** 2026-02-05 (exposed token replaced)
 
 ## Communication Preferences
 - Send messages in chunks, don't leave long typing indicators
