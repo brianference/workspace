@@ -431,9 +431,14 @@
   .mobile-tabs-inner {
     display: flex;
     width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .mobile-tabs-inner::-webkit-scrollbar { display: none; }
   .mobile-tab {
-    flex: 1;
+    flex: 0 0 auto;
+    min-width: 90px;
     padding: 12px 8px;
     text-align: center;
     font-size: 13px;
@@ -451,6 +456,7 @@
   }
   .mobile-tab.active { color: var(--text); }
   .mobile-tab[data-tab="backlog"].active { border-bottom-color: var(--column-backlog); }
+  .mobile-tab[data-tab="next-up"].active { border-bottom-color: var(--column-next-up); }
   .mobile-tab[data-tab="progress"].active { border-bottom-color: var(--column-progress); }
   .mobile-tab[data-tab="blocked"].active { border-bottom-color: var(--column-blocked); }
   .mobile-tab[data-tab="done"].active { border-bottom-color: var(--column-done); }
