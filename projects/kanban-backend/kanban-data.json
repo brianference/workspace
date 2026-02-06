@@ -42,15 +42,15 @@
     },
     {
       "id": "task-002",
-      "title": "AI Agent Control Tower",
-      "description": "Session/task management UI for OpenClaw agents",
+      "title": "done",
+      "description": "--updated",
       "priority": "high",
       "tags": [
         "coding"
       ],
-      "status": "active",
+      "status": "--status",
       "createdAt": "2026-02-06T15:15:00Z",
-      "updatedAt": "2026-02-06T17:54:00.906Z"
+      "updatedAt": "2026-02-06T18:30:43.690Z"
     },
     {
       "id": "task-003",
