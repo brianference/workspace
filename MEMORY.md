@@ -83,10 +83,23 @@
 
 ## Communication Preferences
 - Send messages in chunks, don't leave long typing indicators
+- Stop over-explaining — results over process narration
 - Interruption protocol: quick tasks → just do them. Longer work → pause and ask
 - Proactively add tasks to kanban from conversations
 - Quick wins first, bigger projects when directed
 - Dev work OK during day (token budget is fine)
+
+## Operational Improvements (2026-02-05)
+- **Batch commits** — group related changes, fewer pushes
+- **Kill stale processes** — auto-cleanup background sessions
+- **Pre-push validation** — run lint/typecheck before pushing
+- **Full log reads** — diagnose thoroughly before applying fixes
+- **Real-time docs** — update MEMORY.md as I work, not after
+- **Verify before claiming** — test fixes before saying "done"
+- **Critical first** — kanban Critical priority always comes first
+- **Proactive monitoring** — CI status, kanban, git status checked autonomously
+- **ClawHub browsing** — regularly check https://clawhub.com for useful skills, ask + security scan before installing
+- **Self-assessment 5x daily** — review improvements during heartbeats
 
 ## Key Targets (for @swordtruth content)
 - TPUSA, Erica Kirk, Tyler Bowyer, Andrew Kolvet, Mikey McCoy, Charlie Kirk
