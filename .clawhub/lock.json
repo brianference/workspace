@@ -52,6 +52,22 @@
     "twitter-sum": {
       "version": "1.0.0",
       "installedAt": 1770414695405
+    },
+    "tiktok-teneo": {
+      "version": "1.0.8",
+      "installedAt": 1770414857129
+    },
+    "postiz": {
+      "version": "1.0.0",
+      "installedAt": 1770414864633
+    },
+    "tiktok": {
+      "version": "1.0.0",
+      "installedAt": 1770414871522
+    },
+    "tiktok-ai-model-generator": {
+      "version": "1.0.0",
+      "installedAt": 1770414880780
     }
   }
 }
