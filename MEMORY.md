@@ -33,12 +33,9 @@
 
 ## Backend Hosting Options (2026-02-06)
 **Primary:** Netlify Functions (serverless) - $0, 125K req/month, already using Netlify  
-**Backup:** Render - $0 free tier (750h/month, spins down after 15min) or $7/month (always-on)  
-**Avoid:** Railway ($20-50/month, misleading "free" tier)
+**Avoid:** Railway ($20-50/month), Render (charges compute costs), other paid options
 
-**What is Render:** Platform-as-a-Service like Heroku. Push code → auto-deploys. Free PostgreSQL included. Sign up: https://render.com (GitHub login, no CC needed).
-
-**Decision:** Use Netlify Functions for Control Tower backend (simple REST API). Render as backup for future WebSocket/database apps.
+**Decision:** Use Netlify Functions exclusively for all backends. Serverless architecture, no compute charges.
 
 **Full comparison:** `/root/.openclaw/workspace/docs/BACKEND-HOSTING-COMPARISON.md`
 
