@@ -984,7 +984,7 @@ async function handleAuth() {
     if (document.getElementById('rememberMe').checked) saveSession(passphrase);
     // Migrate existing unencrypted data
     await migrateToEncrypted();
-    unlockBoard();
+    await unlockBoard();
   } else {
     // Verify passphrase
     const salt = Uint8Array.from(atob(storedSalt), c => c.charCodeAt(0));
@@ -994,7 +994,7 @@ async function handleAuth() {
       cryptoKey = key;
       failedAttempts = 0;
       if (document.getElementById('rememberMe').checked) saveSession(passphrase);
-      unlockBoard();
+      await unlockBoard();
     } else {
       failedAttempts++;
       const lockSecs = getLockoutSeconds();
@@ -1029,11 +1029,11 @@ async function migrateToEncrypted() {
   } catch(e) {}
 }
 
-function unlockBoard() {
+async function unlockBoard() {
   document.getElementById('lockScreen').classList.add('hidden');
   document.getElementById('lockBtn').disabled = false;
   document.getElementById('lockBtn').textContent = 'Unlock';
-  initBoard();
+  await initBoard();
 }
 
 // Lock screen enter key
@@ -1066,7 +1066,7 @@ const PRECONFIGURED_VERIFY = '+nZeIiYI5KvPUgrWclMPYIkV+FUpWVRlxZ/LAM2sAguxK+CpxS
     const valid = await checkVerifier(key, storedVerify);
     if (valid) {
       cryptoKey = key;
-      unlockBoard();
+      await unlockBoard();
     } else {
       clearSession(); // saved passphrase no longer valid
     }
@@ -1187,11 +1187,42 @@ async function syncPush() {
   syncing = false;
 }
 
-function load() {
+async function loadFromJSON() {
+  try {
+    const response = await fetch('./kanban-data.json');
+    if (!response.ok) return null;
+    const data = await response.json();
+    // Convert JSON format to internal cards format
+    return data.tasks.map(task => ({
+      id: task.id,
+      title: task.title,
+      desc: task.description,
+      priority: task.priority,
+      tag: task.tags[0] || '',
+      col: task.status === 'active' ? 'progress' : task.status,
+      order: 0
+    }));
+  } catch(e) {
+    console.log('JSON backend not available, using localStorage');
+    return null;
+  }
+}
+
+async function load() {
+  // Try JSON backend first
+  const jsonCards = await loadFromJSON();
+  if (jsonCards) {
+    cards = jsonCards;
+    save(); // Sync to localStorage
+    return;
+  }
+  
+  // Fall back to localStorage
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) { cards = JSON.parse(raw); return; }
   } catch(e) {}
+  
   cards = DEFAULT_CARDS;
   save();
 }
@@ -1203,7 +1234,7 @@ function save() {
 
 // ── Render ──
 function render() {
-  ['backlog','progress','blocked','done'].forEach(col => {
+  ['backlog','next-up','progress','blocked','done'].forEach(col => {
     const container = document.getElementById('col-' + col);
     const colCards = cards
       .filter(c => c.col === col)
@@ -1222,7 +1253,7 @@ function render() {
   document.getElementById('cardCount').textContent = `${done}/${total} done`;
 
   // Update mobile tab counts
-  ['backlog','progress','blocked','done'].forEach(col => {
+  ['backlog','next-up','progress','blocked','done'].forEach(col => {
     const mcount = document.querySelector(`[data-mcount="${col}"]`);
     if (mcount) mcount.textContent = cards.filter(c => c.col === col).length;
   });
@@ -1512,7 +1543,7 @@ function updateThemeBtn() {
 let touchStartX = 0;
 let touchEndX = 0;
 const SWIPE_THRESHOLD = 60;
-const tabOrder = ['backlog', 'progress', 'blocked', 'done'];
+const tabOrder = ['backlog', 'next-up', 'progress', 'blocked', 'done'];
 
 document.getElementById('board').addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
@@ -1528,8 +1559,8 @@ document.getElementById('board').addEventListener('touchend', e => {
 }, { passive: true });
 
 // ── Init (called after auth) ──
-function initBoard() {
-  load();
+async function initBoard() {
+  await load();
   const firstWithCards = tabOrder.find(t => cards.some(c => c.col === t)) || 'backlog';
   activeTab = firstWithCards;
   document.querySelectorAll('.mobile-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
