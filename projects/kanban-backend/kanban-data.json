@@ -42,15 +42,15 @@
     },
     {
       "id": "task-002",
-      "title": "done",
-      "description": "--updated",
+      "title": "AI Agent Control Tower",
+      "description": "Production backend complete with security hardening. Commit: 6ab4dfd. Deployment guide + README added. Ready for Railway deployment.",
       "priority": "high",
       "tags": [
         "coding"
       ],
-      "status": "--status",
+      "status": "done",
       "createdAt": "2026-02-06T15:15:00Z",
-      "updatedAt": "2026-02-06T18:30:43.690Z"
+      "updatedAt": "2026-02-06T18:31:00.000Z"
     },
     {
       "id": "task-003",
