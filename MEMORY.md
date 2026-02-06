@@ -160,6 +160,7 @@
 - `x-algorithm` - X algorithm mastery, viral strategies - **NEW 2026-02-06**
 - `x-mastery` - Advanced X growth tactics - **NEW 2026-02-06**
 - `upload-post` - Multi-platform posting API (commercial) - **NEW 2026-02-06**
+- `sub-agent-orchestration` - **MANDATORY for parallel work** - Spawn & coordinate multiple sub-agents, write clear task descriptions, monitor progress, integrate results - **NEW 2026-02-06**
 
 **Design Resources:**
 - `MODERN-MOBILE-DESIGN-SYSTEM.md` - iOS HIG, Mobbin patterns, 2025-2026 trends (44px touch targets, glassmorphism, liquid glass, 5 color palettes) - **NEW 2026-02-06**

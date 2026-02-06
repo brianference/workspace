@@ -1,0 +1,29 @@
+{
+  "name": "sub-agent-orchestration",
+  "version": "1.0.0",
+  "description": "Orchestrate multiple sub-agents to work in parallel on complex tasks. Ensures sub-agents follow standards and work together effectively.",
+  "author": "Cole",
+  "created": "2026-02-06",
+  "keywords": [
+    "sub-agents",
+    "parallel-processing",
+    "task-orchestration",
+    "agent-teams",
+    "coordination",
+    "claude-teams"
+  ],
+  "triggers": [
+    "spawn sub-agent",
+    "parallel work",
+    "multiple pages",
+    "agent teams",
+    "coordinate agents"
+  ],
+  "dependencies": [],
+  "tools": [
+    "sessions_spawn",
+    "sessions_list", 
+    "sessions_history",
+    "sessions_send"
+  ]
+}
