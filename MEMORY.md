@@ -104,12 +104,16 @@
 
 ## Security Rules
 - ALL public-facing builds get security by default — no exceptions
+- **Read SECURITY-PROTOCOLS.md before building** — comprehensive security checklist
+- Invoke `pentest` skill for security audits (SAST, vulnerability review)
+- Invoke `vibe-coding-patterns` for production-ready code standards
 - Encrypt data at rest for any cloud-stored user data
 - Auth gate on anything with a public URL
 - PBKDF2/bcrypt for password hashing (anti-brute-force)
 - Rate limiting on auth attempts
 - Brian will provide hostile security audit prompts — apply to everything
 - **NEVER display full tokens** — always mask as `***...***`
+- **NEVER hardcode secrets** — use `/root/.openclaw/secrets/keys.env`
 - Token rotation guide: `/root/.openclaw/workspace/TOKEN-ROTATION-GUIDE.md`
 
 ## Lessons Learned
@@ -149,6 +153,10 @@
 - `vibe-coding-patterns` - Use for security audits and production-ready code
 - `build-verify-deploy` - **MANDATORY before claiming any build status** - Forces evidence before saying "done"
 - `modern-app-standards` - **MANDATORY for all apps** - 10 essential features (responsive, theme toggle, search, security, etc.)
+- `pentest` - Security review methodology (SAST, penetration testing, vulnerability analysis) - **NEW 2026-02-06**
+- `agent-browser-3` - Browser automation with agent-browser CLI (v0.9.1 installed)
+- `playwright-cli-2` - Browser automation with Playwright CLI (v0.0.66 installed) - **NEW 2026-02-06**
+- `test-master` - Testing strategies (unit, E2E, security, performance)
 
 **Never create a skill and then forget to use it.**
 
