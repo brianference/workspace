@@ -114,6 +114,9 @@
 - Proactively add tasks to kanban from conversations
 - Evidence over words: commits, file paths, URLs
 
+## Never Sit Idle Rule (SET 2026-02-06)
+**MANDATORY:** After completing any task, immediately check kanban backlog and start the next priority task WITHOUT asking permission. Token budget is not a constraint. Only sit idle during late night (11 PM - 8 AM) OR when actively working on multi-hour builds. Never go quiet for >30 min during work hours without an update.
+
 ## Skills Usage Protocol (2026-02-06)
 
 **Problem:** Creating skills but not using them. Task-memory skill exists but I didn't use it before claiming tasks were missing.
