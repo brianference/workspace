@@ -196,3 +196,35 @@
 - TPUSA, Erica Kirk, Tyler Bowyer, Andrew Kolvet, Mikey McCoy, Charlie Kirk
 - Focus: corruption, criticism, exposure
 - Source: TikTok videos < 72h old → repost on X
+
+## X Algorithm Analysis (2026-02-06)
+**Source:** xAI GitHub repo (https://github.com/xai-org/x-algorithm)  
+**Analysis:** `/root/.openclaw/workspace/X-ALGORITHM-ANALYSIS-2026.md`
+
+### Critical Changes (Phoenix/Grok Model)
+- **ZERO hand-engineered features** — Pure ML, no gaming metrics
+- **15 action predictions:** likes, replies, reposts, clicks, dwells, blocks, mutes, reports, etc.
+- **Negative signals hurt badly:** 2% block probability > 30% like probability
+- **Dwell time tracked:** How long users look at posts (new explicit signal)
+- **Author diversity scoring:** Posting 10+ times/day gets attenuated
+- **Engagement clustering:** Two-tower retrieval finds similar audiences
+
+### Strategy for @swordtruth
+1. **Optimize for replies** (highest positive weight) — End with questions
+2. **Avoid blocks/mutes** (severe negative weights) — Evidence over rage bait
+3. **Hook first sentence** (dwell time signal) — "BREAKING: Tyler Bowyer caught..."
+4. **Post 2-4x daily max** (author diversity) — Quality > quantity
+5. **Quote tweets with analysis** — Adds value signal + dwell time
+6. **Build clustering** — Engage with other TPUSA watchdogs
+
+### Updated Workflow
+```
+OLD: Find TikTok → Download → Repost on X
+NEW: Find TikTok → Download → Add hook overlay → Quote tweet with analysis → Ask question
+```
+
+**Why:** Quote tweets get higher dwell time + value signal. Questions drive replies (highest weight).
+
+**Skills updated:**
+- `x-algorithm` v2.0.0 — Added 2026 Phoenix model insights
+- `x-mastery` — (pending update with clustering tactics)

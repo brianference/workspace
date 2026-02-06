@@ -1,24 +1,64 @@
 ---
 name: x-algorithm
 description: X (Twitter) algorithm rules, viral strategies, and article best practices. Boost engagement, avoid reach death, write posts that perform. Works with AI agents, Claude, Cursor.
-version: 1.0.1
-author: NextFrontierBuilds
-keywords: x, twitter, algorithm, viral, engagement, social-media, growth, content-strategy, ai-agent, ai-coding, claude, cursor, openclaw, moltbot, openclaw, vibe-coding, automation
+version: 2.0.0
+author: NextFrontierBuilds + xAI Analysis (2026-02-06)
+keywords: x, twitter, algorithm, viral, engagement, social-media, growth, content-strategy, ai-agent, ai-coding, claude, cursor, openclaw, moltbot, openclaw, vibe-coding, automation, grok, phoenix, transformer
 ---
 
-# X Algorithm Mastery
+# X Algorithm Mastery (2026 Update)
 
-Everything you need to know about the X (Twitter) algorithm. Based on X's open-source code, viral post analysis, and real engagement data.
+Everything you need to know about the X (Twitter) algorithm. Based on X's open-source code (xAI GitHub release), viral post analysis, and real engagement data.
+
+**MAJOR UPDATE (2026-02-06):** X now uses Grok-based transformers with zero hand-engineered features. See [xAI GitHub analysis](/root/.openclaw/workspace/X-ALGORITHM-ANALYSIS-2026.md) for full details.
+
+## 🔥 2026 ALGORITHM CHANGES (CRITICAL)
+
+X completely rebuilt the algorithm using **Grok-based transformers** (Phoenix model). Zero hand-engineered features now.
+
+### What Changed
+1. **No more gaming metrics** — Follower count, post velocity, etc. don't directly matter anymore
+2. **15 action predictions** — Algorithm predicts likes, replies, reposts, clicks, dwells, blocks, mutes, reports, etc.
+3. **Negative signals HURT** — Blocks, mutes, reports have negative weights that kill reach
+4. **Dwell time tracked** — How long users look at your post is now explicit signal
+5. **Author diversity scoring** — Posting too often gets algorithmically attenuated
+6. **Engagement clustering** — Two-tower retrieval finds audiences similar to your engagers
+
+### New Priority Order
+```
+1. Replies (highest positive weight)
+2. Reposts/Quote tweets
+3. Follows
+4. Shares
+5. Profile clicks
+6. Likes (lower weight than before)
+7. Dwell time (NEW)
+8. Clicks
+---
+9. Not interested (negative)
+10. Mutes (severe negative)
+11. Blocks (severe negative)
+12. Reports (death sentence)
+```
+
+### Critical Rules (2026)
+- **Avoid blocks at all costs** — One block hurts more than 100 likes help
+- **Optimize for replies first** — Highest positive weight
+- **Quality > Quantity** — Author diversity scoring penalizes spamming
+- **First sentence = dwell time** — Hook immediately or lose reach
+- **Build your tribe** — Engagement clustering amplifies to similar users
+
+---
 
 ## TL;DR - The Golden Rules
 
-1. **First 2 hours are critical** — replies/engagement in this window determine reach
-2. **No external links in main post** — X penalizes links that take users off-platform
-3. **Media > Text** — videos get 10x engagement, images get 2-3x
-4. **Reply to EVERYTHING** — replies are weighted higher than likes/retweets
-5. **Post when audience is awake** — 8 AM - 2 PM weekdays optimal
-6. **Controversy drives engagement** — but pick battles wisely
-7. **Threads outperform single tweets** — for long-form content
+1. **Optimize for REPLIES not likes** — Replies have highest positive weight (2026 update)
+2. **NEVER trigger blocks** — Negative signals kill reach permanently (2026 update)
+3. **First sentence hooks** — Dwell time is now explicitly tracked (2026 update)
+4. **Post 2-4x daily max** — Author diversity scoring penalizes spam (2026 update)
+5. **No external links in main post** — X penalizes links that take users off-platform
+6. **Media > Text** — videos get 10x engagement, images get 2-3x
+7. **Post when audience is awake** — 8 AM - 2 PM weekdays optimal
 
 ---
 
@@ -31,17 +71,25 @@ Everything you need to know about the X (Twitter) algorithm. Based on X's open-s
 3. **Filtering**: Removes blocked/muted, balances in/out-network, limits single author
 4. **Serving**: Final mix with ads, 5B times/day, ~1.5 seconds
 
-### Engagement Weight Hierarchy
+### Engagement Weight Hierarchy (2026 Update)
 
-| Action | Weight |
-|--------|--------|
-| Replies | Highest |
-| Retweets | High |
-| Quote Tweets | High (2x regular posts) |
-| Likes | Medium |
-| Bookmarks | Medium |
-| Views | Low |
-| Reports | Negative (kills reach) |
+| Action | Weight | Impact |
+|--------|--------|--------|
+| **Replies** | Highest (+++) | Shows deep engagement |
+| **Reposts** | High (++) | Amplifies to network |
+| **Quote Tweets** | High (++) | Adds value signal |
+| **Follow Author** | High (++) | Ultimate validation |
+| **Share** | Medium (+) | Off-platform boost |
+| **Profile Click** | Medium (+) | Curiosity about author |
+| **Likes** | Medium (+) | Lower weight than before |
+| **Click** | Low (+) | Interest but not commitment |
+| **Dwell** | Low (+) | **NEW: Time spent viewing** |
+| **Video View** | Low (+) | Passive consumption |
+| **Photo Expand** | Low (+) | Curiosity signal |
+| **Not Interested** | Negative (-) | **NEW: Feedback loop** |
+| **Mute Author** | Severe (---) | **NEW: Silent death** |
+| **Block Author** | Severe (---) | **NEW: Permanent damage** |
+| **Report** | Death (----) | **Reach destruction** |
 
 ---
 
@@ -73,30 +121,41 @@ Everything you need to know about the X (Twitter) algorithm. Based on X's open-s
 
 ---
 
-## What Kills Your Reach
+## What Kills Your Reach (2026 Update)
 
 ### Instant Death
+- ❌ **Getting blocked by users** — Negative weight nukes your score (NEW)
+- ❌ **Getting muted by users** — Silent reach death (NEW)
+- ❌ **Getting reported** — Severe penalty across similar audiences (NEW)
 - ❌ External links in main post
-- ❌ Getting reported/blocked
 - ❌ Posting same content repeatedly
 - ❌ Too many hashtags (>2)
 
 ### Slow Death
+- ❌ **Low dwell time** — Users scroll past immediately (NEW)
+- ❌ **Pure rage bait** — Triggers blocks/mutes, not worth it (NEW)
+- ❌ **Spammy posting** — Author diversity scoring attenuates reach (NEW)
 - ❌ Posting inconsistently
 - ❌ Not replying to comments
 - ❌ Off-topic from your niche
 - ❌ Corporate/formal tone
 
+### 2026 Insight: Negative Signals Are Powerful
+A 2% block probability can **completely nuke** a post's reach even with 30% like probability. The negative weights are that severe. Focus on avoiding blocks, not just getting likes.
+
 ---
 
 ## Posting Best Practices
 
-### Frequency
-| Goal | Posts/Day |
-|------|-----------|
-| Minimum | 2-3 |
-| Growth | 5-10 |
-| Maximum | 15-30 |
+### Frequency (2026 Update: Author Diversity Scoring)
+| Goal | Posts/Day | Notes |
+|------|-----------|-------|
+| **Optimal** | 2-4 | Quality > quantity enforced algorithmically |
+| Minimum | 1-2 | Consistency matters |
+| Maximum | 6-8 | Beyond this, reach gets attenuated |
+| ❌ Avoid | 10+ | Author diversity scorer kills reach |
+
+**2026 Change:** The old "post 15-30x/day" strategy is DEAD. The algorithm now **attenuates** (reduces scores) for repeated appearances in feeds. Focus on making 2-4 great posts instead of 15 mediocre ones.
 
 ### Timing (audience timezone)
 - **Best**: 8 AM - 2 PM weekdays
@@ -112,13 +171,37 @@ Everything you need to know about the X (Twitter) algorithm. Based on X's open-s
 
 ---
 
+## Maximizing Dwell Time (NEW 2026 Signal)
+
+Dwell time = how long users spend looking at your post. Now explicitly tracked.
+
+### Tactics
+- **Hook first sentence** — "BREAKING: Tyler Bowyer caught..."
+- **Line breaks for readability** — Walls of text = instant scroll
+- **Images/screenshots** — Keep eyes on post
+- **Video thumbnails** — Must hook before play button
+- **Quote tweets with analysis** — More dwell than naked reposts
+
+### What Kills Dwell
+- ❌ Boring first sentence
+- ❌ Text walls with no breaks
+- ❌ Generic "Check this out" intros
+- ❌ Clickbait without payoff
+
+---
+
 ## Getting Replies (Most Important)
 
+Replies have the **highest positive weight** in the 2026 algorithm.
+
+### Tactics
 - **Ask questions** — open-ended or controversial
 - **Hot takes** — polarizing opinions get "actually..." replies
 - **Fill in the blank** — "The best movie ever is ___"
 - **Predictions** — people love to disagree
 - **Personal stories** — "This happened to me..."
+- **Call out orgs** — "@TPUSA, care to explain?" (invites response)
+- **Leave threads incomplete** — Invite contribution
 
 ---
 
@@ -157,22 +240,51 @@ Everything you need to know about the X (Twitter) algorithm. Based on X's open-s
 
 ---
 
-## Quick Checklist
+## Quick Checklist (2026 Update)
 
 Before posting:
+- [ ] **First sentence hooks immediately?** (Dwell time signal - NEW)
+- [ ] **Could this trigger blocks?** (Negative weight check - NEW)
+- [ ] **Reason to reply?** (Highest positive weight)
+- [ ] **Line breaks for readability?** (Dwell time optimization - NEW)
 - [ ] Under 280 chars? (If not, thread it)
-- [ ] First line hooks attention?
-- [ ] Reason to reply? (Question, hot take)
 - [ ] Good time to post?
 - [ ] No external links? (Move to reply)
-- [ ] Fits your niche?
+- [ ] Fits your niche? (Engagement clustering)
 - [ ] Available to reply for 2 hours?
+- [ ] **Posting <4 times today?** (Author diversity check - NEW)
+
+---
+
+## Engagement Clustering Strategy (NEW 2026)
+
+The **two-tower retrieval model** finds users similar to those who engage with you. This is how out-of-network discovery works now.
+
+### How It Works
+```
+User Tower: Encodes YOUR engagement history
+     ↓
+Similarity Search
+     ↓
+Candidate Tower: Finds posts similar to what you engage with
+```
+
+### Build Your Tribe
+1. **Engage with your engagers** — Reply to your best commenters
+2. **Crossover with similar accounts** — Other investigative/accountability accounts
+3. **Create recurring themes** — Series branding helps clustering
+4. **Consistent framing** — Use same terminology (builds audience identity)
+
+### Why This Matters
+- When TPUSA critics engage with you → you get shown to more TPUSA critics
+- Tribal identity amplifies: "Corruption watchers" "Accountability journalists"
+- Algorithm finds audiences similar to your current engagers
 
 ---
 
 ## Growth Hacks
 
-### Reply Guy Strategy
+### Reply Guy Strategy (Still Works)
 Turn on notifications for big accounts → be first with thoughtful reply → their audience discovers you
 
 ### Thread Takeover
@@ -181,19 +293,31 @@ Find viral post in your area → quote tweet with "Let me explain why..." → ad
 ### Personality Posts
 Every 5-10 posts, share something personal. Builds connection → higher engagement.
 
+### Clustering Hack (NEW 2026)
+Engage with accounts that share your audience → their followers get recommended your content via two-tower retrieval
+
 ---
 
 ## Sources
-- X Algorithm GitHub (open source)
+- **xAI X Algorithm GitHub (2026)**: https://github.com/xai-org/x-algorithm
+- X Algorithm open source release (2023)
 - Hootsuite, Sprout Social, SocialBee guides
 - Analysis of viral articles (Damian Player, Alex Finn, Dan Koe)
+- Phoenix (Grok-based transformer) documentation
+- Thunder (in-network) and candidate pipeline architecture
+
+## Related Resources
+- Full analysis: `/root/.openclaw/workspace/X-ALGORITHM-ANALYSIS-2026.md`
+- x-mastery skill: Advanced tactics and growth strategies
+- TPUSA Intel strategy guide
 
 ---
 
 ## Installation
 
 ```bash
-clawdhub install NextFrontierBuilds/x-algorithm
+clawhub install NextFrontierBuilds/x-algorithm
 ```
 
-Built by [@NextXFrontier](https://x.com/NextXFrontier)
+Built by [@NextXFrontier](https://x.com/NextXFrontier)  
+2026 update by Cole (xAI analysis integration)
