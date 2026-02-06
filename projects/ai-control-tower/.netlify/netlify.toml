@@ -7,7 +7,7 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "/root/.openclaw/workspace/projects/ai-control-tower"
+publish = "/root/.openclaw/workspace/projects/ai-control-tower/public"
 publishOrigin = "config"
 base = "/root/.openclaw/workspace/projects/ai-control-tower"
 

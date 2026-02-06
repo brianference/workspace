@@ -1,2 +1,6 @@
 [build]
-  publish = "."
+  publish = "public"
+
+# Note: This deploys the static frontend only.
+# For full functionality with backend API, deploy to Railway/Render.
+# See README.md for deployment instructions.
