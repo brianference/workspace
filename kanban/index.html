@@ -36,6 +36,7 @@
     --tag-default: #e5e7eb;
     --tag-default-text: #6b7280;
     --column-backlog: #2563eb;
+    --column-next-up: #7c3aed;
     --column-progress: #ca8a04;
     --column-blocked: #dc2626;
     --column-done: #16a34a;
@@ -72,6 +73,7 @@
     --tag-default: #30363d;
     --tag-default-text: #8b949e;
     --column-backlog: #388bfd;
+    --column-next-up: #a371f7;
     --column-progress: #d29922;
     --column-blocked: #f85149;
     --column-done: #3fb950;
@@ -188,6 +190,7 @@
     flex-shrink: 0;
   }
   .column[data-col="backlog"] .column-dot { background: var(--column-backlog); }
+  .column[data-col="next-up"] .column-dot { background: var(--column-next-up); }
   .column[data-col="progress"] .column-dot { background: var(--column-progress); }
   .column[data-col="blocked"] .column-dot { background: var(--column-blocked); }
   .column[data-col="done"] .column-dot { background: var(--column-done); }
@@ -753,6 +756,9 @@
     <button class="mobile-tab active" data-tab="backlog" onclick="switchTab('backlog')">
       Backlog <span class="mobile-tab-count" data-mcount="backlog">0</span>
     </button>
+    <button class="mobile-tab" data-tab="next-up" onclick="switchTab('next-up')">
+      Next Up <span class="mobile-tab-count" data-mcount="next-up">0</span>
+    </button>
     <button class="mobile-tab" data-tab="progress" onclick="switchTab('progress')">
       Active <span class="mobile-tab-count" data-mcount="progress">0</span>
     </button>
@@ -773,6 +779,13 @@
       <span class="column-count" data-count="backlog">0</span>
     </div>
     <div class="column-cards" id="col-backlog"></div>
+  </div>
+  <div class="column" data-col="next-up">
+    <div class="column-header">
+      <div class="column-title"><div class="column-dot"></div>Next Up</div>
+      <span class="column-count" data-count="next-up">0</span>
+    </div>
+    <div class="column-cards" id="col-next-up"></div>
   </div>
   <div class="column" data-col="progress">
     <div class="column-header">
@@ -829,6 +842,7 @@
       <label for="cardColumnInput">Status</label>
       <select id="cardColumnInput">
         <option value="backlog">Backlog</option>
+        <option value="next-up">Next Up</option>
         <option value="progress">In Progress</option>
         <option value="blocked">Blocked</option>
         <option value="done">Done</option>
