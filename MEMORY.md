@@ -74,6 +74,7 @@
 - Skills should be security-scanned before use (clawhub scan)
 - **DO NOT enable hooks** — caused hours of troubleshooting (2026-02-05)
 - **GitHub token rotated** 2026-02-05 (exposed token replaced)
+- Git history cleaned with filter-branch to remove secrets from SELF-AUDIT.md
 
 ## Communication Preferences
 - Send messages in chunks, don't leave long typing indicators
