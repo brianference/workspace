@@ -407,6 +407,7 @@
 
   /* Mobile tab nav (hidden on desktop) */
   .mobile-theme-toggle { display: none; }
+  .mobile-add-fab { display: none; }
   .mobile-tabs {
     display: none;
     background: var(--surface);
@@ -471,18 +472,8 @@
   }
 
   @media (max-width: 680px) {
-    /* Header compact */
-    .header {
-      padding: 10px 14px;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-    }
-    .header h1 { font-size: 16px; }
-    .header h1 span { font-size: 18px; }
-    .header-actions {
-      display: none;
-    }
+    /* Header: hidden on mobile */
+    .header { display: none; }
     .card-count { display: none; }
 
     /* Filter chips: move into mobile tabs area — rendered below tabs */
@@ -500,7 +491,7 @@
     .filter-chip { white-space: nowrap; font-size: 11px; padding: 3px 10px; }
 
     /* Show mobile tabs + theme toggle */
-    .mobile-tabs { display: block; }
+    .mobile-tabs { display: block; position: relative; top: 0; }
     .mobile-theme-toggle { display: flex; }
 
     /* Hide desktop filter bar */
@@ -511,6 +502,7 @@
       flex-direction: column;
       align-items: stretch;
       padding: 10px;
+      padding-top: 0;
       gap: 0;
       min-height: calc(100vh - 130px);
     }
@@ -574,6 +566,28 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* Add card FAB on mobile */
+    .mobile-add-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 28px;
+      font-weight: 300;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mobile-add-fab:hover { background: var(--accent-hover); }
 
     /* Modal: full screen on mobile */
     .modal-overlay { align-items: flex-end; }
@@ -675,6 +689,22 @@
     margin-top: 12px;
     min-height: 20px;
   }
+  .remember-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 10px 0 4px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .remember-label input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
   .lock-icon { font-size: 40px; margin-bottom: 16px; }
   .lock-setup-note {
     font-size: 12px;
@@ -692,6 +722,7 @@
     <h2 id="lockTitle">Enter Passphrase</h2>
     <p id="lockSubtitle">This board is encrypted</p>
     <input type="password" class="lock-input" id="lockInput" placeholder="passphrase" autocomplete="off" autofocus>
+    <label class="remember-label"><input type="checkbox" id="rememberMe" checked> Remember for 30 days</label>
     <button class="lock-btn" id="lockBtn" onclick="handleAuth()">Unlock</button>
     <div class="lock-error" id="lockError"></div>
     <div class="lock-setup-note" id="lockNote"></div>
@@ -748,6 +779,7 @@
 </div>
 
 <button class="mobile-theme-toggle" id="mobileThemeBtn" onclick="toggleTheme()">🌙</button>
+<button class="mobile-add-fab" id="mobileAddBtn" onclick="openModal()">＋</button>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
@@ -800,6 +832,9 @@
 const CRYPTO_SALT_KEY = 'kanban-salt';
 const CRYPTO_VERIFY_KEY = 'kanban-verify';
 const CRYPTO_CACHED_KEY = 'kanban-ck';
+const SESSION_KEY = 'kanban-session';
+const SESSION_EXPIRY_KEY = 'kanban-session-exp';
+const SESSION_DAYS = 30;
 const PBKDF2_ITERATIONS = 600000;
 let cryptoKey = null;
 
@@ -855,6 +890,26 @@ async function checkVerifier(key, b64) {
   } catch(e) { return false; }
 }
 
+// Session persistence — remember passphrase for 30 days
+function saveSession(passphrase) {
+  const expiry = Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000;
+  localStorage.setItem(SESSION_KEY, btoa(unescape(encodeURIComponent(passphrase))));
+  localStorage.setItem(SESSION_EXPIRY_KEY, String(expiry));
+}
+
+function loadSession() {
+  const exp = localStorage.getItem(SESSION_EXPIRY_KEY);
+  const b64 = localStorage.getItem(SESSION_KEY);
+  if (!exp || !b64) return null;
+  if (Date.now() > Number(exp)) { clearSession(); return null; }
+  try { return decodeURIComponent(escape(atob(b64))); } catch(e) { clearSession(); return null; }
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_EXPIRY_KEY);
+}
+
 // Brute force protection
 let failedAttempts = 0;
 let lockoutUntil = 0;
@@ -891,6 +946,7 @@ async function handleAuth() {
     localStorage.setItem(CRYPTO_SALT_KEY, btoa(String.fromCharCode(...salt)));
     localStorage.setItem(CRYPTO_VERIFY_KEY, verifier);
     cryptoKey = key;
+    if (document.getElementById('rememberMe').checked) saveSession(passphrase);
     // Migrate existing unencrypted data
     await migrateToEncrypted();
     unlockBoard();
@@ -902,6 +958,7 @@ async function handleAuth() {
     if (valid) {
       cryptoKey = key;
       failedAttempts = 0;
+      if (document.getElementById('rememberMe').checked) saveSession(passphrase);
       unlockBoard();
     } else {
       failedAttempts++;
@@ -949,15 +1006,36 @@ document.getElementById('lockInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') handleAuth();
 });
 
-// Show setup vs unlock mode
+// Pre-configured encryption (set by Cole)
+const PRECONFIGURED_SALT = 'MYv01JG14siiWUBaC5MGzEXjG8KNvMGla8l7r1UK5/Q=';
+const PRECONFIGURED_VERIFY = '+nZeIiYI5KvPUgrWclMPYIkV+FUpWVRlxZ/LAM2sAguxK+CpxSq0ghJSBA==';
+
 (function() {
-  const hasSalt = localStorage.getItem(CRYPTO_SALT_KEY);
-  if (!hasSalt) {
-    document.getElementById('lockTitle').textContent = 'Set Passphrase';
-    document.getElementById('lockSubtitle').textContent = 'Choose a passphrase to encrypt your board';
-    document.getElementById('lockBtn').textContent = 'Set Up';
-    document.getElementById('lockNote').textContent = 'This passphrase encrypts all your data. Remember it — it cannot be recovered.';
+  // Auto-set the crypto config if not already present
+  if (!localStorage.getItem(CRYPTO_SALT_KEY)) {
+    localStorage.setItem(CRYPTO_SALT_KEY, PRECONFIGURED_SALT);
+    localStorage.setItem(CRYPTO_VERIFY_KEY, PRECONFIGURED_VERIFY);
   }
+})();
+
+// Auto-unlock from saved session
+(async function() {
+  const saved = loadSession();
+  if (!saved) return;
+  const storedSalt = localStorage.getItem(CRYPTO_SALT_KEY);
+  const storedVerify = localStorage.getItem(CRYPTO_VERIFY_KEY);
+  if (!storedSalt || !storedVerify) return;
+  try {
+    const salt = Uint8Array.from(atob(storedSalt), c => c.charCodeAt(0));
+    const key = await deriveKey(saved, salt);
+    const valid = await checkVerifier(key, storedVerify);
+    if (valid) {
+      cryptoKey = key;
+      unlockBoard();
+    } else {
+      clearSession(); // saved passphrase no longer valid
+    }
+  } catch(e) { clearSession(); }
 })();
 
 // ══════════════════════════════════════

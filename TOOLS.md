@@ -13,23 +13,19 @@ Things like:
 - Device nicknames
 - Anything environment-specific
 
-## Examples
+## Secrets
 
-```markdown
-### Cameras
+All tokens stored in `/root/.openclaw/secrets/keys.env` (chmod 600, outside workspace).
+- `GITHUB_TOKEN` — brianference, repo scope, expires ~May 2026
+- `NETLIFY_TOKEN` — swordtruth-kanban deploys
 
-- living-room → Main area, 180° wide angle
-- front-door → Entrance, motion-triggered
+To load in scripts: `source /root/.openclaw/secrets/keys.env`
 
-### SSH
-
-- home-server → 192.168.1.100, user: admin
-
-### TTS
-
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
-```
+**Rules:**
+- Never hardcode tokens in workspace files, scripts, or HTML
+- Never commit secrets to git
+- Always reference via env vars or the secrets file
+- Rotate tokens if exposed in logs
 
 ## Why Separate?
 

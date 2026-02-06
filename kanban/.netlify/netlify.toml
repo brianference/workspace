@@ -1,0 +1,30 @@
+functionsDirectory = "/root/.openclaw/workspace/kanban/netlify/functions"
+functionsDirectoryOrigin = "config"
+plugins = []
+headers = []
+redirects = []
+
+[build]
+publish = "/root/.openclaw/workspace/kanban"
+publishOrigin = "default"
+base = "/root/.openclaw/workspace/kanban"
+functions = "/root/.openclaw/workspace/kanban/netlify/functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+node_bundler = "esbuild"
