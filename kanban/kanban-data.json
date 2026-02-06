@@ -1,0 +1,71 @@
+{
+  "columns": [
+    {
+      "id": "backlog",
+      "name": "Backlog",
+      "color": "#2563eb"
+    },
+    {
+      "id": "next-up",
+      "name": "Next Up",
+      "color": "#7c3aed"
+    },
+    {
+      "id": "active",
+      "name": "Active",
+      "color": "#ca8a04"
+    },
+    {
+      "id": "blocked",
+      "name": "Blocked",
+      "color": "#dc2626"
+    },
+    {
+      "id": "done",
+      "name": "Done",
+      "color": "#16a34a"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Kanban JSON Backend",
+      "description": "Build JSON data layer for kanban programmatic updates",
+      "priority": "critical",
+      "tags": ["infrastructure", "coding"],
+      "status": "active",
+      "createdAt": "2026-02-06T15:15:00Z",
+      "updatedAt": "2026-02-06T15:15:00Z"
+    },
+    {
+      "id": "task-002",
+      "title": "AI Agent Control Tower",
+      "description": "Session/task management UI for OpenClaw agents",
+      "priority": "high",
+      "tags": ["coding"],
+      "status": "next-up",
+      "createdAt": "2026-02-06T15:15:00Z",
+      "updatedAt": "2026-02-06T15:15:00Z"
+    },
+    {
+      "id": "task-003",
+      "title": "TPUSA Intel Aggregator",
+      "description": "TikTok/X content scanner for TPUSA criticism",
+      "priority": "high",
+      "tags": ["coding", "content"],
+      "status": "next-up",
+      "createdAt": "2026-02-06T15:15:00Z",
+      "updatedAt": "2026-02-06T15:15:00Z"
+    },
+    {
+      "id": "task-004",
+      "title": "Scholarship Hunt Pro",
+      "description": "Deadline tracker + filter for Lena's scholarships",
+      "priority": "high",
+      "tags": ["coding"],
+      "status": "next-up",
+      "createdAt": "2026-02-06T15:15:00Z",
+      "updatedAt": "2026-02-06T15:15:00Z"
+    }
+  ]
+}
