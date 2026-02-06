@@ -208,6 +208,29 @@ Think of it like a human reviewing their journal and updating their mental model
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
 
+## Mistakes to Never Repeat
+
+### Security Errors
+- **NEVER display full tokens** — Always mask as `ghp_***...***` or `[MASKED]`
+- **NEVER commit secrets** — Use `/root/.openclaw/secrets/keys.env`, reference via env vars
+- **DO NOT enable hooks** without understanding them (caused hours of troubleshooting 2026-02-05)
+
+### Git/GitHub Errors
+- Before pushing, verify repo exists on GitHub (avoid "repository not found" errors)
+- Update git remote URL after token rotation: `git remote set-url origin "https://${GITHUB_TOKEN}@github.com/user/repo.git"`
+- Check current remote with `git remote -v` before push attempts
+
+### Communication Errors
+- Send replies in chunks, not all at once (avoid long typing indicators)
+- Add tasks to kanban proactively, don't wait to be asked
+- Update MEMORY.md consistently, not just when prompted
+- Document lessons in AGENTS.md immediately after mistakes
+
+### Research Errors
+- Batch web searches to avoid rate limits
+- Don't over-research simple tasks
+- Check existing skills/tools before searching externally
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
