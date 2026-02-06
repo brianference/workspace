@@ -19,6 +19,7 @@
     --text-dim: #5a6270;
     --accent: #2563eb;
     --accent-hover: #3b82f6;
+    --critical: #7c2d12;
     --high: #dc2626;
     --med: #ca8a04;
     --low: #16a34a;
@@ -36,6 +37,7 @@
     --tag-default-text: #6b7280;
     --column-backlog: #2563eb;
     --column-progress: #ca8a04;
+    --column-blocked: #dc2626;
     --column-done: #16a34a;
     --shadow: 0 2px 8px rgba(0,0,0,.08);
     --radius: 10px;
@@ -53,6 +55,7 @@
     --text-dim: #8b949e;
     --accent: #58a6ff;
     --accent-hover: #79c0ff;
+    --critical: #ff6b35;
     --high: #f85149;
     --med: #d29922;
     --low: #3fb950;
@@ -70,6 +73,7 @@
     --tag-default-text: #8b949e;
     --column-backlog: #388bfd;
     --column-progress: #d29922;
+    --column-blocked: #f85149;
     --column-done: #3fb950;
     --shadow: 0 3px 12px rgba(0,0,0,.4);
     --radius: 8px;
@@ -185,6 +189,7 @@
   }
   .column[data-col="backlog"] .column-dot { background: var(--column-backlog); }
   .column[data-col="progress"] .column-dot { background: var(--column-progress); }
+  .column[data-col="blocked"] .column-dot { background: var(--column-blocked); }
   .column[data-col="done"] .column-dot { background: var(--column-done); }
   .column-count {
     background: var(--surface2);
@@ -232,6 +237,7 @@
     transition: all .15s;
     position: relative;
   }
+  .card.priority-critical-card { border-left-color: var(--critical); }
   .card.priority-high-card { border-left-color: var(--high); }
   .card.priority-medium-card { border-left-color: var(--med); }
   .card.priority-low-card { border-left-color: var(--low); }
@@ -240,6 +246,7 @@
     border-left-color: inherit;
     box-shadow: var(--shadow);
   }
+  .card.priority-critical-card:hover { border-left-color: var(--critical); }
   .card.priority-high-card:hover { border-left-color: var(--high); }
   .card.priority-medium-card:hover { border-left-color: var(--med); }
   .card.priority-low-card:hover { border-left-color: var(--low); }
@@ -279,6 +286,7 @@
     text-transform: uppercase;
     letter-spacing: .5px;
   }
+  .priority-badge.critical { background: #7c2d1233; color: var(--critical); font-weight: 900; }
   .priority-badge.high { background: #f8514922; color: var(--high); }
   .priority-badge.medium { background: #d2992222; color: var(--med); }
   .priority-badge.low { background: #3fb95022; color: var(--low); }
@@ -441,6 +449,7 @@
   .mobile-tab.active { color: var(--text); }
   .mobile-tab[data-tab="backlog"].active { border-bottom-color: var(--column-backlog); }
   .mobile-tab[data-tab="progress"].active { border-bottom-color: var(--column-progress); }
+  .mobile-tab[data-tab="blocked"].active { border-bottom-color: var(--column-blocked); }
   .mobile-tab[data-tab="done"].active { border-bottom-color: var(--column-done); }
   .mobile-tab-count {
     background: var(--surface2);
@@ -747,6 +756,9 @@
     <button class="mobile-tab" data-tab="progress" onclick="switchTab('progress')">
       Active <span class="mobile-tab-count" data-mcount="progress">0</span>
     </button>
+    <button class="mobile-tab" data-tab="blocked" onclick="switchTab('blocked')">
+      Blocked <span class="mobile-tab-count" data-mcount="blocked">0</span>
+    </button>
     <button class="mobile-tab" data-tab="done" onclick="switchTab('done')">
       Done <span class="mobile-tab-count" data-mcount="done">0</span>
     </button>
@@ -768,6 +780,13 @@
       <span class="column-count" data-count="progress">0</span>
     </div>
     <div class="column-cards" id="col-progress"></div>
+  </div>
+  <div class="column" data-col="blocked">
+    <div class="column-header">
+      <div class="column-title"><div class="column-dot"></div>Blocked</div>
+      <span class="column-count" data-count="blocked">0</span>
+    </div>
+    <div class="column-cards" id="col-blocked"></div>
   </div>
   <div class="column" data-col="done">
     <div class="column-header">
@@ -796,6 +815,7 @@
     <div class="form-group">
       <label for="cardPriorityInput">Priority</label>
       <select id="cardPriorityInput">
+        <option value="critical">🔥 Critical</option>
         <option value="high">🔴 High</option>
         <option value="medium" selected>🟡 Medium</option>
         <option value="low">🟢 Low</option>
@@ -806,10 +826,11 @@
       <input type="text" id="cardTagInput" placeholder="e.g. infrastructure, content, research">
     </div>
     <div class="form-group">
-      <label for="cardColumnInput">Column</label>
+      <label for="cardColumnInput">Status</label>
       <select id="cardColumnInput">
         <option value="backlog">Backlog</option>
         <option value="progress">In Progress</option>
+        <option value="blocked">Blocked</option>
         <option value="done">Done</option>
       </select>
     </div>
@@ -1168,7 +1189,7 @@ function save() {
 
 // ── Render ──
 function render() {
-  ['backlog','progress','done'].forEach(col => {
+  ['backlog','progress','blocked','done'].forEach(col => {
     const container = document.getElementById('col-' + col);
     const colCards = cards
       .filter(c => c.col === col)
@@ -1187,7 +1208,7 @@ function render() {
   document.getElementById('cardCount').textContent = `${done}/${total} done`;
 
   // Update mobile tab counts
-  ['backlog','progress','done'].forEach(col => {
+  ['backlog','progress','blocked','done'].forEach(col => {
     const mcount = document.querySelector(`[data-mcount="${col}"]`);
     if (mcount) mcount.textContent = cards.filter(c => c.col === col).length;
   });
@@ -1477,7 +1498,7 @@ function updateThemeBtn() {
 let touchStartX = 0;
 let touchEndX = 0;
 const SWIPE_THRESHOLD = 60;
-const tabOrder = ['backlog', 'progress', 'done'];
+const tabOrder = ['backlog', 'progress', 'blocked', 'done'];
 
 document.getElementById('board').addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
