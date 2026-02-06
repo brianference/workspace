@@ -47,7 +47,33 @@ Trigger words:
 - **Line height:** 1.2-1.6
 - **Tracking:** -0.02em for titles
 
-### 4. Spacing (4px Grid)
+### 4. Color Palette Strategy (CRITICAL: Variation Not Uniformity)
+
+**RULE:** Every app gets its own palette based on purpose/audience. Never make all apps look the same.
+
+**Selection Guide:**
+| Use Case | Palette | Reasoning |
+|----------|---------|-----------|
+| Pro Tools / Monitoring / Analytics | **Midnight Premium** | Dark-first, high contrast, focus-oriented |
+| Professional / Finance / Intel | **Ocean Calm** | Blue = trust, authority, serious |
+| Social / Consumer / Entertainment | **Sunset Vibrant** | Warm, energetic, engaging |
+| Health / Wellness / Education | **Nature Soft** | Green = calming, growth, support |
+| News / Editorial / Minimal | **Monochrome Minimal** | High contrast, content-first |
+
+**Example Application:**
+- AI Agent Control Tower → Midnight Premium (monitoring tool)
+- TPUSA Intel → Ocean Calm (investigative research)
+- Scholarship Hunt → Nature Soft (stress-reducing, hopeful)
+
+**Layout Variation:**
+- Different apps need different card styles, navigation patterns, information hierarchy
+- Control Tower: Dense data grids, glow effects, gradient stats
+- Content aggregator: Media-heavy cards, platform badges, filters
+- Form/tracker: Status indicators, deadline urgency, progress tracking
+
+**Reference:** `/root/.openclaw/workspace/MODERN-MOBILE-DESIGN-SYSTEM.md` has all 5 palettes with full specs.
+
+### 5. Spacing (4px Grid)
 - Base spacing: 4px, 8px, 12px, 16px, 20px, 24px, 32px
 - Screen margins: 16px default, 20px large phones
 - Card padding: 16-24px
