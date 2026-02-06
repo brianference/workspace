@@ -153,10 +153,16 @@
 - `vibe-coding-patterns` - Use for security audits and production-ready code
 - `build-verify-deploy` - **MANDATORY before claiming any build status** - Forces evidence before saying "done"
 - `modern-app-standards` - **MANDATORY for all apps** - 10 essential features (responsive, theme toggle, search, security, etc.)
-- `pentest` - Security review methodology (SAST, penetration testing, vulnerability analysis) - **NEW 2026-02-06**
+- `pentest` - Security review methodology (SAST, penetration testing, vulnerability analysis)
 - `agent-browser-3` - Browser automation with agent-browser CLI (v0.9.1 installed)
-- `playwright-cli-2` - Browser automation with Playwright CLI (v0.0.66 installed) - **NEW 2026-02-06**
+- `playwright-cli-2` - Browser automation with Playwright CLI (v0.0.66 installed)
 - `test-master` - Testing strategies (unit, E2E, security, performance)
+- `x-algorithm` - X algorithm mastery, viral strategies - **NEW 2026-02-06**
+- `x-mastery` - Advanced X growth tactics - **NEW 2026-02-06**
+- `upload-post` - Multi-platform posting API (commercial) - **NEW 2026-02-06**
+
+**Design Resources:**
+- `MODERN-MOBILE-DESIGN-SYSTEM.md` - iOS HIG, Mobbin patterns, 2025-2026 trends (44px touch targets, glassmorphism, liquid glass, 5 color palettes) - **NEW 2026-02-06**
 
 **Never create a skill and then forget to use it.**
 
