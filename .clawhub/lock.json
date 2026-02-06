@@ -20,6 +20,38 @@
     "pentest": {
       "version": "1.0.0",
       "installedAt": 1770411472120
+    },
+    "bird": {
+      "version": "1.0.0",
+      "installedAt": 1770414646378
+    },
+    "x-algorithm": {
+      "version": "1.0.2",
+      "installedAt": 1770414658310
+    },
+    "upload-post": {
+      "version": "1.0.0",
+      "installedAt": 1770414669654
+    },
+    "x-api": {
+      "version": "0.1.0",
+      "installedAt": 1770414678749
+    },
+    "twitter": {
+      "version": "1.1.0",
+      "installedAt": 1770414680662
+    },
+    "x-twitter": {
+      "version": "2.3.1",
+      "installedAt": 1770414687317
+    },
+    "x-mastery": {
+      "version": "1.0.0",
+      "installedAt": 1770414689371
+    },
+    "twitter-sum": {
+      "version": "1.0.0",
+      "installedAt": 1770414695405
     }
   }
 }
