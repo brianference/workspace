@@ -1,6 +1,18 @@
 [build]
   publish = "public"
+  functions = "netlify/functions"
 
-# Note: This deploys the static frontend only.
-# For full functionality with backend API, deploy to Railway/Render.
-# See README.md for deployment instructions.
+[[redirects]]
+  from = "/api/sessions"
+  to = "/.netlify/functions/sessions"
+  status = 200
+
+[[redirects]]
+  from = "/api/sessions/:key/history"
+  to = "/.netlify/functions/session-history?key=:key"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
