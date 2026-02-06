@@ -89,6 +89,24 @@
 - Quick wins first, bigger projects when directed
 - Dev work OK during day (token budget is fine)
 
+## Skills Usage Protocol (2026-02-06)
+
+**Problem:** Creating skills but not using them. Task-memory skill exists but I didn't use it before claiming tasks were missing.
+
+**Rule:** After creating ANY skill, immediately:
+1. Read the skill's SKILL.md
+2. Execute its main command/script
+3. Verify it works
+4. Use it in the current task
+
+**Available skills that MUST be used:**
+- `task-memory` - Run search-tasks.sh before any task queries
+- `weather` - Use for weather checks
+- `tmux` - Use for interactive CLI control
+- `vibe-coding-patterns` - Use for security audits and production-ready code
+
+**Never create a skill and then forget to use it.**
+
 ## Operational Improvements (2026-02-05)
 - **Batch commits** — group related changes, fewer pushes
 - **Kill stale processes** — auto-cleanup background sessions
