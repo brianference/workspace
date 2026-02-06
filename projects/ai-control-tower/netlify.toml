@@ -1,6 +1,7 @@
 [build]
-  publish = "public"
+  publish = "."
   functions = "netlify/functions"
+  command = "echo 'No build needed'"
 
 [[redirects]]
   from = "/api/sessions"
