@@ -100,6 +100,42 @@
       "status": "done",
       "createdAt": "2026-02-06T16:36:11.351Z",
       "updatedAt": "2026-02-06T16:36:11.351Z"
+    },
+    {
+      "id": "task-007",
+      "title": "AI Community Research",
+      "description": "Research OpenClaw community chatter, new features (v2026.2.2)",
+      "priority": "high",
+      "tags": [
+        "research"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:47:41.810Z",
+      "updatedAt": "2026-02-06T16:47:41.811Z"
+    },
+    {
+      "id": "task-008",
+      "title": "Lena: March Scholarship Wave",
+      "description": "Prep applications for AICPA ($5K-$10K, due 3/15), AWSCPA women ($5K, due 3/15)",
+      "priority": "critical",
+      "tags": [
+        "research"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:47:47.465Z",
+      "updatedAt": "2026-02-06T16:47:47.465Z"
+    },
+    {
+      "id": "task-009",
+      "title": "Nightly Build: Cool Project",
+      "description": "Each night, build something cool for Brian's workflow or @swordtruth content",
+      "priority": "medium",
+      "tags": [
+        "coding"
+      ],
+      "status": "backlog",
+      "createdAt": "2026-02-06T16:47:51.791Z",
+      "updatedAt": "2026-02-06T16:47:51.791Z"
     }
   ]
 }
