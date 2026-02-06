@@ -1,308 +1,375 @@
-# AI Agent Control Tower v2.0
+# 🎯 AI Agent Control Tower
 
-**Production-ready monitoring and control dashboard for OpenClaw AI agents.**
+**Real-time monitoring and control dashboard for OpenClaw AI agents**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![Status](https://img.shields.io/badge/status-production--ready-success)](https://github.com/brianference/workspace)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue)](package.json)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## Features
+---
 
-### ✅ Current (v2.0)
-- **Live Session Monitoring** - Real-time visibility into all active OpenClaw agents
-- **Token Usage Tracking** - Monitor token consumption and costs
-- **Message History** - View conversation history for any session
-- **RESTful API** - Well-documented endpoints for integration
-- **Rate Limiting** - Prevent abuse with configurable limits
-- **Security Hardened** - Helmet, CORS, input validation
-- **Production Ready** - Structured logging, error handling, graceful shutdown
+## 🌟 Features
 
-### 🚧 Roadmap
-- [ ] WebSocket real-time updates (eliminate polling)
-- [ ] Cost tracking with pricing API integration
-- [ ] Agent spawn/kill controls
-- [ ] Budget alerts (email/Telegram)
-- [ ] Multi-user authentication
-- [ ] Database persistence (PostgreSQL)
+### Current (v2.0)
+- ✅ **Real-time session monitoring** - Track all active OpenClaw sessions
+- ✅ **Message history** - View conversation logs for any session
+- ✅ **Session metrics** - Token usage, context percentage, model info
+- ✅ **Dark/Light mode** - Persistent theme toggle
+- ✅ **Production-ready backend** - Security hardened Node.js API
+- ✅ **Rate limiting** - Protection against abuse (100 req/15min)
+- ✅ **Structured logging** - JSON logs for monitoring integration
+- ✅ **Health checks** - `/api/health` endpoint for monitoring
+- ✅ **Graceful shutdown** - Clean process termination
 
-## Architecture
+### Coming Soon (v2.1)
+- 🔄 **WebSocket real-time updates** - Live session changes without polling
+- 🔄 **Advanced filtering** - Search sessions by model, tokens, time
+- 🔄 **Session control** - Spawn new sessions, send commands
+- 🔄 **Authentication** - Secure access with API keys
+- 🔄 **Dashboard widgets** - Customizable dashboard layout
+- 🔄 **Export functionality** - Download session logs as JSON/CSV
 
-```
-src/
-├── config.js                 # Centralized configuration
-├── server.js                 # Main Express server
-├── lib/
-│   └── logger.js            # Production-safe logging
-├── services/
-│   └── openclaw.service.js  # OpenClaw CLI wrapper
-└── routes/
-    └── sessions.routes.js   # API endpoints
-```
+---
 
-## Requirements
+## 🚀 Quick Start
 
-- Node.js >= 18.0.0
-- OpenClaw CLI installed and in PATH
-- npm >= 8.0.0
+### Prerequisites
+- Node.js 18+
+- OpenClaw installed and running
+- npm or yarn
 
-## Installation
+### Installation
 
 ```bash
-# Clone repository
+# Clone repo
 git clone https://github.com/brianference/workspace.git
 cd workspace/projects/ai-control-tower
 
 # Install dependencies
 npm install
 
-# Copy environment template
+# Configure environment
 cp .env.example .env
+# Edit .env with your settings
 
-# Edit configuration
-vim .env
-```
-
-## Configuration
-
-See `.env.example` for all available options.
-
-**Key settings:**
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | 3000 | Server port |
-| `NODE_ENV` | development | Environment (development/production) |
-| `CORS_ORIGIN` | * | Allowed CORS origins |
-| `LOG_LEVEL` | info | Logging verbosity |
-
-## Usage
-
-### Development
-```bash
+# Start development server
 npm run dev
-```
 
-### Production
-```bash
+# Or production server
 npm start
 ```
 
-### Testing
-```bash
-npm test
+Visit: `http://localhost:3000`
+
+---
+
+## 📡 API Documentation
+
+### Base URL
+```
+Production: https://your-railway-app.railway.app
+Local: http://localhost:3000
 ```
 
-### Security Audit
-```bash
-npm run security-audit
+### Endpoints
+
+#### Health Check
+```http
+GET /api/health
 ```
-
-## API Endpoints
-
-### GET /api/health
-Health check endpoint.
-
 **Response:**
 ```json
 {
   "status": "ok",
   "version": "2.0.0",
   "uptime": 12345.67,
-  "timestamp": "2026-02-06T18:00:00.000Z",
+  "timestamp": "2026-02-06T18:27:58.956Z",
   "environment": "production"
 }
 ```
 
-### GET /api/sessions
-List all active sessions.
-
+#### List Sessions
+```http
+GET /api/sessions
+```
 **Response:**
 ```json
 {
-  "sessions": [{
-    "key": "agent:main:main",
-    "kind": "direct",
-    "model": "claude-sonnet-4-5",
-    "totalTokens": 98000,
-    "contextTokens": 1000000
-  }],
+  "sessions": [
+    {
+      "key": "main-session",
+      "displayName": "Main Session",
+      "kind": "active",
+      "model": "anthropic/claude-sonnet-4-5",
+      "totalTokens": 15000,
+      "contextTokens": 12000
+    }
+  ],
   "count": 1,
-  "timestamp": "2026-02-06T18:00:00.000Z"
+  "timestamp": "2026-02-06T18:30:00.000Z"
 }
 ```
 
-### GET /api/sessions/:key/status
-Get detailed status for a specific session.
+#### Get Session Status
+```http
+GET /api/sessions/:key/status
+```
 
-**Parameters:**
-- `key` (string, required) - Session key
+#### Get Session History
+```http
+GET /api/sessions/:key/history?limit=20
+```
+**Query params:**
+- `limit` (optional): Number of messages (1-100, default 10)
 
-**Response:**
-```json
+#### Send Message to Session
+```http
+POST /api/sessions/:key/send
+Content-Type: application/json
+
 {
-  "key": "agent:main:main",
-  "model": "claude-sonnet-4-5",
-  "totalTokens": 98000,
-  "contextTokens": 1000000,
-  "updatedAt": 1738851600000
+  "message": "Hello from Control Tower"
 }
 ```
 
-### GET /api/sessions/:key/history
-Get message history for a session.
+---
 
-**Parameters:**
-- `key` (string, required) - Session key  
-- `limit` (integer, optional) - Number of messages (1-100, default 10)
+## 🏗️ Architecture
 
-**Response:**
-```json
-{
-  "sessionKey": "agent:main:main",
-  "messages": [{
-    "role": "user",
-    "content": "Hello"
-  }],
-  "count": 1,
-  "limit": 10,
-  "timestamp": "2026-02-06T18:00:00.000Z"
-}
+### Tech Stack
+- **Backend:** Node.js, Express
+- **Frontend:** Vanilla JavaScript (no framework overhead)
+- **Logging:** Winston-style structured logging
+- **Security:** Helmet, CORS, rate-limiting
+
+### Project Structure
+```
+src/
+├── server.js               # Express app entry point
+├── config.js               # Centralized configuration
+├── lib/
+│   └── logger.js           # Structured logging
+├── services/
+│   └── openclaw.service.js # OpenClaw CLI wrapper
+└── routes/
+    └── sessions.routes.js  # API route handlers
+
+public/
+└── index.html              # Frontend SPA
 ```
 
-### POST /api/sessions/:key/send
-Send a message to a session.
+---
 
-**Parameters:**
-- `key` (string, required) - Session key
+## 🔧 Configuration
 
-**Body:**
-```json
-{
-  "message": "Your message here"
-}
-```
+### Environment Variables
 
-**Response:**
-```json
-{
-  "success": true,
-  "sessionKey": "agent:main:main",
-  "timestamp": "2026-02-06T18:00:00.000Z"
-}
-```
+Create a `.env` file:
 
-## Security
-
-### Built-in Protections
-- ✅ Rate limiting (100 requests/15 min by default)
-- ✅ Helmet security headers
-- ✅ CORS configuration
-- ✅ Input validation
-- ✅ No secrets in logs
-- ✅ Graceful error handling
-
-### Production Checklist
-- [ ] Set `NODE_ENV=production`
-- [ ] Configure proper `CORS_ORIGIN`
-- [ ] Use HTTPS (reverse proxy recommended)
-- [ ] Set up authentication
-- [ ] Configure rate limits for your use case
-- [ ] Monitor logs for suspicious activity
-- [ ] Regular security audits (`npm run security-audit`)
-
-## Deployment
-
-### Railway
 ```bash
-# Install Railway CLI
-npm install -g @railway/cli
+# Server
+NODE_ENV=production
+PORT=3000
 
-# Login and deploy
+# OpenClaw
+OPENCLAW_BIN=openclaw
+
+# Security
+RATE_LIMIT_WINDOW_MS=900000  # 15 minutes
+RATE_LIMIT_MAX=100           # requests per window
+CLI_TIMEOUT_MS=30000         # 30 seconds
+
+# CORS
+CORS_ORIGIN=*               # Set to specific domain in production
+```
+
+### package.json Scripts
+
+```json
+{
+  "start": "NODE_ENV=production node src/server.js",
+  "dev": "NODE_ENV=development nodemon src/server.js",
+  "test": "jest --coverage",
+  "lint": "eslint src/**/*.js",
+  "security-audit": "npm audit && node scripts/security-check.js"
+}
+```
+
+---
+
+## 🚢 Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for full deployment instructions.
+
+### Railway (Recommended)
+```bash
+npm install -g @railway/cli
 railway login
 railway init
 railway up
 ```
 
-### Docker
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-### PM2 (Self-hosted)
+### Netlify (Frontend Only)
 ```bash
-npm install -g pm2
-pm2 start src/server.js --name control-tower
-pm2 save
-pm2 startup
+netlify deploy --prod --dir=public
 ```
 
-## Development
+### Docker (Coming Soon)
+```bash
+docker build -t ai-control-tower .
+docker run -p 3000:3000 --env-file .env ai-control-tower
+```
 
-### Code Style
-- ES6+ JavaScript
-- JSDoc comments for all functions
-- Modular architecture
-- Service layer pattern
-- Error-first callbacks
+---
 
-### Adding Features
-1. Create service in `src/services/`
-2. Add routes in `src/routes/`
-3. Update config if needed
-4. Write tests
-5. Update README
+## 🔐 Security Features
 
-### Testing
+- ✅ **Helmet.js** - Security headers (XSS, clickjacking, etc.)
+- ✅ **CORS** - Configurable cross-origin policies
+- ✅ **Rate Limiting** - Per-IP request throttling
+- ✅ **Input Validation** - All API inputs sanitized
+- ✅ **Timeout Protection** - Prevents long-running requests
+- ✅ **Safe Error Messages** - No stack traces in production
+- ✅ **Graceful Shutdown** - Clean process termination
+
+### Security Checklist
+- [ ] Set `CORS_ORIGIN` to specific domains
+- [ ] Enable CSP in helmet config
+- [ ] Add authentication middleware
+- [ ] Set up monitoring/alerting
+- [ ] Regular `npm audit` checks
+- [ ] Rotate API keys if implemented
+
+---
+
+## 📊 Monitoring & Logging
+
+Logs are JSON-formatted for easy parsing:
+
+```json
+{
+  "timestamp": "2026-02-06T18:27:58.956Z",
+  "level": "info",
+  "message": "HTTP request",
+  "method": "GET",
+  "path": "/api/sessions",
+  "status": 200,
+  "duration": "45ms",
+  "ip": "192.168.1.1"
+}
+```
+
+Integrate with:
+- Railway logs (built-in)
+- CloudWatch, Datadog, Logtail
+- Custom log aggregation
+
+---
+
+## 🧪 Testing
+
 ```bash
 # Run tests
 npm test
 
-# Watch mode
-npm run test:watch
+# Run with coverage
+npm test -- --coverage
 
-# Coverage report
-npm run test:coverage
+# Lint code
+npm run lint
+
+# Security audit
+npm run security-audit
 ```
 
-## Troubleshooting
+---
 
-### "OpenClaw CLI error"
-**Cause:** OpenClaw not in PATH or not installed  
-**Solution:** Install OpenClaw or set `OPENCLAW_BIN` in .env
+## 🐛 Troubleshooting
 
-### "Rate limit exceeded"
-**Cause:** Too many requests  
-**Solution:** Increase `rateLimitMax` in config or wait
+### Server won't start
+```bash
+# Check OpenClaw is installed
+openclaw --version
 
-### Port already in use
-**Cause:** Port 3000 already occupied  
-**Solution:** Change `PORT` in .env or kill existing process
+# Verify port is available
+lsof -i :3000
 
-## Contributing
+# Check environment variables
+node -e "console.log(require('./src/config'))"
+```
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and lint
-5. Submit a pull request
+### API errors
+```bash
+# Test health endpoint
+curl http://localhost:3000/api/health
 
-## License
+# Check OpenClaw status
+openclaw status
 
-MIT © 2026 Cole AI
+# View logs
+tail -f logs/app.log
+```
 
-## Links
+### Frontend can't connect
+1. Verify `API_BASE` in `public/index.html`
+2. Check CORS_ORIGIN allows your domain
+3. Test API directly with curl
 
-- **GitHub:** https://github.com/brianference/workspace/tree/master/projects/ai-control-tower
-- **OpenClaw:** https://openclaw.ai
-- **Live Demo:** https://swordtruth-control-tower.netlify.app (static version)
+---
 
-## Support
+## 🤝 Contributing
 
-For issues, questions, or feature requests:
-- GitHub Issues: https://github.com/brianference/workspace/issues
-- Telegram: @swordtruth
+This project is part of the OpenClaw ecosystem.
+
+**Improvements welcome:**
+- Bug fixes
+- Performance optimizations
+- New features
+- Documentation updates
+
+---
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file
+
+---
+
+## 🎯 Roadmap
+
+### v2.1 (Next)
+- WebSocket support for real-time updates
+- Authentication & authorization
+- Advanced filtering & search
+- Session spawning from UI
+
+### v2.2 (Future)
+- Dashboard customization
+- Alert notifications
+- Export/import functionality
+- Multi-user support
+
+### v3.0 (Vision)
+- Agent marketplace integration
+- Visual workflow builder
+- Team collaboration features
+- Analytics & insights
+
+---
+
+**Built by:** Cole AI ⚡  
+**Repository:** https://github.com/brianference/workspace  
+**Demo:** https://swordtruth-control-tower.netlify.app (static frontend)  
+**Documentation:** See [DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+## 📞 Support
+
+- **Issues:** [GitHub Issues](https://github.com/brianference/workspace/issues)
+- **Discussions:** OpenClaw Discord
+- **Email:** cole@swordtruth.ai
+
+---
+
+**⭐ Star this repo if you find it useful!**
