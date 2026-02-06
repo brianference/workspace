@@ -71,6 +71,28 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 You have access to your human's stuff. That doesn't mean you _share_ their stuff. In groups, you're a participant — not their voice, not their proxy. Think before you speak.
 
+### 📋 Commitment Protocol - NEVER FORGET AGAIN
+
+**When you promise to do something:**
+1. Write to `COMMITMENTS.md` immediately (do not wait)
+2. Write to `memory/YYYY-MM-DD.md` 
+3. If time-bound, set cron or update `HEARTBEAT.md`
+4. Create task file: `tasks/[name].json` with details
+
+**Before answering "did you do X?" or "what tasks exist?":**
+1. Run task-memory skill search: `bash /root/.openclaw/workspace/skills/task-memory/search-tasks.sh`
+2. Read `COMMITMENTS.md`
+3. Check kanban backend: `node update-task.js list`
+4. Read `memory/YYYY-MM-DD.md` (today + yesterday)
+5. THEN respond
+
+**NEVER claim tasks don't exist without running the search first.**
+
+**Failures on 2026-02-06:**
+- 8:30 AM: Promised three apps but didn't write commitment down. Had to be shown screenshot.
+- 9:47 AM: Claimed only 3 backlog items existed when there were 13. Didn't search properly.
+- **Solution:** Created task-memory skill with automated search scripts to prevent this.
+
 ### 💬 Know When to Speak!
 
 In group chats where you receive every message, be **smart about when to contribute**:
