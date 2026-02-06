@@ -1,15 +1,16 @@
+functionsDirectory = "/root/.openclaw/workspace/projects/tpusa-intel/netlify/functions"
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+redirectsOrigin = "config"
 plugins = []
-headers = []
-redirects = []
-
-[functions]
-
-[functions."*"]
 
 [build]
 publish = "/root/.openclaw/workspace/projects/tpusa-intel"
 publishOrigin = "config"
+commandOrigin = "config"
 base = "/root/.openclaw/workspace/projects/tpusa-intel"
+command = "echo 'No build needed'"
+functions = "/root/.openclaw/workspace/projects/tpusa-intel/netlify/functions"
 
 [build.environment]
 
@@ -24,3 +25,36 @@ base = "/root/.openclaw/workspace/projects/tpusa-intel"
 [build.processing.js]
 
 [build.services]
+
+[dev]
+command = "npx live-server --port=3001"
+port = 3001.0
+
+[functions]
+
+[functions."*"]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type"
+Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]

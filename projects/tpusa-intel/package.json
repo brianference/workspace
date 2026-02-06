@@ -1,13 +1,15 @@
 {
-  "name": "tpusa-intel",
+  "name": "tpusa-intel-aggregator",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "TPUSA Intel Aggregator - TikTok/X content scanner",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "netlify dev",
+    "deploy": "netlify deploy --prod"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "dependencies": {
+    "@netlify/functions": "^2.8.2"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.37.1"
+  }
 }

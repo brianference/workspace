@@ -4,6 +4,14 @@
     "react-expert": {
       "version": "0.1.0",
       "installedAt": 1770334969684
+    },
+    "agent-browser-3": {
+      "version": "0.1.0",
+      "installedAt": 1770410556789
+    },
+    "test-master": {
+      "version": "0.1.0",
+      "installedAt": 1770410570195
     }
   }
 }

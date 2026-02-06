@@ -1,0 +1,37 @@
+{
+  "targets": [
+    {
+      "id": "erica-kirk",
+      "name": "Erica Kirk",
+      "platform": "tiktok",
+      "handle": "@ericakirk",
+      "lastScanned": null,
+      "contentCount": 0
+    },
+    {
+      "id": "tyler-bowyer",
+      "name": "Tyler Bowyer",
+      "platform": "tiktok",
+      "handle": "@tylerbowyer",
+      "lastScanned": null,
+      "contentCount": 0
+    },
+    {
+      "id": "andrew-kolvet",
+      "name": "Andrew Kolvet",
+      "platform": "tiktok",
+      "handle": "@andrewkolvet",
+      "lastScanned": null,
+      "contentCount": 0
+    },
+    {
+      "id": "charlie-kirk",
+      "name": "Charlie Kirk",
+      "platform": "tiktok",
+      "handle": "@charliekirk",
+      "lastScanned": null,
+      "contentCount": 0
+    }
+  ],
+  "content": []
+}

@@ -547,12 +547,175 @@ html {
 </nav>
 
 <script>
+// API Configuration
+const API_BASE = window.location.hostname === 'localhost' 
+  ? 'http://localhost:8888/.netlify/functions'
+  : 'https://swordtruth-tpusa-intel.netlify.app/.netlify/functions';
+
+// State
+let currentContent = [];
+let currentTargets = [];
+let currentStats = {};
+
+// Fetch targets from API
+async function loadTargets() {
+  try {
+    const response = await fetch(`${API_BASE}/targets`);
+    const data = await response.json();
+    currentTargets = data.targets;
+    renderTargets();
+  } catch (error) {
+    console.error('Failed to load targets:', error);
+  }
+}
+
+// Fetch stats from API
+async function loadStats() {
+  try {
+    const response = await fetch(`${API_BASE}/stats`);
+    const data = await response.json();
+    currentStats = data.stats;
+    renderStats();
+  } catch (error) {
+    console.error('Failed to load stats:', error);
+  }
+}
+
+// Fetch content from API
+async function loadContent(filters = {}) {
+  try {
+    const params = new URLSearchParams(filters);
+    const response = await fetch(`${API_BASE}/content?${params}`);
+    const data = await response.json();
+    currentContent = data.content;
+    renderContent();
+  } catch (error) {
+    console.error('Failed to load content:', error);
+  }
+}
+
+// Render targets
+function renderTargets() {
+  const grid = document.querySelector('.targets-grid');
+  grid.innerHTML = currentTargets.map(target => `
+    <div class="target-badge" data-id="${target.id}">
+      ${target.name}
+      ${target.contentCount > 0 ? `<span style="margin-left: 6px; opacity: 0.6;">(${target.contentCount})</span>` : ''}
+    </div>
+  `).join('');
+}
+
+// Render stats
+function renderStats() {
+  const stats = currentStats;
+  const statCards = document.querySelectorAll('.stat-card');
+  
+  if (statCards[0]) {
+    statCards[0].querySelector('.stat-value').textContent = stats.recentContent || 0;
+  }
+  if (statCards[1]) {
+    // Calculate this week (simplified: show platform breakdown)
+    const tiktok = stats.platformBreakdown?.tiktok || 0;
+    const twitter = stats.platformBreakdown?.twitter || 0;
+    statCards[1].querySelector('.stat-value').textContent = tiktok + twitter;
+  }
+  if (statCards[2]) {
+    statCards[2].querySelector('.stat-value').textContent = stats.totalContent || 0;
+  }
+}
+
+// Render content feed
+function renderContent() {
+  const feed = document.querySelector('.content-feed');
+  const emptyState = document.querySelector('.empty-state');
+  
+  if (currentContent.length === 0) {
+    if (emptyState) emptyState.style.display = 'flex';
+    if (feed) feed.style.display = 'none';
+    return;
+  }
+  
+  if (emptyState) emptyState.style.display = 'none';
+  if (feed) feed.style.display = 'block';
+  
+  feed.innerHTML = currentContent.map(item => `
+    <div class="content-card">
+      <div class="content-header">
+        <div class="content-author">${item.author || 'Unknown'}</div>
+        <div class="platform-badge platform-${item.platform}">${item.platform}</div>
+      </div>
+      <div class="content-text">${item.text || item.title || ''}</div>
+      ${item.thumbnail ? `<img src="${item.thumbnail}" alt="Thumbnail" style="width: 100%; border-radius: 12px; margin-top: 12px;">` : ''}
+      <div class="content-meta">
+        <span>❤️ ${item.likes || 0}</span>
+        <span>💬 ${item.comments || 0}</span>
+        <span>🔄 ${item.shares || 0}</span>
+        <span>${new Date(item.timestamp).toLocaleDateString()}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Trigger scan
+async function scanTarget(targetId, platform) {
+  try {
+    const response = await fetch(`${API_BASE}/scan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ targetId, platform })
+    });
+    
+    const result = await response.json();
+    
+    if (response.ok) {
+      alert(`Scan complete! Found ${result.newContent} new items.`);
+      await loadContent();
+      await loadStats();
+    } else {
+      alert(`Scan failed: ${result.error}`);
+    }
+  } catch (error) {
+    console.error('Scan error:', error);
+    alert('Failed to scan. Check console for details.');
+  }
+}
+
 // Filter chip interaction
 document.querySelectorAll('.filter-chip').forEach(chip => {
   chip.addEventListener('click', function() {
-    this.classList.toggle('active');
+    // Toggle active state
+    const isActive = this.classList.contains('active');
+    
+    // If "All Sources" clicked, deactivate others
+    if (this.textContent.includes('All Sources')) {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    } else {
+      // Deactivate "All Sources" if another filter is selected
+      document.querySelectorAll('.filter-chip').forEach(c => {
+        if (c.textContent.includes('All Sources')) c.classList.remove('active');
+      });
+      this.classList.toggle('active');
+    }
+    
+    // Apply filters
+    applyFilters();
   });
 });
+
+// Apply filters to content
+function applyFilters() {
+  const activeFilters = Array.from(document.querySelectorAll('.filter-chip.active'))
+    .map(chip => chip.textContent.trim());
+  
+  const filters = {};
+  
+  if (activeFilters.includes('TikTok')) filters.platform = 'tiktok';
+  if (activeFilters.includes('X (Twitter)')) filters.platform = 'twitter';
+  
+  // Time filters would need backend support
+  loadContent(filters);
+}
 
 // Theme toggle
 function toggleTheme() {
@@ -570,7 +733,13 @@ function toggleTheme() {
   document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
 })();
 
-console.log('TPUSA Intel v2.0 - Modern UI with light/dark mode');
+// Initialize on load
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadTargets();
+  await loadStats();
+  await loadContent();
+  console.log('TPUSA Intel v3.0 - Functional backend with Netlify Functions + agent-browser');
+});
 </script>
 
 </body>
