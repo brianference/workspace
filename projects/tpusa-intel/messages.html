@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Messages - TPUSA Intel</title>
+<style>
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ocean Calm Palette (Professional/Finance/Intel) */
+:root {
+  /* Colors */
+  --primary: #0A84FF;
+  --primary-light: #5AC8FA;
+  --secondary: #30D158;
+  --accent: #FF9F0A;
+  --surface: #FFFFFF;
+  --surface-secondary: #F2F2F7;
+  --surface-tertiary: #E5E5EA;
+  --text-primary: #1C1C1E;
+  --text-secondary: #3C3C43;
+  --text-tertiary: #8E8E93;
+  --border: #D1D1D6;
+  --error: #FF3B30;
+  --warning: #FF9500;
+  --success: #34C759;
+  
+  /* Spacing (4px grid) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  
+  /* Touch Targets */
+  --touch-min: 44px;
+  
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+  --shadow-primary: 0 4px 14px rgba(10, 132, 255, 0.25);
+  
+  /* Safe areas */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+[data-theme="dark"] {
+  --primary: #0A84FF;
+  --surface: #1C1C1E;
+  --surface-secondary: #2C2C2E;
+  --surface-tertiary: #3A3A3C;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --border: #38383A;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding-bottom: calc(72px + var(--safe-bottom));
+  overflow-x: hidden;
+}
+
+/* Header */
+.app-header {
+  position: sticky;
+  top: var(--safe-top);
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+  padding: var(--space-4) var(--space-5);
+}
+
+[data-theme="dark"] .app-header {
+  background: rgba(28, 28, 30, 0.85);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--error) 0%, var(--warning) 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Theme Toggle - 44px Touch Target */
+.theme-toggle {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.125rem;
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+  background: var(--surface-secondary);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Search Bar */
+.search-section {
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-4);
+  font-size: 1.125rem;
+  color: var(--text-tertiary);
+}
+
+.search-input {
+  width: 100%;
+  height: var(--touch-min);
+  padding: 0 var(--space-4) 0 calc(var(--space-4) * 3);
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: var(--shadow-primary);
+}
+
+.search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Filters */
+.filters-section {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--surface);
+  border-bottom: 0.5px solid var(--border);
+}
+
+.filters-section::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-chip {
+  height: 36px;
+  padding: 0 var(--space-4);
+  background: var(--surface-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.filter-chip:active {
+  transform: scale(0.96);
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+/* Message List */
+.message-list {
+  background: var(--surface);
+}
+
+.message-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.message-item:active {
+  background: var(--surface-secondary);
+}
+
+.message-item.unread {
+  background: rgba(10, 132, 255, 0.03);
+}
+
+[data-theme="dark"] .message-item.unread {
+  background: rgba(10, 132, 255, 0.1);
+}
+
+.message-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.message-avatar.priority {
+  background: linear-gradient(135deg, var(--error), var(--warning));
+}
+
+.unread-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+}
+
+.message-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.message-sender {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-time {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.message-preview {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: var(--space-2);
+}
+
+.message-item.unread .message-preview {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.message-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+.message-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  background: var(--surface-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.message-badge.flagged {
+  background: rgba(255, 159, 10, 0.1);
+  color: var(--warning);
+}
+
+.message-badge.priority {
+  background: rgba(255, 59, 48, 0.1);
+  color: var(--error);
+}
+
+/* Message Detail View (Modal) */
+.message-detail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+}
+
+.message-detail.active {
+  display: flex;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 0.5px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+[data-theme="dark"] .detail-header {
+  background: rgba(28, 28, 30, 0.85);
+}
+
+.back-button {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.back-button:active {
+  background: var(--surface-secondary);
+  transform: scale(0.95);
+}
+
+.detail-title {
+  flex: 1;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.action-button {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.25rem;
+}
+
+.action-button:active {
+  background: var(--surface-secondary);
+  transform: scale(0.95);
+}
+
+.detail-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+.detail-sender-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.detail-sender-text h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.detail-sender-text p {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}
+
+.detail-message-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: var(--safe-bottom);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] .bottom-nav {
+  background: rgba(28, 28, 30, 0.85);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-4);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-tertiary);
+  text-decoration: none;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+  background: var(--surface-secondary);
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  position: relative;
+}
+
+.nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: var(--error);
+  border: 2px solid var(--surface);
+  border-radius: 9px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.3;
+}
+
+.empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.empty-text {
+  font-size: 0.9375rem;
+  color: var(--text-tertiary);
+}
+
+/* Utility */
+.hidden { display: none; }
+</style>
+</head>
+<body data-theme="light">
+
+<!-- Header -->
+<header class="app-header">
+  <div class="header-content">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🔍</div>
+      <span>Messages</span>
+    </a>
+    <button class="theme-toggle" id="themeToggle">
+      <span id="themeIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<!-- Main Container -->
+<main class="container">
+  <!-- Search Bar -->
+  <section class="search-section">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="search" 
+        class="search-input" 
+        id="searchInput"
+        placeholder="Search messages..."
+        autocomplete="off"
+      >
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <button class="filter-chip active" data-filter="all" onclick="filterMessages('all')">
+      All
+    </button>
+    <button class="filter-chip" data-filter="unread" onclick="filterMessages('unread')">
+      Unread
+    </button>
+    <button class="filter-chip" data-filter="flagged" onclick="filterMessages('flagged')">
+      Flagged
+    </button>
+  </div>
+
+  <!-- Message List -->
+  <div class="message-list" id="messageList">
+    <!-- Messages will be rendered here -->
+  </div>
+</main>
+
+<!-- Message Detail View -->
+<div class="message-detail" id="messageDetail">
+  <div class="detail-header">
+    <div class="back-button" onclick="closeMessageDetail()">←</div>
+    <div class="detail-title" id="detailTitle">Message</div>
+    <div class="action-button" onclick="toggleFlag()">🚩</div>
+  </div>
+  <div class="detail-body" id="detailBody">
+    <!-- Detail content will be rendered here -->
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <div class="nav-container">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">📊</div>
+      <div class="nav-label">Feed</div>
+    </a>
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">💬</div>
+      <div class="nav-label">Messages</div>
+    </a>
+    <a href="messages.html" class="nav-item active">
+      <div class="nav-icon">
+        💬
+        <span class="nav-badge" id="unreadBadge">3</span>
+      </div>
+      <div class="nav-label">Messages</div>
+    </a>
+    <a href="settings.html" class="nav-item">
+      <div class="nav-icon">⚙️</div>
+      <div class="nav-label">Settings</div>
+    </a>
+  </div>
+</nav>
+
+<script>
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const body = document.body;
+
+let currentTheme = localStorage.getItem('theme') || 'light';
+body.setAttribute('data-theme', currentTheme);
+themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  body.setAttribute('data-theme', currentTheme);
+  themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', currentTheme);
+});
+
+// Mock Message Data
+const mockMessages = [
+  {
+    id: 1,
+    sender: 'Sarah Chen',
+    avatar: 'SC',
+    preview: 'Found critical intel on upcoming campus event. Multiple target accounts coordinating in private groups.',
+    message: 'Found critical intel on upcoming campus event. Multiple target accounts coordinating in private groups.\n\nThey\'re planning a counter-protest at ASU next week. Estimated 200+ participants based on group membership. Key organizers include the usual suspects from previous events.\n\nI\'ve captured screenshots of the planning discussions and compiled a list of confirmed attendees. Sending detailed briefing document separately.\n\nRecommend we brief campus admin and local PD ASAP.',
+    timestamp: Date.now() - 1000 * 60 * 15, // 15 min ago
+    unread: true,
+    flagged: false,
+    priority: false,
+    tags: ['Intel', 'Campus']
+  },
+  {
+    id: 2,
+    sender: 'Marcus Rodriguez',
+    avatar: 'MR',
+    preview: 'Target account @activist_voice just posted coordinated attack thread. 45K impressions in 2 hours.',
+    message: 'Target account @activist_voice just posted coordinated attack thread. 45K impressions in 2 hours.\n\nThread contains false claims about TPUSA policies and mischaracterizes our positions on immigration reform. Standard playbook.\n\nEngagement is being artificially boosted - suspect bot network involvement. Pattern matches previous coordinated campaigns.\n\nWe have fact-check responses ready to deploy. Awaiting approval to engage.',
+    timestamp: Date.now() - 1000 * 60 * 45, // 45 min ago
+    unread: true,
+    flagged: true,
+    priority: true,
+    tags: ['Social Media', 'Priority']
+  },
+  {
+    id: 3,
+    sender: 'Emily Washington',
+    avatar: 'EW',
+    preview: 'Weekly analytics report ready for review. Engagement up 34% across all platforms this week.',
+    message: 'Weekly analytics report ready for review. Engagement up 34% across all platforms this week.\n\nKey highlights:\n- TikTok content performing exceptionally well (2.3M views)\n- Twitter engagement doubled after implementing new response strategy\n- Target account tracking identified 12 new emerging influencers\n\nFull report attached in shared drive. Available for discussion during tomorrow\'s briefing.\n\nGreat work team!',
+    timestamp: Date.now() - 1000 * 60 * 60 * 2, // 2 hours ago
+    unread: true,
+    flagged: false,
+    priority: false,
+    tags: ['Analytics', 'Report']
+  },
+  {
+    id: 4,
+    sender: 'David Kim',
+    avatar: 'DK',
+    preview: 'New monitoring tool integration complete. Real-time alerts now active for all target accounts.',
+    message: 'New monitoring tool integration complete. Real-time alerts now active for all target accounts.\n\nSystem is now tracking 247 high-priority accounts across 5 platforms. Push notifications configured for urgent items.\n\nTested alerts with control group - response time improved by 67%. Dashboard access credentials sent to authorized team members.\n\nLet me know if you need any training or have questions about the new features.',
+    timestamp: Date.now() - 1000 * 60 * 60 * 4, // 4 hours ago
+    unread: false,
+    flagged: false,
+    priority: false,
+    tags: ['Tech', 'Tools']
+  },
+  {
+    id: 5,
+    sender: 'Jessica Martinez',
+    avatar: 'JM',
+    preview: 'Campus chapter reporting suspicious activity. Possible doxxing attempt against local leadership.',
+    message: 'Campus chapter reporting suspicious activity. Possible doxxing attempt against local leadership.\n\nUCLA chapter president received threatening messages containing personal information. IP addresses traced to coordinated campaign.\n\nLocal authorities notified. Campus security implementing enhanced protection protocols. Chapter members briefed on operational security.\n\nThis matches the pattern from incidents at 3 other campuses last month. Recommend nationwide security review.',
+    timestamp: Date.now() - 1000 * 60 * 60 * 6, // 6 hours ago
+    unread: false,
+    flagged: true,
+    priority: true,
+    tags: ['Security', 'Campus']
+  },
+  {
+    id: 6,
+    sender: 'Alex Thompson',
+    avatar: 'AT',
+    preview: 'Media monitoring update: Positive coverage increased 22% following last week\'s press campaign.',
+    message: 'Media monitoring update: Positive coverage increased 22% following last week\'s press campaign.\n\nTraditional media sentiment analysis shows significant improvement across key demographics. Social amplification of press releases exceeded targets.\n\nTop performing stories:\n1. Campus free speech initiative (+45K shares)\n2. Economic policy explainer (+38K shares)\n3. Student success stories (+29K shares)\n\nContinuing momentum with planned content calendar.',
+    timestamp: Date.now() - 1000 * 60 * 60 * 8, // 8 hours ago
+    unread: false,
+    flagged: false,
+    priority: false,
+    tags: ['Media', 'PR']
+  },
+  {
+    id: 7,
+    sender: 'Rachel Foster',
+    avatar: 'RF',
+    preview: 'TikTok trending analysis: Conservative content gaining traction with Gen Z. Opportunity window identified.',
+    message: 'TikTok trending analysis: Conservative content gaining traction with Gen Z. Opportunity window identified.\n\nAlgorithm shifts detected favoring authentic political discourse. Several conservative creators seeing exponential growth.\n\nRecommend accelerating TikTok content production while trend is favorable. Have identified 5 potential creator partnerships worth pursuing.\n\nDetailed strategy deck ready for review. This could be a major breakthrough for youth outreach.',
+    timestamp: Date.now() - 1000 * 60 * 60 * 12, // 12 hours ago
+    unread: false,
+    flagged: false,
+    priority: false,
+    tags: ['TikTok', 'Strategy']
+  },
+  {
+    id: 8,
+    sender: 'Chris Anderson',
+    avatar: 'CA',
+    preview: 'Security briefing: New threat assessment protocols approved. Training session scheduled for next week.',
+    message: 'Security briefing: New threat assessment protocols approved. Training session scheduled for next week.\n\nUpdated procedures cover:\n- Enhanced digital security measures\n- Physical security at events\n- Doxing prevention and response\n- Coordinated attack identification\n\nMandatory training for all field staff and chapter leadership. Virtual sessions available for remote team members.\n\nSafety is our top priority.',
+    timestamp: Date.now() - 1000 * 60 * 60 * 24, // 1 day ago
+    unread: false,
+    flagged: true,
+    priority: false,
+    tags: ['Security', 'Training']
+  }
+];
+
+let allMessages = [...mockMessages];
+let filteredMessages = [...mockMessages];
+let currentFilter = 'all';
+let currentMessage = null;
+
+// Search Functionality
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  
+  filteredMessages = allMessages.filter(msg => {
+    const matchesFilter = 
+      currentFilter === 'all' ||
+      (currentFilter === 'unread' && msg.unread) ||
+      (currentFilter === 'flagged' && msg.flagged);
+    
+    const matchesSearch = 
+      msg.sender.toLowerCase().includes(query) ||
+      msg.preview.toLowerCase().includes(query) ||
+      msg.message.toLowerCase().includes(query);
+    
+    return matchesFilter && matchesSearch;
+  });
+  
+  renderMessages();
+});
+
+// Filter Messages
+function filterMessages(filter) {
+  currentFilter = filter;
+  
+  // Update active state
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === filter);
+  });
+  
+  // Apply filter
+  const query = searchInput.value.toLowerCase();
+  filteredMessages = allMessages.filter(msg => {
+    const matchesFilter = 
+      filter === 'all' ||
+      (filter === 'unread' && msg.unread) ||
+      (filter === 'flagged' && msg.flagged);
+    
+    const matchesSearch = 
+      !query ||
+      msg.sender.toLowerCase().includes(query) ||
+      msg.preview.toLowerCase().includes(query) ||
+      msg.message.toLowerCase().includes(query);
+    
+    return matchesFilter && matchesSearch;
+  });
+  
+  renderMessages();
+}
+
+// Render Messages
+function renderMessages() {
+  const container = document.getElementById('messageList');
+  
+  if (filteredMessages.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">No Messages Found</div>
+        <div class="empty-text">Try adjusting your filters or search query</div>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = filteredMessages.map(msg => `
+    <div class="message-item ${msg.unread ? 'unread' : ''}" onclick="openMessageDetail(${msg.id})">
+      <div class="message-avatar ${msg.priority ? 'priority' : ''}">
+        ${msg.avatar}
+        ${msg.unread ? '<div class="unread-dot"></div>' : ''}
+      </div>
+      <div class="message-content">
+        <div class="message-header">
+          <div class="message-sender">${msg.sender}</div>
+          <div class="message-time">${formatTime(msg.timestamp)}</div>
+        </div>
+        <div class="message-preview">${msg.preview}</div>
+        <div class="message-meta">
+          ${msg.priority ? '<div class="message-badge priority">⚡ Priority</div>' : ''}
+          ${msg.flagged ? '<div class="message-badge flagged">🚩 Flagged</div>' : ''}
+          ${msg.tags.map(tag => `<span>${tag}</span>`).join(' • ')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+  
+  updateUnreadBadge();
+}
+
+// Open Message Detail
+function openMessageDetail(messageId) {
+  const message = allMessages.find(m => m.id === messageId);
+  if (!message) return;
+  
+  currentMessage = message;
+  
+  // Mark as read
+  message.unread = false;
+  renderMessages();
+  
+  // Render detail view
+  const detailBody = document.getElementById('detailBody');
+  detailBody.innerHTML = `
+    <div class="detail-sender-info">
+      <div class="detail-avatar ${message.priority ? 'priority' : ''}">${message.avatar}</div>
+      <div class="detail-sender-text">
+        <h3>${message.sender}</h3>
+        <p>${formatTime(message.timestamp)} • ${message.tags.join(', ')}</p>
+      </div>
+    </div>
+    <div class="detail-message-content">${message.message}</div>
+  `;
+  
+  // Show detail view
+  document.getElementById('messageDetail').classList.add('active');
+  
+  // Update flag button
+  const flagButton = document.querySelector('.action-button');
+  flagButton.textContent = message.flagged ? '🚩' : '⚐';
+}
+
+// Close Message Detail
+function closeMessageDetail() {
+  document.getElementById('messageDetail').classList.remove('active');
+  currentMessage = null;
+}
+
+// Toggle Flag
+function toggleFlag() {
+  if (!currentMessage) return;
+  
+  currentMessage.flagged = !currentMessage.flagged;
+  
+  // Update flag button
+  const flagButton = document.querySelector('.action-button');
+  flagButton.textContent = currentMessage.flagged ? '🚩' : '⚐';
+  
+  // Re-render if on flagged filter
+  if (currentFilter === 'flagged') {
+    filterMessages('flagged');
+  } else {
+    renderMessages();
+  }
+}
+
+// Update Unread Badge
+function updateUnreadBadge() {
+  const unreadCount = allMessages.filter(m => m.unread).length;
+  const badge = document.getElementById('unreadBadge');
+  
+  if (unreadCount > 0) {
+    badge.textContent = unreadCount;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// Format Time
+function formatTime(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// Show Coming Soon
+function showComingSoon(event) {
+  event.preventDefault();
+  alert('Coming soon! 🚀');
+}
+
+// Handle browser back button on detail view
+window.addEventListener('popstate', () => {
+  if (document.getElementById('messageDetail').classList.contains('active')) {
+    closeMessageDetail();
+  }
+});
+
+// Initialize
+renderMessages();
+</script>
+
+</body>
+</html>

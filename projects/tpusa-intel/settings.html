@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Settings - TPUSA Intel</title>
+<style>
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ocean Calm Palette (Professional/Finance/Intel) */
+:root {
+  /* Colors */
+  --primary: #0A84FF;
+  --primary-light: #5AC8FA;
+  --secondary: #30D158;
+  --accent: #FF9F0A;
+  --surface: #FFFFFF;
+  --surface-secondary: #F2F2F7;
+  --surface-tertiary: #E5E5EA;
+  --text-primary: #1C1C1E;
+  --text-secondary: #3C3C43;
+  --text-tertiary: #8E8E93;
+  --border: #D1D1D6;
+  --error: #FF3B30;
+  --warning: #FF9500;
+  --success: #34C759;
+  
+  /* Spacing (4px grid) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  
+  /* Touch Targets */
+  --touch-min: 44px;
+  
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+  --shadow-primary: 0 4px 14px rgba(10, 132, 255, 0.25);
+  
+  /* Safe areas */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+[data-theme="dark"] {
+  --primary: #0A84FF;
+  --surface: #1C1C1E;
+  --surface-secondary: #2C2C2E;
+  --surface-tertiary: #3A3A3C;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-tertiary: rgba(235, 235, 245, 0.3);
+  --border: #38383A;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding-bottom: calc(72px + var(--safe-bottom));
+  overflow-x: hidden;
+}
+
+/* Header */
+.app-header {
+  position: sticky;
+  top: var(--safe-top);
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+  padding: var(--space-4) var(--space-5);
+}
+
+[data-theme="dark"] .app-header {
+  background: rgba(28, 28, 30, 0.85);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--error) 0%, var(--warning) 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+}
+
+/* Settings Section */
+.settings-section {
+  margin-bottom: var(--space-6);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.section-icon {
+  font-size: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.settings-card {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Settings Row */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  min-height: var(--touch-min);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.settings-row-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.settings-row-description {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border);
+  transition: 0.3s;
+  border-radius: 31px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 27px;
+  width: 27px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--secondary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.toggle-switch:active .toggle-slider:before {
+  width: 30px;
+}
+
+/* Select Dropdown */
+.select-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.settings-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: var(--surface-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-6) var(--space-2) var(--space-3);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 36px;
+  font-family: inherit;
+}
+
+.settings-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+}
+
+.select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+/* Target Management */
+.target-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+}
+
+.target-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-secondary);
+  border-radius: var(--radius-lg);
+  min-height: var(--touch-min);
+}
+
+.target-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.target-emoji {
+  font-size: 1.5rem;
+}
+
+.target-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.target-remove {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--error);
+  color: white;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.target-remove:active {
+  transform: scale(0.9);
+  opacity: 0.8;
+}
+
+.add-target-form {
+  display: flex;
+  gap: var(--space-2);
+  padding: 0 var(--space-5) var(--space-4);
+}
+
+.add-target-input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  min-height: var(--touch-min);
+}
+
+.add-target-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+}
+
+.add-target-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.add-target-button {
+  padding: 0 var(--space-5);
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-primary);
+  min-height: var(--touch-min);
+  white-space: nowrap;
+}
+
+.add-target-button:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+/* Action Buttons */
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+  min-height: var(--touch-min);
+  font-family: inherit;
+}
+
+.action-button:active {
+  transform: scale(0.98);
+  background: var(--surface-secondary);
+}
+
+.action-button.primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.action-button.danger {
+  background: var(--error);
+  color: white;
+  border-color: var(--error);
+}
+
+.action-buttons-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .action-buttons-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: var(--safe-bottom);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] .bottom-nav {
+  background: rgba(28, 28, 30, 0.85);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-4);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-tertiary);
+  text-decoration: none;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+  background: var(--surface-secondary);
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  top: calc(var(--safe-top) + 80px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--surface);
+  color: var(--text-primary);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast.success {
+  background: var(--success);
+  color: white;
+}
+
+.toast.error {
+  background: var(--error);
+  color: white;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 0.9375rem;
+  color: var(--text-tertiary);
+}
+
+/* Utility */
+.hidden { display: none; }
+</style>
+</head>
+<body data-theme="light">
+
+<!-- Header -->
+<header class="app-header">
+  <div class="header-content">
+    <div class="logo">
+      <div class="logo-icon">🔍</div>
+      <span>TPUSA Intel</span>
+    </div>
+  </div>
+</header>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<!-- Main Container -->
+<main class="container">
+  <h1 class="page-title">Settings</h1>
+
+  <!-- Notifications Section -->
+  <section class="settings-section">
+    <div class="section-header">
+      <span class="section-icon">🔔</span>
+      <h2 class="section-title">Notifications</h2>
+    </div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <div class="settings-row-title">Push Notifications</div>
+          <div class="settings-row-description">Receive alerts for new content</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pushNotifications" onchange="saveSetting('pushNotifications', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <div class="settings-row-title">Email Notifications</div>
+          <div class="settings-row-description">Get daily email summaries</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="emailNotifications" onchange="saveSetting('emailNotifications', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <div class="settings-row-title">High Priority Only</div>
+          <div class="settings-row-description">Only notify for important updates</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="highPriorityOnly" onchange="saveSetting('highPriorityOnly', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scan Frequency Section -->
+  <section class="settings-section">
+    <div class="section-header">
+      <span class="section-icon">⏱️</span>
+      <h2 class="section-title">Scan Frequency</h2>
+    </div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <div class="settings-row-title">Auto Scan Interval</div>
+          <div class="settings-row-description">How often to check for new content</div>
+        </div>
+        <div class="select-wrapper">
+          <select id="scanFrequency" class="settings-select" onchange="saveSetting('scanFrequency', this.value)">
+            <option value="hourly">Hourly</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Target Management Section -->
+  <section class="settings-section">
+    <div class="section-header">
+      <span class="section-icon">🎯</span>
+      <h2 class="section-title">Target Management</h2>
+    </div>
+    <div class="settings-card">
+      <div class="target-list" id="targetList">
+        <!-- Targets will be dynamically added here -->
+      </div>
+      <div class="add-target-form">
+        <input 
+          type="text" 
+          id="newTargetInput" 
+          class="add-target-input" 
+          placeholder="Enter target name..."
+          onkeypress="if(event.key === 'Enter') addTarget()"
+        >
+        <button class="add-target-button" onclick="addTarget()">Add</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Appearance Section -->
+  <section class="settings-section">
+    <div class="section-header">
+      <span class="section-icon">🎨</span>
+      <h2 class="section-title">Appearance</h2>
+    </div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <div class="settings-row-title">Dark Mode</div>
+          <div class="settings-row-description">Switch between light and dark theme</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkMode" onchange="toggleTheme(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Data Management Section -->
+  <section class="settings-section">
+    <div class="section-header">
+      <span class="section-icon">💾</span>
+      <h2 class="section-title">Data Management</h2>
+    </div>
+    <div class="action-buttons-grid">
+      <button class="action-button primary" onclick="exportData()">
+        <span>📤</span>
+        <span>Export Data</span>
+      </button>
+      <button class="action-button danger" onclick="clearCache()">
+        <span>🗑️</span>
+        <span>Clear Cache</span>
+      </button>
+    </div>
+  </section>
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <div class="nav-container">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">📊</div>
+      <div class="nav-label">Feed</div>
+    </a>
+    <a href="messages.html" class="nav-item">
+      <div class="nav-icon">💬</div>
+      <div class="nav-label">Messages</div>
+    </a>
+    <a href="index.html#scan" class="nav-item">
+      <div class="nav-icon">🔍</div>
+      <div class="nav-label">Scan</div>
+    </a>
+    <a href="settings.html" class="nav-item active">
+      <div class="nav-icon">⚙️</div>
+      <div class="nav-label">Settings</div>
+    </a>
+  </div>
+</nav>
+
+<script>
+// Default Settings
+const DEFAULT_SETTINGS = {
+  pushNotifications: true,
+  emailNotifications: false,
+  highPriorityOnly: false,
+  scanFrequency: 'daily',
+  theme: 'light',
+  targets: ['Charlie Kirk', 'Candace Owens', 'Vivek Ramaswamy']
+};
+
+// Load Settings from localStorage
+function loadSettings() {
+  const savedSettings = localStorage.getItem('tpusaIntelSettings');
+  return savedSettings ? JSON.parse(savedSettings) : DEFAULT_SETTINGS;
+}
+
+// Save Setting
+function saveSetting(key, value) {
+  const settings = loadSettings();
+  settings[key] = value;
+  localStorage.setItem('tpusaIntelSettings', JSON.stringify(settings));
+  showToast('Setting saved', 'success');
+}
+
+// Initialize Settings
+function initSettings() {
+  const settings = loadSettings();
+  
+  // Load notification toggles
+  document.getElementById('pushNotifications').checked = settings.pushNotifications;
+  document.getElementById('emailNotifications').checked = settings.emailNotifications;
+  document.getElementById('highPriorityOnly').checked = settings.highPriorityOnly;
+  
+  // Load scan frequency
+  document.getElementById('scanFrequency').value = settings.scanFrequency;
+  
+  // Load theme
+  const theme = settings.theme || 'light';
+  document.body.setAttribute('data-theme', theme);
+  document.getElementById('darkMode').checked = theme === 'dark';
+  
+  // Load targets
+  renderTargets(settings.targets);
+}
+
+// Theme Toggle
+function toggleTheme(isDark) {
+  const theme = isDark ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', theme);
+  saveSetting('theme', theme);
+}
+
+// Target Management
+function renderTargets(targets) {
+  const targetList = document.getElementById('targetList');
+  
+  if (!targets || targets.length === 0) {
+    targetList.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🎯</div>
+        <div class="empty-text">No targets added yet</div>
+      </div>
+    `;
+    return;
+  }
+  
+  targetList.innerHTML = targets.map((target, index) => `
+    <div class="target-item">
+      <div class="target-info">
+        <span class="target-emoji">🎯</span>
+        <span class="target-name">${target}</span>
+      </div>
+      <button class="target-remove" onclick="removeTarget(${index})" title="Remove target">
+        ✕
+      </button>
+    </div>
+  `).join('');
+}
+
+function addTarget() {
+  const input = document.getElementById('newTargetInput');
+  const targetName = input.value.trim();
+  
+  if (!targetName) {
+    showToast('Please enter a target name', 'error');
+    return;
+  }
+  
+  const settings = loadSettings();
+  
+  if (settings.targets.includes(targetName)) {
+    showToast('Target already exists', 'error');
+    return;
+  }
+  
+  settings.targets.push(targetName);
+  localStorage.setItem('tpusaIntelSettings', JSON.stringify(settings));
+  
+  renderTargets(settings.targets);
+  input.value = '';
+  showToast('Target added successfully', 'success');
+}
+
+function removeTarget(index) {
+  if (!confirm('Remove this target?')) return;
+  
+  const settings = loadSettings();
+  const targetName = settings.targets[index];
+  settings.targets.splice(index, 1);
+  localStorage.setItem('tpusaIntelSettings', JSON.stringify(settings));
+  
+  renderTargets(settings.targets);
+  showToast(`Removed ${targetName}`, 'success');
+}
+
+// Data Management
+function exportData() {
+  const settings = loadSettings();
+  const dataStr = JSON.stringify(settings, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `tpusa-intel-settings-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
+  showToast('Settings exported successfully', 'success');
+}
+
+function clearCache() {
+  if (!confirm('Clear all cached data? This will remove all stored content and settings.')) {
+    return;
+  }
+  
+  // Clear all localStorage except settings
+  const settings = loadSettings();
+  localStorage.clear();
+  localStorage.setItem('tpusaIntelSettings', JSON.stringify(settings));
+  
+  showToast('Cache cleared successfully', 'success');
+}
+
+// Toast Notification
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  
+  // Show toast
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  // Hide toast after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// Coming Soon
+function showComingSoon(event) {
+  event.preventDefault();
+  showToast('Coming soon! 🚀');
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initSettings);
+</script>
+
+</body>
+</html>
