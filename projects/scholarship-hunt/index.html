@@ -2,55 +2,95 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Scholarship Hunt Pro</title>
 <style>
 * { 
   margin: 0; 
   padding: 0; 
-  box-sizing: border-box;
+  box-sizing: border-box; 
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Nature Soft Palette (Health/Wellness/Calming) */
 :root {
-  --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
-  --surface: rgba(255, 255, 255, 0.95);
-  --text: #1e293b;
-  --text-dim: #64748b;
-  --border: rgba(0, 0, 0, 0.1);
-  --primary: #6366f1;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  --radius: 20px;
+  /* Colors */
+  --primary: #86A789;
+  --secondary: #D2E3C8;
+  --accent: #FFCBCB;
+  --surface: #FFFDF8;
+  --surface-card: #FFFFFF;
+  --text-primary: #2C3E50;
+  --text-secondary: #7F8C8D;
+  --success: #86A789;
+  --error: #E57373;
+  --warning: #FFD93D;
+  --border: #E8E4DC;
+  
+  /* Spacing (4px grid) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  
+  /* Touch Targets */
+  --touch-min: 44px;
+  
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  
+  /* Safe areas */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
 }
 
 [data-theme="dark"] {
-  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --surface: rgba(30, 41, 59, 0.95);
-  --text: #f1f5f9;
-  --text-dim: #94a3b8;
-  --border: rgba(255, 255, 255, 0.1);
+  --surface: #1C1C1E;
+  --surface-card: #2C2C2E;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --border: #38383A;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg-gradient);
-  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--text-primary);
   min-height: 100vh;
-  padding-bottom: 80px;
+  padding-bottom: calc(72px + var(--safe-bottom));
+  overflow-x: hidden;
 }
 
+/* Header */
 .app-header {
   position: sticky;
-  top: 0;
+  top: var(--safe-top);
   z-index: 100;
-  backdrop-filter: blur(20px);
-  background: var(--surface);
+  background: rgba(255, 253, 248, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border);
-  padding: 16px 20px;
-  box-shadow: var(--shadow);
+  padding: var(--space-4) var(--space-5);
+}
+
+[data-theme="dark"] .app-header {
+  background: rgba(28, 28, 30, 0.85);
 }
 
 .header-content {
@@ -64,580 +104,660 @@ body {
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 18px;
+  gap: var(--space-3);
+  font-size: 1.25rem;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 .logo-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 1.125rem;
 }
 
+/* Theme Toggle - 44px Touch Target */
 .theme-toggle {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  border: none;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  font-size: 20px;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
+  font-size: 1.125rem;
 }
 
 .theme-toggle:active {
   transform: scale(0.95);
 }
 
+/* Container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--space-6) var(--space-4);
 }
 
-.quick-stats {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  padding: 4px;
+/* Summary Cards */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
 }
 
-.quick-stat {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 12px 20px;
-  white-space: nowrap;
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@media (min-width: 640px) {
+  .summary-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
-.quick-stat-value {
-  font-size: 20px;
-  font-weight: 700;
+.summary-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
 }
 
-.quick-stat-value.urgent { color: var(--danger); }
-.quick-stat-value.soon { color: var(--warning); }
-.quick-stat-value.applied { color: var(--success); }
-
-.quick-stat-label {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-weight: 600;
-}
-
-.filters-section {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-}
-
-.filter-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-dim);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.filter-chips {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.filter-chip {
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border: 2px solid var(--border);
-  background: var(--surface);
-  color: var(--text-dim);
-  transition: all 0.2s ease;
-}
-
-.filter-chip:active {
+.summary-card:active {
   transform: scale(0.98);
 }
 
+.summary-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.summary-value.primary {
+  color: var(--primary);
+}
+
+.summary-value.success {
+  color: var(--success);
+}
+
+.summary-value.warning {
+  color: var(--warning);
+}
+
+/* Filters */
+.filters-section {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--space-2);
+}
+
+.filters-section::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-chip {
+  height: 40px;
+  padding: 0 var(--space-4);
+  background: var(--surface-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.filter-chip:active {
+  transform: scale(0.96);
+}
+
 .filter-chip.active {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border-color: transparent;
+  background: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 
-.filter-group {
-  margin-bottom: 16px;
+/* Scholarship Cards */
+.scholarships-section {
+  margin-bottom: var(--space-8);
 }
 
-.filter-group:last-child {
-  margin-bottom: 0;
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
 }
 
-.scholarship-grid {
-  display: grid;
-  gap: 16px;
+.scholarships-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .scholarship-card {
-  background: var(--surface);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: var(--shadow);
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
 }
 
-.scholarship-card:hover {
-  border-color: var(--primary);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+.scholarship-card:active {
+  transform: scale(0.99);
+  box-shadow: var(--shadow-md);
 }
 
 .scholarship-header {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
 }
 
-.scholarship-name {
-  font-size: 18px;
+.scholarship-title {
+  font-size: 1.125rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-primary);
+  line-height: 1.3;
   flex: 1;
 }
 
-.deadline-badge {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
+.amount-badge {
+  padding: var(--space-2) var(--space-3);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
   font-weight: 700;
   white-space: nowrap;
-  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.scholarship-org {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.scholarship-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-size: 0.875rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
 }
 
 .deadline-urgent {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-}
-
-.deadline-soon {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
-}
-
-.deadline-later {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-}
-
-.scholarship-amount {
-  font-size: 24px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 8px;
-}
-
-.scholarship-details {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.detail-tag {
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 12px;
+  color: var(--error);
   font-weight: 600;
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--primary);
-}
-
-.detail-tag.no-essay {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--success);
-}
-
-.detail-tag.essay {
-  background: rgba(245, 158, 11, 0.1);
-  color: var(--warning);
 }
 
 .scholarship-requirements {
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.6;
-  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.req-chip {
+  padding: var(--space-1) var(--space-3);
+  background: var(--secondary);
+  color: var(--text-primary);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .scholarship-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-3);
 }
 
 .btn {
-  flex: 1;
-  padding: 10px 16px;
-  border-radius: 10px;
+  height: var(--touch-min);
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-xl);
+  font-size: 0.9375rem;
   font-weight: 600;
-  font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
   border: none;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  color: white;
-}
-
-.btn-secondary {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  color: var(--text);
+  flex: 1;
 }
 
 .btn:active {
   transform: scale(0.98);
 }
 
-.status-selector {
-  padding: 8px;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.fab {
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+.btn-primary {
+  background: var(--primary);
   color: white;
-  border: none;
-  font-size: 28px;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+
+.status-select {
+  height: var(--touch-min);
+  padding: 0 var(--space-4);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 99;
+  flex: 1;
 }
 
-.fab:active {
-  transform: scale(0.95);
-}
-
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--surface);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding: 12px 20px;
-  display: flex;
-  justify-content: space-around;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   z-index: 100;
+  background: rgba(255, 253, 248, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--border);
+  padding-bottom: var(--safe-bottom);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] .bottom-nav {
+  background: rgba(28, 28, 30, 0.85);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-4);
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 16px;
-  border-radius: 12px;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--text-dim);
-  font-size: 12px;
-  font-weight: 600;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
 }
 
 .nav-item.active {
   color: var(--primary);
-  background: rgba(99, 102, 241, 0.1);
 }
 
 .nav-icon {
-  font-size: 24px;
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
-@media (max-width: 768px) {
-  .scholarship-header {
-    flex-direction: column;
-  }
-  
-  .deadline-badge {
-    margin-left: 0;
-    margin-top: 8px;
-  }
+.nav-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-align: center;
 }
 
-@supports (padding: max(0px)) {
-  body {
-    padding-bottom: max(80px, env(safe-area-inset-bottom));
-  }
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
 }
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.3;
+}
+
+.empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.empty-text {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+/* Utility */
+.hidden { display: none; }
 </style>
 </head>
-<body>
+<body data-theme="light">
 
+<!-- Header -->
 <header class="app-header">
   <div class="header-content">
     <div class="logo">
       <div class="logo-icon">🎓</div>
-      <span>Scholarship Hunt Pro</span>
+      <span>Scholarship Hunt</span>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button class="theme-toggle" id="themeToggle">
+      <span id="themeIcon">🌙</span>
+    </button>
   </div>
 </header>
 
-<div class="container">
-  <!-- Quick Stats Bar -->
-  <div class="quick-stats">
-    <div class="quick-stat">
-      <span class="quick-stat-value urgent">3</span>
-      <span class="quick-stat-label">Urgent (<7d)</span>
+<!-- Main Container -->
+<main class="container">
+  <!-- Summary Grid -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-label">Total</div>
+      <div class="summary-value primary" id="totalCount">5</div>
     </div>
-    <div class="quick-stat">
-      <span class="quick-stat-value soon">2</span>
-      <span class="quick-stat-label">Soon (<14d)</span>
+    <div class="summary-card">
+      <div class="summary-label">Applied</div>
+      <div class="summary-value success" id="appliedCount">0</div>
     </div>
-    <div class="quick-stat">
-      <span class="quick-stat-value applied">0</span>
-      <span class="quick-stat-label">Applied</span>
+    <div class="summary-card">
+      <div class="summary-label">Pending</div>
+      <div class="summary-value warning" id="pendingCount">2</div>
     </div>
-    <div class="quick-stat">
-      <span class="quick-stat-value" style="color: var(--primary);">$50K+</span>
-      <span class="quick-stat-label">Potential</span>
+    <div class="summary-card">
+      <div class="summary-label">Value</div>
+      <div class="summary-value" id="totalValue">$26K</div>
     </div>
   </div>
 
   <!-- Filters -->
   <div class="filters-section">
-    <div class="filter-group">
-      <div class="filter-title">Deadline</div>
-      <div class="filter-chips">
-        <div class="filter-chip active" data-filter="all">All</div>
-        <div class="filter-chip" data-filter="urgent">Urgent (<7 days)</div>
-        <div class="filter-chip" data-filter="soon">Soon (<14 days)</div>
-        <div class="filter-chip" data-filter="later">Later (>14 days)</div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-title">Amount</div>
-      <div class="filter-chips">
-        <div class="filter-chip" data-filter="high">$5K+</div>
-        <div class="filter-chip" data-filter="medium">$1K-$5K</div>
-        <div class="filter-chip" data-filter="low"><$1K</div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-title">Requirements</div>
-      <div class="filter-chips">
-        <div class="filter-chip" data-filter="no-essay">No Essay</div>
-        <div class="filter-chip" data-filter="essay">Essay Required</div>
-        <div class="filter-chip" data-filter="big4">Big 4 Firms</div>
-        <div class="filter-chip" data-filter="women">Women Only</div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-title">Status</div>
-      <div class="filter-chips">
-        <div class="filter-chip" data-filter="not-started">Not Started</div>
-        <div class="filter-chip" data-filter="in-progress">In Progress</div>
-        <div class="filter-chip" data-filter="applied">Applied</div>
-      </div>
-    </div>
+    <button class="filter-chip active" onclick="filterScholarships('all')">All</button>
+    <button class="filter-chip" onclick="filterScholarships('deadline')">Urgent</button>
+    <button class="filter-chip" onclick="filterScholarships('amount')">High Value</button>
+    <button class="filter-chip" onclick="filterScholarships('requirements')">Essay Required</button>
+    <button class="filter-chip" onclick="filterScholarships('status')">Not Applied</button>
   </div>
 
-  <!-- Scholarship List -->
-  <div class="scholarship-grid" id="scholarshipList">
-    <!-- Scholarships will be rendered here -->
-  </div>
-</div>
+  <!-- Scholarships Section -->
+  <section class="scholarships-section">
+    <h2 class="section-title">Available Scholarships</h2>
+    <div class="scholarships-list" id="scholarshipsList">
+      <!-- Loaded via JavaScript -->
+    </div>
+  </section>
+</main>
 
-<button class="fab" title="Add Scholarship">+</button>
-
+<!-- Bottom Navigation -->
 <nav class="bottom-nav">
-  <div class="nav-item active">
-    <div class="nav-icon">📋</div>
-    <span>All</span>
-  </div>
-  <div class="nav-item">
-    <div class="nav-icon">⚡</div>
-    <span>Urgent</span>
-  </div>
-  <div class="nav-item">
-    <div class="nav-icon">✅</div>
-    <span>Applied</span>
+  <div class="nav-container">
+    <a href="#" class="nav-item active">
+      <div class="nav-icon">🎯</div>
+      <div class="nav-label">Browse</div>
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon">✅</div>
+      <div class="nav-label">Applied</div>
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon">📅</div>
+      <div class="nav-label">Calendar</div>
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Profile</div>
+    </a>
   </div>
 </nav>
 
 <script>
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const body = document.body;
+
+let currentTheme = localStorage.getItem('theme') || 'light';
+body.setAttribute('data-theme', currentTheme);
+themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  body.setAttribute('data-theme', currentTheme);
+  themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', currentTheme);
+});
+
+// Scholarship Data
 const scholarships = [
   {
-    name: "AICPA Foundation Scholarship",
+    id: 1,
+    title: "Sallie Mae No Essay Scholarship",
+    organization: "Sallie Mae",
+    amount: "$9,000",
+    deadline: "2026-02-28",
+    requirements: ["No essay"],
+    status: "not_applied",
+    url: "https://www.salliemae.com/scholarships/",
+    description: "Easy apply, just basic info"
+  },
+  {
+    id: 2,
+    title: "AICPA Foundation Scholarship",
+    organization: "AICPA",
     amount: "$5,000 - $10,000",
-    deadline: "March 15, 2026",
-    daysLeft: 37,
-    requirements: "Essay + 2 letters of rec + transcript",
-    tags: ["Essay", "High Amount", "Accounting"],
-    url: "https://thiswaytocpa.com/education/aicpa-legacy-scholarships/",
-    status: "not-started"
+    deadline: "2026-03-15",
+    requirements: ["Essay", "Transcript", "Letter of Rec"],
+    status: "not_applied",
+    url: "https://www.aicpa.org/",
+    description: "For accounting majors"
   },
   {
-    name: "Arizona Society of CPAs - Women's",
+    id: 3,
+    title: "Arizona Women's CPA Scholarship",
+    organization: "AWSCPA",
     amount: "$5,000",
-    deadline: "March 15, 2026",
-    daysLeft: 37,
-    requirements: "Application via ASU Scholarship Universe",
-    tags: ["Essay", "Women Only", "High Amount"],
-    url: "https://scholarships.asu.edu/",
-    status: "not-started"
+    deadline: "2026-03-15",
+    requirements: ["Essay", "Transcript"],
+    status: "not_applied",
+    url: "https://www.azscpa.org/",
+    description: "Women in accounting"
   },
   {
-    name: "Deloitte Foundation",
+    id: 4,
+    title: "Deloitte Foundation Scholarship",
+    organization: "Deloitte",
     amount: "$2,500 - $25,000",
-    deadline: "March 1, 2026",
-    daysLeft: 23,
-    requirements: "Essay + resume + transcript",
-    tags: ["Essay", "High Amount", "Big 4"],
+    deadline: "2026-03-01",
+    requirements: ["Essay", "Transcript", "Letter of Rec", "Interview"],
+    status: "pending",
     url: "https://www2.deloitte.com/",
-    status: "not-started"
+    description: "Big 4 accounting firm"
   },
   {
-    name: "PwC Scholarships",
-    amount: "$2,500 - $10,000",
-    deadline: "Rolling",
-    daysLeft: 999,
-    requirements: "Online app + leadership essay",
-    tags: ["Essay", "High Amount", "Big 4"],
-    url: "https://www.pwc.com/",
-    status: "not-started"
-  },
-  {
-    name: "KPMG Future Leaders",
-    amount: "$10,000",
-    deadline: "February 1, 2026",
-    daysLeft: -5,
-    requirements: "Essay on leadership",
-    tags: ["Essay", "High Amount", "Big 4"],
-    url: "https://apply.mykaleidoscope.com/",
-    status: "not-started"
+    id: 5,
+    title: "Women in Business Scholarship",
+    organization: "Bold.org",
+    amount: "$500",
+    deadline: "2026-04-01",
+    requirements: ["Short essay"],
+    status: "pending",
+    url: "https://bold.org/",
+    description: "Quick essay scholarship"
   }
 ];
 
-function renderScholarships() {
-  const container = document.getElementById('scholarshipList');
-  container.innerHTML = scholarships.map(s => {
-    const urgency = s.daysLeft < 0 ? 'Closed' : s.daysLeft <= 7 ? 'deadline-urgent' : s.daysLeft <= 14 ? 'deadline-soon' : 'deadline-later';
-    const urgencyText = s.daysLeft < 0 ? 'Closed' : `${s.daysLeft} days left`;
-    
+// Render Scholarships
+function renderScholarships(filter = 'all') {
+  const container = document.getElementById('scholarshipsList');
+  let filtered = [...scholarships];
+
+  // Apply filters
+  if (filter === 'deadline') {
+    const urgentDate = new Date();
+    urgentDate.setDate(urgentDate.getDate() + 30);
+    filtered = filtered.filter(s => new Date(s.deadline) <= urgentDate);
+  } else if (filter === 'amount') {
+    filtered = filtered.filter(s => {
+      const amount = parseInt(s.amount.replace(/[^0-9]/g, ''));
+      return amount >= 5000;
+    });
+  } else if (filter === 'requirements') {
+    filtered = filtered.filter(s => s.requirements.some(r => r.toLowerCase().includes('essay')));
+  } else if (filter === 'status') {
+    filtered = filtered.filter(s => s.status === 'not_applied');
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No Scholarships Found</div>
+        <div class="empty-text">Try adjusting your filters</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(s => {
+    const daysUntil = Math.ceil((new Date(s.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+    const isUrgent = daysUntil <= 30;
+
     return `
       <div class="scholarship-card">
         <div class="scholarship-header">
-          <div class="scholarship-name">${s.name}</div>
-          <div class="deadline-badge ${urgency}">${urgencyText}</div>
+          <h3 class="scholarship-title">${s.title}</h3>
+          <div class="amount-badge">${s.amount}</div>
         </div>
-        <div class="scholarship-amount">${s.amount}</div>
-        <div class="scholarship-details">
-          ${s.tags.map(tag => {
-            const isNoEssay = tag.toLowerCase().includes('no essay');
-            const isEssay = tag.toLowerCase().includes('essay') && !isNoEssay;
-            return `<div class="detail-tag ${isNoEssay ? 'no-essay' : isEssay ? 'essay' : ''}">${tag}</div>`;
-          }).join('')}
+        <div class="scholarship-org">${s.organization}</div>
+        <div class="scholarship-meta">
+          <div class="meta-item ${isUrgent ? 'deadline-urgent' : ''}">
+            <span>📅</span>
+            <span>Due ${formatDate(s.deadline)} (${daysUntil} days)</span>
+          </div>
         </div>
-        <div class="scholarship-requirements">📝 ${s.requirements}</div>
+        <div class="scholarship-requirements">
+          ${s.requirements.map(r => `<span class="req-chip">${r}</span>`).join('')}
+        </div>
         <div class="scholarship-actions">
-          <button class="btn btn-primary" onclick="window.open('${s.url}', '_blank')">Apply Now</button>
-          <select class="status-selector" onchange="updateStatus('${s.name}', this.value)">
-            <option value="not-started" ${s.status === 'not-started' ? 'selected' : ''}>Not Started</option>
-            <option value="in-progress" ${s.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+          <button class="btn btn-primary" onclick="applyScholarship(${s.id})">
+            Apply Now
+          </button>
+          <select class="status-select" onchange="updateStatus(${s.id}, this.value)">
+            <option value="not_applied" ${s.status === 'not_applied' ? 'selected' : ''}>Not Applied</option>
+            <option value="pending" ${s.status === 'pending' ? 'selected' : ''}>In Progress</option>
             <option value="applied" ${s.status === 'applied' ? 'selected' : ''}>Applied</option>
           </select>
         </div>
       </div>
     `;
   }).join('');
+
+  updateSummary();
 }
 
-function updateStatus(name, status) {
-  const scholarship = scholarships.find(s => s.name === name);
+// Update Summary Stats
+function updateSummary() {
+  const total = scholarships.length;
+  const applied = scholarships.filter(s => s.status === 'applied').length;
+  const pending = scholarships.filter(s => s.status === 'pending').length;
+  const totalValue = scholarships.reduce((sum, s) => {
+    const amount = parseInt(s.amount.replace(/[^0-9]/g, ''));
+    return sum + amount;
+  }, 0);
+
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('appliedCount').textContent = applied;
+  document.getElementById('pendingCount').textContent = pending;
+  document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+}
+
+// Filter Scholarships
+function filterScholarships(filter) {
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  renderScholarships(filter);
+}
+
+// Apply Scholarship
+function applyScholarship(id) {
+  const scholarship = scholarships.find(s => s.id === id);
+  if (scholarship) {
+    window.open(scholarship.url, '_blank');
+  }
+}
+
+// Update Status
+function updateStatus(id, status) {
+  const scholarship = scholarships.find(s => s.id === id);
   if (scholarship) {
     scholarship.status = status;
-    localStorage.setItem('scholarships', JSON.stringify(scholarships));
+    updateSummary();
   }
 }
 
-// Filter interaction
-document.querySelectorAll('.filter-chip').forEach(chip => {
-  chip.addEventListener('click', function() {
-    const group = this.closest('.filter-group');
-    group.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    this.classList.add('active');
-    // Filter logic would go here
-  });
-});
-
-// Theme toggle
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  localStorage.setItem('scholarship-theme', isDark ? 'light' : 'dark');
-  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+// Helpers
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-// Load saved theme
-(function() {
-  const saved = localStorage.getItem('scholarship-theme') || 'light';
-  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-  document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
-  
-  // Load saved scholarships
-  const savedData = localStorage.getItem('scholarships');
-  if (savedData) {
-    const loaded = JSON.parse(savedData);
-    loaded.forEach((saved, i) => {
-      if (scholarships[i]) scholarships[i].status = saved.status;
-    });
-  }
-  
-  renderScholarships();
-})();
+function formatCurrency(amount) {
+  if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
+  return `$${amount}`;
+}
+
+// Initialize
+renderScholarships();
 </script>
 
 </body>
