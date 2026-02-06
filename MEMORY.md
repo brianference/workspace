@@ -105,8 +105,16 @@
 - `tmux` - Use for interactive CLI control
 - `vibe-coding-patterns` - Use for security audits and production-ready code
 - `build-verify-deploy` - **MANDATORY before claiming any build status** - Forces evidence before saying "done"
+- `modern-app-standards` - **MANDATORY for all apps** - 10 essential features (responsive, theme toggle, search, security, etc.)
 
 **Never create a skill and then forget to use it.**
+
+**Modern App Standards (Created 2026-02-06 11:19 AM):**
+- **EVERY app MUST have:** Responsive design, light/dark mode toggle, search functionality, security hardening, accessible UI/UX, performance optimization, state persistence
+- **Read BEFORE starting any app** - Prevents building apps that are missing standard features
+- **Applies to:** All 3 current apps (Control Tower, TPUSA, Scholarship) + all future apps
+- **No exceptions** - "We'll add it later" is not acceptable
+- Based on 2025 industry research: 92.3% mobile users, PWA capabilities, real-time updates
 
 **Build-Verify-Deploy Protocol (Created 2026-02-06 11:11 AM):**
 - Prevents "saying building but not building" failures
