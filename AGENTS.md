@@ -53,6 +53,16 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - `trash` > `rm` (recoverable beats gone forever)
 - When in doubt, ask.
 
+## Security Protocols
+
+**Before building anything:**
+1. Read `SECURITY-PROTOCOLS.md` - mandatory security checklist
+2. Invoke `pentest` skill for security audits
+3. Invoke `vibe-coding-patterns` for production standards
+4. Follow hostile audit prompts from Brian
+
+**Never hardcode secrets.** Always use `/root/.openclaw/secrets/keys.env`.
+
 ## External vs Internal
 
 **Safe to do freely:**

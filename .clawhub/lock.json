@@ -12,6 +12,14 @@
     "test-master": {
       "version": "0.1.0",
       "installedAt": 1770410570195
+    },
+    "playwright-cli-2": {
+      "version": "0.1.0",
+      "installedAt": 1770411450963
+    },
+    "pentest": {
+      "version": "1.0.0",
+      "installedAt": 1770411472120
     }
   }
 }
