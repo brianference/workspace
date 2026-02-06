@@ -146,9 +146,9 @@
         "coding",
         "infra"
       ],
-      "status": "backlog",
+      "status": "active",
       "createdAt": "2026-02-06T16:51:37.907Z",
-      "updatedAt": "2026-02-06T16:51:37.908Z"
+      "updatedAt": "2026-02-06T19:44:06.664Z"
     },
     {
       "id": "task-011",
@@ -283,6 +283,18 @@
       "status": "active",
       "createdAt": "2026-02-06T19:05:35.530Z",
       "updatedAt": "2026-02-06T19:05:35.530Z"
+    },
+    {
+      "id": "task-022",
+      "title": "Control Tower UI Redesign",
+      "description": "Mobile-first redesign with modern UI patterns from mobbin.com - glassmorphism, better spacing, animations, responsive",
+      "priority": "high",
+      "tags": [
+        "coding"
+      ],
+      "status": "active",
+      "createdAt": "2026-02-06T19:55:19.235Z",
+      "updatedAt": "2026-02-06T19:55:19.235Z"
     }
   ]
 }
