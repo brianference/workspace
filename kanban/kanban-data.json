@@ -48,9 +48,9 @@
       "tags": [
         "coding"
       ],
-      "status": "done",
+      "status": "active",
       "createdAt": "2026-02-06T15:15:00Z",
-      "updatedAt": "2026-02-06T17:44:15.600Z"
+      "updatedAt": "2026-02-06T17:54:00.906Z"
     },
     {
       "id": "task-003",
@@ -258,6 +258,18 @@
       "status": "backlog",
       "createdAt": "2026-02-06T16:54:41.400Z",
       "updatedAt": "2026-02-06T16:54:41.401Z"
+    },
+    {
+      "id": "task-020",
+      "title": "Control Tower MVP Built",
+      "description": "Functional OpenClaw integration with live session monitoring, token tracking, message history",
+      "priority": "high",
+      "tags": [
+        "coding"
+      ],
+      "status": "done",
+      "createdAt": "2026-02-06T17:54:01.001Z",
+      "updatedAt": "2026-02-06T17:54:01.001Z"
     }
   ]
 }
