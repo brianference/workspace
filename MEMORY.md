@@ -52,10 +52,15 @@
 - **Next:** Deploy backend to Railway, update frontend API_BASE
 
 ### TPUSA Intel Aggregator (COMPLETE 2026-02-06)
-- **Status:** ✅ Deployed and functional
+- **Status:** ✅ Deployed with functional backend
 - **URL:** https://swordtruth-tpusa-intel.netlify.app
-- **Features:** TikTok/X content scanner, target tracking, engagement metrics, dark mode
-- **Next:** Set up browser relay for authenticated TikTok/X access
+- **Backend:** Netlify Functions (targets, content, stats, scan)
+- **Browser automation:** agent-browser CLI installed (v0.9.1)
+- **Features:** TikTok/X content scanner, target tracking, engagement metrics, dark mode, real API endpoints
+- **Architecture:** In-memory data store (MVP), agent-browser for scraping
+- **Commits:** 67b5d12 (initial backend), 66a2804 (in-memory storage fix)
+- **Skills installed:** agent-browser-3 (browser automation), test-master (testing methodology)
+- **Next:** Set up authenticated browser sessions for TikTok/X scraping (Browser Relay or manual login state)
 
 ### Scholarship Hunt Pro (COMPLETE 2026-02-06)
 - **Status:** ✅ Deployed with 5 real scholarships
