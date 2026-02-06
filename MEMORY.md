@@ -31,6 +31,17 @@
 - Netlify: Brian has account — use for deploying kanban + projects
 - Secrets file: `/root/.openclaw/secrets/keys.env` (chmod 600)
 
+## Backend Hosting Options (2026-02-06)
+**Primary:** Netlify Functions (serverless) - $0, 125K req/month, already using Netlify  
+**Backup:** Render - $0 free tier (750h/month, spins down after 15min) or $7/month (always-on)  
+**Avoid:** Railway ($20-50/month, misleading "free" tier)
+
+**What is Render:** Platform-as-a-Service like Heroku. Push code → auto-deploys. Free PostgreSQL included. Sign up: https://render.com (GitHub login, no CC needed).
+
+**Decision:** Use Netlify Functions for Control Tower backend (simple REST API). Render as backup for future WebSocket/database apps.
+
+**Full comparison:** `/root/.openclaw/workspace/docs/BACKEND-HOSTING-COMPARISON.md`
+
 ## Active Projects
 
 ### AI Agent Control Tower (COMPLETE 2026-02-06)
