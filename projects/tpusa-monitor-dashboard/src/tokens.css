@@ -1,0 +1,73 @@
+:root {
+  --bg: #080d18;
+  --card: #0d1828;
+  --accent: #00c9ff;
+  --danger: #ff4757;
+  --t1: #e8f8ff;
+  --t2: #7ec8e3;
+  --t3: #2a5a78;
+  --t4: #0e2838;
+  --sepc: rgba(255,255,255,0.07);
+  --nav: rgba(8,13,24,0.92);
+}
+.light {
+  --bg: #edf6ff;
+  --card: #ffffff;
+  --accent: #0099cc;
+  --danger: #d92b3a;
+  --t1: #05162a;
+  --t2: #1e5f84;
+  --t3: #5e9ab8;
+  --t4: #c0ddf0;
+  --sepc: rgba(0,0,0,0.07);
+  --nav: rgba(237,246,255,0.94);
+}
+
+/* Global typography */
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--t1);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Skeleton pulse animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.30; }
+}
+
+/* Throb animation for live dots */
+@keyframes throb {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+/* Toast slide-in animation */
+@keyframes toast-slide-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Toast slide-out animation */
+@keyframes toast-slide-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
