@@ -12,18 +12,26 @@ from typing import Any
 import mcp.server.stdio
 import mcp.types as types
 from mcp.server import Server
+from mcp.server.lowlevel.server import NotificationOptions
 from mcp.server.models import InitializationOptions
 
 from x_search_mcp.client import XClient
 from x_search_mcp.config import cfg
+from x_search_mcp.context import request_token
 from x_search_mcp.security import sanitize
 
 # ---------------------------------------------------------------------------
 # Singletons
 # ---------------------------------------------------------------------------
 
-client = XClient(bearer_token=cfg.bearer_token)
 app = Server("x-search-mcp-server")
+
+# Global client used by the stdio path only.
+# Only created when X_BEARER_TOKEN is present in the environment so that the
+# HTTP entry point can start without any env-level credentials.
+_stdio_client: XClient | None = (
+    XClient(bearer_token=cfg.bearer_token) if cfg.bearer_token else None
+)
 
 
 def _safe(data: Any) -> Any:
@@ -249,18 +257,29 @@ async def list_tools() -> list[types.Tool]:
 
 @app.call_tool()
 async def call_tool(name: str, arguments: dict[str, Any]) -> list[types.TextContent]:
+    # HTTP path: bearer token injected per-request by the auth middleware.
+    # Stdio path: fall back to the module-level client.
+    token = request_token.get(None)
+    if token:
+        xclient = XClient(bearer_token=token)
+    elif _stdio_client is not None:
+        xclient = _stdio_client
+    else:
+        return [types.TextContent(type="text", text="Error: no bearer token available")]
+
     try:
-        result = await _dispatch(name, arguments)
+        result = await _dispatch(name, arguments, xclient)
     except Exception as exc:  # noqa: BLE001
         return [types.TextContent(type="text", text=f"Error: {_err(exc)}")]
     return [types.TextContent(type="text", text=json.dumps(_safe(result), indent=2))]
 
 
-async def _dispatch(name: str, args: dict[str, Any]) -> Any:
+async def _dispatch(name: str, args: dict[str, Any], xclient: XClient) -> Any:
+    """Route a tool call to the appropriate XClient method."""
     max_results = args.get("max_results", cfg.default_max_results)
 
     if name == "search_recent_tweets":
-        return await client.search_recent(
+        return await xclient.search_recent(
             query=args["query"],
             max_results=max_results,
             next_token=args.get("next_token"),
@@ -270,7 +289,7 @@ async def _dispatch(name: str, args: dict[str, Any]) -> Any:
         )
 
     if name == "search_all_tweets":
-        return await client.search_all(
+        return await xclient.search_all(
             query=args["query"],
             max_results=max_results,
             next_token=args.get("next_token"),
@@ -280,10 +299,10 @@ async def _dispatch(name: str, args: dict[str, Any]) -> Any:
         )
 
     if name == "get_user_profile":
-        return await client.get_user_by_username(args["username"])
+        return await xclient.get_user_by_username(args["username"])
 
     if name == "get_user_timeline":
-        return await client.get_user_timeline(
+        return await xclient.get_user_timeline(
             user_id=args["user_id"],
             max_results=max_results,
             next_token=args.get("next_token"),
@@ -293,23 +312,23 @@ async def _dispatch(name: str, args: dict[str, Any]) -> Any:
         )
 
     if name == "get_user_mentions":
-        return await client.get_user_mentions(
+        return await xclient.get_user_mentions(
             user_id=args["user_id"],
             max_results=max_results,
             next_token=args.get("next_token"),
         )
 
     if name == "get_tweet":
-        return await client.get_tweet(args["tweet_id"])
+        return await xclient.get_tweet(args["tweet_id"])
 
     if name == "get_tweet_thread":
-        return await client.get_tweet_thread(
+        return await xclient.get_tweet_thread(
             conversation_id=args["conversation_id"],
             max_results=max_results,
         )
 
     if name == "get_tweet_counts":
-        return await client.get_tweet_counts_recent(
+        return await xclient.get_tweet_counts_recent(
             query=args["query"],
             granularity=args.get("granularity", "hour"),
             start_time=args.get("start_time"),
@@ -320,7 +339,7 @@ async def _dispatch(name: str, args: dict[str, Any]) -> Any:
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Entry point (stdio)
 # ---------------------------------------------------------------------------
 
 async def _main() -> None:
@@ -332,7 +351,7 @@ async def _main() -> None:
                 server_name="x-search-mcp-server",
                 server_version="0.1.0",
                 capabilities=app.get_capabilities(
-                    notification_options=None,
+                    notification_options=NotificationOptions(),
                     experimental_capabilities={},
                 ),
             ),

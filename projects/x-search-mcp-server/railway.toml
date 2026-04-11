@@ -1,0 +1,5 @@
+[deploy]
+startCommand = "x-search-mcp-server-http"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
