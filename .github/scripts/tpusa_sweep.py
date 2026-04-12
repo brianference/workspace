@@ -46,9 +46,9 @@ def search_tweets():
     print(f"Searching from {start_time}")
 
     queries = [
-        "turning point usa OR TPUSA",
-        "erika kirk",
-        '"charlie kirk" murder OR trial',
+        "turning point usa OR TPUSA -is:reply lang:en",
+        "erika kirk -is:reply lang:en",
+        '"charlie kirk" murder OR trial -is:reply lang:en',
     ]
 
     all_tweets = []
@@ -56,7 +56,7 @@ def search_tweets():
         print(f"Searching: {query}")
         result = mcp_call("tools/call", {
             "name": "search_recent_tweets",
-            "arguments": {"query": query, "max_results": 20, "start_time": start_time},
+            "arguments": {"query": query, "max_results": 30, "start_time": start_time},
         })
         tweets = result.get("data", [])
         users = {u["id"]: u for u in result.get("includes", {}).get("users", [])}
