@@ -2,7 +2,7 @@ name: TPUSA Monitor Sweep
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # every 6 hours UTC
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -11,180 +11,11 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Run monitoring sweep
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run sweep
         env:
           MCP_URL: "https://workspace-production-9f91.up.railway.app/mcp"
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          python3 << 'PYEOF'
-          import json, os, sys, urllib.request, urllib.error
-          from datetime import datetime, timedelta, timezone
-
-          MCP_URL = os.environ["MCP_URL"]
-          ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-
-          def mcp_call(method, params, call_id=1):
-              """Call the Railway MCP server and return the result text."""
-              payload = json.dumps({
-                  "jsonrpc": "2.0",
-                  "method": method,
-                  "params": params,
-                  "id": call_id,
-              }).encode()
-              req = urllib.request.Request(
-                  MCP_URL,
-                  data=payload,
-                  headers={
-                      "Content-Type": "application/json",
-                      "Accept": "application/json, text/event-stream",
-                  },
-              )
-              with urllib.request.urlopen(req, timeout=30) as resp:
-                  for line in resp:
-                      line = line.decode().strip()
-                      if line.startswith("data:"):
-                          d = json.loads(line[5:])
-                          if "result" in d:
-                              return json.loads(d["result"]["content"][0]["text"])
-                          if "error" in d:
-                              raise RuntimeError(f"MCP error: {d['error']}")
-              raise RuntimeError("No result from MCP server")
-
-          start_time = (datetime.now(timezone.utc) - timedelta(hours=12)).strftime("%Y-%m-%dT%H:%M:%SZ")
-          print(f"Searching from {start_time}")
-
-          queries = [
-              "turning point usa OR TPUSA",
-              "erika kirk",
-              '"charlie kirk" murder OR trial',
-          ]
-
-          all_tweets = []
-          for q in queries:
-              print(f"Searching: {q}")
-              result = mcp_call("tools/call", {
-                  "name": "search_recent_tweets",
-                  "arguments": {"query": q, "max_results": 20, "start_time": start_time},
-              })
-              tweets = result.get("data", [])
-              users = {u["id"]: u for u in result.get("includes", {}).get("users", [])}
-              for t in tweets:
-                  author = users.get(t.get("author_id"), {})
-                  all_tweets.append({
-                      "id": t["id"],
-                      "text": t["text"],
-                      "author": "@" + author.get("username", "unknown"),
-                      "followers": author.get("public_metrics", {}).get("followers_count", 0),
-                      "impressions": t.get("public_metrics", {}).get("impression_count", 0),
-                      "created_at": t.get("created_at", ""),
-                  })
-              print(f"  Got {len(tweets)} tweets")
-
-          print(f"Total tweets to analyze: {len(all_tweets)}")
-
-          # Deduplicate by tweet id
-          seen = set()
-          unique = []
-          for t in all_tweets:
-              if t["id"] not in seen:
-                  seen.add(t["id"])
-                  unique.append(t)
-          all_tweets = unique
-
-          # Use Claude to analyze if API key is available, else use simple filter
-          flagged = []
-          if ANTHROPIC_API_KEY:
-              tweets_json = json.dumps(all_tweets, indent=2)
-              prompt = f"""You are a TPUSA monitoring analyst. Review these tweets and flag only those that are newsworthy and directly relevant to:
-- TPUSA org news or staff acting in TPUSA capacity
-- Erika Kirk
-- Charlie Kirk murder investigation or trial
-- Tyler Bowyer legal threats
-- nihiloX TPUSA posts
-
-EXCLUDE: Trump/MAGA general, Swalwell, ranked choice voting, foreign policy, AZ state benefits/policy.
-THRESHOLD: Only flag if author has >25K followers OR high impressions.
-
-For each flagged tweet return JSON array with objects:
-{{ "handle": "@username", "excerpt": "tweet text", "category": "legal|mention|org|flag", "tags": ["tag1"], "source_url": "https://x.com/USERNAME/status/ID" }}
-
-Tweets:
-{tweets_json}
-
-Return ONLY the JSON array, no other text. If nothing is newsworthy return [].
-"""
-              api_payload = json.dumps({
-                  "model": "claude-sonnet-4-6",
-                  "max_tokens": 2000,
-                  "messages": [{"role": "user", "content": prompt}],
-              }).encode()
-              req = urllib.request.Request(
-                  "https://api.anthropic.com/v1/messages",
-                  data=api_payload,
-                  headers={
-                      "x-api-key": ANTHROPIC_API_KEY,
-                      "anthropic-version": "2023-06-01",
-                      "content-type": "application/json",
-                  },
-              )
-              with urllib.request.urlopen(req, timeout=60) as resp:
-                  analysis = json.loads(resp.read())
-              raw_text = analysis["content"][0]["text"].strip()
-              # Strip markdown code fences if present
-              if raw_text.startswith("```"):
-                  raw_text = "\n".join(raw_text.split("\n")[1:])
-              if raw_text.endswith("```"):
-                  raw_text = "\n".join(raw_text.split("\n")[:-1])
-              flagged = json.loads(raw_text.strip())
-              summary = f"Claude-analyzed sweep over {len(all_tweets)} tweets. {len(flagged)} flagged."
-              print(f"Claude flagged {len(flagged)} posts")
-          else:
-              # Simple keyword filter fallback
-              KEYWORDS = ["tpusa", "turning point", "charlie kirk", "erika kirk", "tyler bowyer", "candace owens"]
-              for t in all_tweets:
-                  if t["followers"] >= 25000 and any(k in t["text"].lower() for k in KEYWORDS):
-                      flagged.append({
-                          "handle": t["author"],
-                          "excerpt": t["text"][:500],
-                          "category": "mention",
-                          "tags": ["tpusa"],
-                          "source_url": f"https://x.com/i/web/status/{t['id']}",
-                      })
-              summary = f"Keyword-filtered sweep over {len(all_tweets)} tweets. {len(flagged)} flagged."
-              print(f"Keyword filter flagged {len(flagged)} posts")
-
-          # Count by category
-          legal_count = sum(1 for f in flagged if f.get("category") == "legal")
-          mention_count = sum(1 for f in flagged if f.get("category") == "mention")
-          org_count = sum(1 for f in flagged if f.get("category") == "org")
-
-          # Write sweep
-          sweep = mcp_call("tools/call", {
-              "name": "write_sweep",
-              "arguments": {
-                  "flag_count": len(flagged),
-                  "legal_count": legal_count,
-                  "mention_count": mention_count,
-                  "org_count": org_count,
-                  "summary": summary,
-              },
-          }, call_id=10)
-          sweep_id = sweep["sweep_id"]
-          print(f"Sweep written: {sweep_id}")
-
-          # Write flagged posts
-          for i, post in enumerate(flagged):
-              mcp_call("tools/call", {
-                  "name": "write_flagged_post",
-                  "arguments": {
-                      "sweep_id": sweep_id,
-                      "handle": post["handle"],
-                      "excerpt": post["excerpt"],
-                      "category": post.get("category", "flag"),
-                      "tags": post.get("tags", ["tpusa"]),
-                      "source_url": post["source_url"],
-                  },
-              }, call_id=20 + i)
-          print(f"Wrote {len(flagged)} flagged posts")
-          print(f"SWEEP COMPLETE - sweep_id={sweep_id} flag_count={len(flagged)}")
-          PYEOF
+        run: python3 .github/scripts/tpusa_sweep.py
