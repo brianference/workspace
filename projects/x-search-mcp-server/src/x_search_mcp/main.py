@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+import httpx
 import mcp.server.stdio
 import mcp.types as types
 from mcp.server import Server
@@ -243,6 +244,79 @@ TOOLS = [
             },
         },
     ),
+    types.Tool(
+        name="write_sweep",
+        description=(
+            "Write a completed monitoring sweep record to the TPUSA dashboard database. "
+            "Call this once per sweep with aggregate counts and a summary paragraph. "
+            "Returns the new sweep's UUID to use when writing individual flagged posts."
+        ),
+        inputSchema={
+            "type": "object",
+            "required": ["flag_count", "summary"],
+            "properties": {
+                "flag_count": {
+                    "type": "integer",
+                    "description": "Total number of flagged posts in this sweep",
+                },
+                "legal_count": {
+                    "type": "integer",
+                    "description": "Number of legal/litigation category posts (default 0)",
+                },
+                "mention_count": {
+                    "type": "integer",
+                    "description": "Number of mention category posts (default 0)",
+                },
+                "org_count": {
+                    "type": "integer",
+                    "description": "Number of org news category posts (default 0)",
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "One-paragraph prose summary of what was found this sweep",
+                },
+            },
+        },
+    ),
+    types.Tool(
+        name="write_flagged_post",
+        description=(
+            "Write a single flagged post to the TPUSA dashboard database. "
+            "Call once per flagged post after obtaining the sweep_id from write_sweep."
+        ),
+        inputSchema={
+            "type": "object",
+            "required": ["sweep_id", "handle", "excerpt", "category", "source_url"],
+            "properties": {
+                "sweep_id": {
+                    "type": "string",
+                    "description": "UUID returned by write_sweep",
+                },
+                "handle": {
+                    "type": "string",
+                    "description": "X handle including @, e.g. '@CharlieKirk11'",
+                },
+                "excerpt": {
+                    "type": "string",
+                    "description": "Full or truncated tweet text",
+                },
+                "category": {
+                    "type": "string",
+                    "enum": ["legal", "mention", "org", "flag"],
+                    "description": "Classification category",
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Optional list of topic tags, e.g. ['tpusa', 'charlie-kirk']",
+                },
+                "source_url": {
+                    "type": "string",
+                    "description": "Full X post URL, e.g. 'https://x.com/username/status/12345'",
+                },
+            },
+        },
+    ),
 ]
 
 
@@ -335,7 +409,87 @@ async def _dispatch(name: str, args: dict[str, Any], xclient: XClient) -> Any:
             end_time=args.get("end_time"),
         )
 
+    if name == "write_sweep":
+        return await _write_sweep(args)
+
+    if name == "write_flagged_post":
+        return await _write_flagged_post(args)
+
     raise ValueError(f"Unknown tool: {name}")
+
+
+# ---------------------------------------------------------------------------
+# Supabase write helpers (use server-side service role key from env)
+# ---------------------------------------------------------------------------
+
+def _supabase_headers() -> dict[str, str]:
+    """Return headers required for Supabase REST API writes."""
+    key = cfg.supabase_service_role_key
+    return {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+
+
+async def _write_sweep(args: dict[str, Any]) -> dict[str, Any]:
+    """Insert a sweep row and return its id."""
+    if not cfg.supabase_url or not cfg.supabase_service_role_key:
+        raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set in the environment")
+
+    payload = {
+        "flag_count": args["flag_count"],
+        "legal_count": args.get("legal_count", 0),
+        "mention_count": args.get("mention_count", 0),
+        "org_count": args.get("org_count", 0),
+        "raw_report": args["summary"],
+    }
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{cfg.supabase_url}/rest/v1/sweeps",
+            headers=_supabase_headers(),
+            json=payload,
+            timeout=15,
+        )
+        resp.raise_for_status()
+        rows = resp.json()
+
+    if not rows:
+        raise ValueError("Supabase returned empty response for sweep insert")
+
+    return {"sweep_id": rows[0]["id"], "created_at": rows[0].get("created_at")}
+
+
+async def _write_flagged_post(args: dict[str, Any]) -> dict[str, Any]:
+    """Insert a flagged_post row linked to a sweep."""
+    if not cfg.supabase_url or not cfg.supabase_service_role_key:
+        raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set in the environment")
+
+    payload = {
+        "sweep_id": args["sweep_id"],
+        "handle": args["handle"],
+        "excerpt": args["excerpt"],
+        "category": args["category"],
+        "tags": args.get("tags", []),
+        "source_url": args["source_url"],
+    }
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{cfg.supabase_url}/rest/v1/flagged_posts",
+            headers=_supabase_headers(),
+            json=payload,
+            timeout=15,
+        )
+        resp.raise_for_status()
+        rows = resp.json()
+
+    if not rows:
+        raise ValueError("Supabase returned empty response for flagged_post insert")
+
+    return {"flagged_post_id": rows[0]["id"]}
 
 
 # ---------------------------------------------------------------------------

@@ -31,7 +31,9 @@ class _BearerAuthMiddleware:
     """Extract the X bearer token from Authorization header and store in ContextVar.
 
     Passes /health through without auth so Railway's health check always works.
-    Returns 401 for any other request that lacks a valid Authorization: Bearer header.
+    If no Authorization header is present, falls back to the server's own
+    X_BEARER_TOKEN env var (single-tenant mode). This lets claude.ai connectors
+    connect without per-request auth while the server uses its own credentials.
     """
 
     def __init__(self, wrapped_app: ASGIApp) -> None:
@@ -51,11 +53,14 @@ class _BearerAuthMiddleware:
             }
             auth_header = headers.get("authorization", "")
 
-            if not auth_header.lower().startswith("bearer "):
-                await _send_401(scope, send)
-                return
+            if auth_header.lower().startswith("bearer "):
+                token = auth_header[len("bearer "):].strip()
+            else:
+                # Fall back to the server's own bearer token from env.
+                # Allows claude.ai connectors and other clients that don't
+                # supply per-request auth to use the server's credentials.
+                token = os.environ.get("X_BEARER_TOKEN", "")
 
-            token = auth_header[len("bearer "):].strip()
             if not token:
                 await _send_401(scope, send)
                 return
