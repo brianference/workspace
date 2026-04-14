@@ -19,4 +19,7 @@ export interface FlaggedPost {
   tags: string[]
   source_url: string
   created_at: string
+  media_url?: string | null
+  media_type?: string | null  // 'photo' | 'video' | 'animated_gif'
+  tweet_created_at?: string | null
 }

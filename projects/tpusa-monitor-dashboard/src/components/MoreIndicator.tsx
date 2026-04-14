@@ -1,12 +1,13 @@
 interface MoreIndicatorProps {
   count: number
+  onSeeAll: () => void
 }
 
 /**
  * Three vertical dots with "N more flags this sweep" label
- * and a "See all" link in accent color.
+ * and a "See all" button that navigates to the full post list.
  */
-export function MoreIndicator({ count }: MoreIndicatorProps) {
+export function MoreIndicator({ count, onSeeAll }: MoreIndicatorProps) {
   return (
     <div
       style={{
@@ -42,22 +43,26 @@ export function MoreIndicator({ count }: MoreIndicatorProps) {
         {count} more flags this sweep
       </span>
 
-      <a
-        href="#"
+      <button
+        onClick={onSeeAll}
         style={{
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: '0.6rem',
           fontWeight: 700,
           color: 'var(--accent)',
-          textDecoration: 'none',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '0',
           marginLeft: 'auto',
           minHeight: '44px',
           display: 'flex',
           alignItems: 'center',
         }}
+        aria-label={`See all ${count + 5} flagged posts`}
       >
         See all &rarr;
-      </a>
+      </button>
     </div>
   )
 }

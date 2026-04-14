@@ -47,13 +47,56 @@ export async function getFlaggedPosts(sweepId: string): Promise<FlaggedPost[]> {
     .from('flagged_posts')
     .select('*')
     .eq('sweep_id', sweepId)
-    .order('created_at', { ascending: true })
+    .order('tweet_created_at', { ascending: false, nullsFirst: false })
+    .order('created_at', { ascending: false })
 
   if (error) {
     throw new Error(`Failed to fetch flagged posts: ${error.message}`)
   }
 
   return data ?? []
+}
+
+const ALL_POSTS_PAGE_SIZE = 20
+
+/**
+ * Fetch all flagged posts across all sweeps with pagination, optional search, and sort order.
+ * @param page - Zero-based page index
+ * @param query - Optional search string filtering excerpt/handle/category
+ * @param sortAsc - If true, sort oldest first; default false (newest first)
+ */
+export async function getAllFlaggedPosts(
+  page: number,
+  query?: string,
+  sortAsc = false
+): Promise<{ posts: FlaggedPost[]; hasMore: boolean }> {
+  const from = page * ALL_POSTS_PAGE_SIZE
+  const to = from + ALL_POSTS_PAGE_SIZE // fetch one extra to detect hasMore
+
+  let qb = supabase
+    .from('flagged_posts')
+    .select('*')
+    .order('tweet_created_at', { ascending: sortAsc, nullsFirst: false })
+    .order('created_at', { ascending: sortAsc })
+    .range(from, to)
+
+  const trimmed = query?.trim()
+  if (trimmed) {
+    qb = qb.or(
+      `excerpt.ilike.%${trimmed}%,handle.ilike.%${trimmed}%,category.ilike.%${trimmed}%`
+    )
+  }
+
+  const { data, error } = await qb
+  if (error) {
+    throw new Error(`Failed to fetch flagged posts: ${error.message}`)
+  }
+
+  const rows = data ?? []
+  return {
+    posts: rows.slice(0, ALL_POSTS_PAGE_SIZE),
+    hasMore: rows.length > ALL_POSTS_PAGE_SIZE,
+  }
 }
 
 /**

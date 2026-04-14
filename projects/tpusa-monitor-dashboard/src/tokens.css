@@ -3,6 +3,7 @@
   --card: #0d1828;
   --accent: #00c9ff;
   --danger: #ff4757;
+  --warn: #ffb300;
   --t1: #e8f8ff;
   --t2: #7ec8e3;
   --t3: #2a5a78;
@@ -15,12 +16,33 @@
   --card: #ffffff;
   --accent: #0099cc;
   --danger: #d92b3a;
+  --warn: #c47d00;
   --t1: #05162a;
   --t2: #1e5f84;
   --t3: #5e9ab8;
   --t4: #c0ddf0;
   --sepc: rgba(0,0,0,0.07);
   --nav: rgba(237,246,255,0.94);
+}
+
+/* Responsive two-column post grid */
+.post-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 860px) {
+  .post-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  /* In grid mode, cards don't use the timeline dot */
+  .post-grid .timeline-dot {
+    display: none;
+  }
 }
 
 /* Global typography */

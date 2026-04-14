@@ -2,29 +2,44 @@ import type { FlaggedPost } from '../lib/types'
 
 interface EventItemProps {
   post: FlaggedPost
+  showMedia?: boolean
 }
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  legal: '\u2696',
-  mention: '\uD83D\uDC64',
-  org: '\uD83C\uDFDB',
+/** Per-category visual config: color variable, emoji, label */
+const CATEGORY_CONFIG: Record<string, { color: string; emoji: string; label: string }> = {
+  legal:   { color: 'var(--danger)', emoji: '⚖️',  label: 'Legal'   },
+  mention: { color: 'var(--warn)',   emoji: '📢',   label: 'Mention' },
+  org:     { color: 'var(--accent)', emoji: '🏛️',  label: 'Org'     },
+  flag:    { color: 'var(--danger)', emoji: '🚩',   label: 'Flag'    },
 }
+
+const DEFAULT_CONFIG = { color: 'var(--warn)', emoji: '📌', label: 'Other' }
 
 /**
- * Timeline event card with category dot, accent stripe,
- * handle, timestamp, excerpt, tags, and "View on X" button.
+ * Timeline event card. Left stripe color and category badge indicate type:
+ *   Red  ⚖️  Legal   — court/investigation content
+ *   Amber 📢 Mention — someone talking about TPUSA/Kirk
+ *   Cyan 🏛️  Org     — official TPUSA org account posting
  */
-export function EventItem({ post }: EventItemProps) {
-  const isOrg = post.category === 'org'
-  const borderColor = isOrg ? 'var(--accent)' : 'var(--danger)'
-  const stripeColor = isOrg ? 'var(--accent)' : 'var(--danger)'
-  const emoji = CATEGORY_EMOJI[post.category] ?? '\u2696'
+export function EventItem({ post, showMedia = true }: EventItemProps) {
+  const cfg = CATEGORY_CONFIG[post.category] ?? DEFAULT_CONFIG
+  const color = cfg.color
 
-  const postDate = new Date(post.created_at)
+  const postDate = new Date(post.tweet_created_at ?? post.created_at)
   const now = new Date()
   const diffMs = now.getTime() - postDate.getTime()
+  const diffMins = Math.floor(diffMs / (1000 * 60))
   const diffH = Math.floor(diffMs / (1000 * 60 * 60))
-  const timeLabel = diffH < 1 ? 'just now' : `${diffH}h ago`
+  const diffD = Math.floor(diffH / 24)
+  const timeLabel = post.tweet_created_at
+    ? (diffMins < 60
+        ? `${diffMins}m ago`
+        : diffH < 24
+          ? `${diffH}h ago`
+          : diffD < 7
+            ? `${diffD}d ago`
+            : postDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: diffD > 365 ? 'numeric' : undefined }))
+    : diffH < 1 ? 'just now' : diffH < 24 ? `${diffH}h ago` : `${diffD}d ago`
 
   return (
     <div
@@ -33,15 +48,16 @@ export function EventItem({ post }: EventItemProps) {
         marginBottom: '0.75rem',
       }}
     >
-      {/* Category dot */}
+      {/* Category dot on timeline rail (hidden in grid via CSS) */}
       <div
+        className="timeline-dot"
         style={{
           position: 'absolute',
           left: '-1.5rem',
           width: '18px',
           height: '18px',
           borderRadius: '50%',
-          border: `2px solid ${borderColor}`,
+          border: `2px solid ${color}`,
           background: 'var(--bg)',
           top: 0,
           display: 'flex',
@@ -49,10 +65,10 @@ export function EventItem({ post }: EventItemProps) {
           justifyContent: 'center',
           fontSize: '0.58rem',
           lineHeight: 1,
-          boxShadow: `0 0 8px color-mix(in srgb, ${borderColor} 30%, transparent)`,
+          boxShadow: `0 0 8px color-mix(in srgb, ${color} 30%, transparent)`,
         }}
       >
-        {emoji}
+        {cfg.emoji}
       </div>
 
       {/* Card body */}
@@ -69,7 +85,7 @@ export function EventItem({ post }: EventItemProps) {
         <div
           style={{
             width: '3px',
-            background: stripeColor,
+            background: color,
             flexShrink: 0,
             alignSelf: 'stretch',
           }}
@@ -77,30 +93,57 @@ export function EventItem({ post }: EventItemProps) {
 
         {/* Content */}
         <div style={{ padding: '0.65rem 0.8rem 0.7rem', flex: 1 }}>
-          {/* Top row: handle + timestamp */}
+          {/* Top row: handle + category badge + timestamp */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               marginBottom: '4px',
+              gap: '6px',
             }}
           >
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '0.72rem',
-                fontWeight: 600,
-                color: 'var(--accent)',
-              }}
-            >
-              @{post.handle}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  color: 'var(--accent)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {post.handle}
+              </span>
+
+              {/* Category badge */}
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '0.52rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  background: `color-mix(in srgb, ${color} 12%, transparent)`,
+                  border: `1px solid color-mix(in srgb, ${color} 28%, transparent)`,
+                  color: color,
+                  flexShrink: 0,
+                }}
+              >
+                {cfg.label}
+              </span>
+            </div>
+
             <span
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '0.55rem',
                 color: 'var(--t3)',
+                flexShrink: 0,
               }}
             >
               {timeLabel}
@@ -113,12 +156,53 @@ export function EventItem({ post }: EventItemProps) {
               fontSize: '0.74rem',
               lineHeight: 1.6,
               color: 'var(--t2)',
-              marginBottom: '0.5rem',
               margin: '0 0 0.5rem 0',
             }}
           >
             {post.excerpt}
           </p>
+
+          {/* Media thumbnail */}
+          {showMedia && post.media_url && (
+            <a
+              href={post.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'block', marginBottom: '0.5rem', position: 'relative', borderRadius: '8px', overflow: 'hidden' }}
+              aria-label={`View ${post.media_type ?? 'media'} on X`}
+            >
+              <img
+                src={post.media_url}
+                alt=""
+                style={{
+                  width: '100%',
+                  maxHeight: '220px',
+                  objectFit: 'cover',
+                  display: 'block',
+                  borderRadius: '8px',
+                  border: '1px solid var(--sepc)',
+                }}
+                loading="lazy"
+              />
+              {(post.media_type === 'video' || post.media_type === 'animated_gif') && (
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'rgba(0,0,0,0.35)',
+                }}>
+                  <div style={{
+                    width: '40px', height: '40px', borderRadius: '50%',
+                    background: 'rgba(0,0,0,0.7)', border: '2px solid rgba(255,255,255,0.8)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                      <polygon points="5,3 19,12 5,21" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </a>
+          )}
 
           {/* Footer: tags + View on X */}
           <div
@@ -126,28 +210,32 @@ export function EventItem({ post }: EventItemProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              gap: '6px',
             }}
           >
-            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', flex: 1 }}>
               {post.tags.map((tag) => {
-                const isDanger = tag.toLowerCase().includes('legal') || tag.toLowerCase().includes('kirk')
+                const isDanger = tag.toLowerCase().includes('legal') ||
+                                 tag.toLowerCase().includes('murder') ||
+                                 tag.toLowerCase().includes('threat')
+                const tagColor = isDanger ? 'var(--danger)' : 'var(--t3)'
                 return (
                   <span
                     key={tag}
                     style={{
-                      fontSize: '0.56rem',
-                      fontWeight: 700,
+                      fontSize: '0.54rem',
+                      fontWeight: 600,
                       padding: '2px 6px',
                       borderRadius: '4px',
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                       background: isDanger
-                        ? 'color-mix(in srgb, var(--danger) 10%, transparent)'
-                        : 'color-mix(in srgb, var(--accent) 10%, transparent)',
-                      color: isDanger ? 'var(--danger)' : 'var(--accent)',
+                        ? 'color-mix(in srgb, var(--danger) 8%, transparent)'
+                        : 'color-mix(in srgb, var(--t3) 12%, transparent)',
+                      color: tagColor,
                       border: isDanger
-                        ? '1px solid color-mix(in srgb, var(--danger) 24%, transparent)'
-                        : '1px solid color-mix(in srgb, var(--accent) 22%, transparent)',
+                        ? '1px solid color-mix(in srgb, var(--danger) 20%, transparent)'
+                        : '1px solid color-mix(in srgb, var(--t3) 20%, transparent)',
                     }}
                   >
                     {tag}
@@ -176,8 +264,9 @@ export function EventItem({ post }: EventItemProps) {
                 minHeight: '44px',
                 minWidth: '44px',
                 justifyContent: 'center',
+                flexShrink: 0,
               }}
-              aria-label={`View post by @${post.handle} on X`}
+              aria-label={`View post by ${post.handle} on X`}
             >
               <svg
                 width="10"

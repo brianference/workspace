@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BottomNav } from '../components/BottomNav'
-import { useTheme } from '../hooks/useTheme'
 import { IS_MOCK_MODE } from '../lib/supabase'
 import { getLatestSweep } from '../lib/api'
 import { MOCK_SWEEPS } from '../lib/mockData'
@@ -15,7 +14,6 @@ const APP_VERSION = '1.0.0'
  */
 export function SettingsPage() {
   const navigate = useNavigate()
-  const { theme, toggleTheme } = useTheme()
   const [countdown, setCountdown] = useState<string>('--:--:--')
 
   useEffect(() => {
@@ -97,29 +95,6 @@ export function SettingsPage() {
       </header>
 
       <div style={{ padding: '0.8rem 1.1rem' }}>
-        {/* Theme toggle */}
-        <SettingsRow label="Appearance">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.65rem',
-              fontWeight: 600,
-              padding: '6px 14px',
-              borderRadius: '8px',
-              background: 'color-mix(in srgb, var(--accent) 10%, transparent)',
-              border: '1px solid color-mix(in srgb, var(--accent) 22%, transparent)',
-              color: 'var(--accent)',
-              cursor: 'pointer',
-              minHeight: '44px',
-              minWidth: '44px',
-            }}
-          >
-            {theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
-          </button>
-        </SettingsRow>
-
         {/* Next sweep countdown */}
         <SettingsRow label="Next sweep">
           <span
