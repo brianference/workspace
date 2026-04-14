@@ -144,7 +144,7 @@ def analyze_with_claude(tweets):
 
     api_payload = json.dumps({
         "model": "claude-sonnet-4-6",
-        "max_tokens": 4000,
+        "max_tokens": 8192,
         "messages": [{"role": "user", "content": prompt}],
     }).encode()
 
@@ -161,11 +161,29 @@ def analyze_with_claude(tweets):
         analysis = json.loads(resp.read())
 
     raw_text = analysis["content"][0]["text"].strip()
+    # Strip markdown code fences if present
     if raw_text.startswith("```"):
         raw_text = "\n".join(raw_text.split("\n")[1:])
     if raw_text.endswith("```"):
-        raw_text = "\n".join(raw_text.split("\n")[:-1])
-    return json.loads(raw_text.strip())
+        raw_text = raw_text[: raw_text.rfind("```")].strip()
+
+    # If output was truncated mid-JSON, recover all complete objects
+    raw_text = raw_text.strip()
+    try:
+        return json.loads(raw_text)
+    except json.JSONDecodeError:
+        # Find the last complete object by truncating after the last '},'  or '}'
+        last_brace = raw_text.rfind("},")
+        if last_brace == -1:
+            last_brace = raw_text.rfind("}")
+        if last_brace != -1:
+            recovered = raw_text[: last_brace + 1].strip()
+            if not recovered.startswith("["):
+                recovered = "[" + recovered
+            recovered = recovered + "]"
+            print(f"WARNING: JSON truncated, recovered up to position {last_brace}")
+            return json.loads(recovered)
+        raise
 
 
 def analyze_simple(tweets):
