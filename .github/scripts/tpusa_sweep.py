@@ -106,7 +106,19 @@ def search_tweets():
 
 def analyze_with_claude(tweets):
     """Use Claude API to intelligently filter and categorize tweets."""
-    tweets_json = json.dumps(tweets, indent=2)
+    # Pre-filter: keep tweets with >=1K followers or any Erika Kirk mention,
+    # then cap at 120 by follower count to avoid token/timeout limits
+    prefiltered = [
+        t for t in tweets
+        if t.get("followers", 0) >= 1000
+        or "erika" in t["text"].lower()
+        or "kirk" in t["text"].lower()
+    ]
+    prefiltered.sort(key=lambda t: t.get("followers", 0), reverse=True)
+    prefiltered = prefiltered[:120]
+    print(f"Pre-filtered to {len(prefiltered)} tweets for Claude analysis")
+
+    tweets_json = json.dumps(prefiltered, indent=2)
     prompt = (
         "You are a TPUSA monitoring analyst. Review these tweets and flag those "
         "that are relevant to:\n"
@@ -145,7 +157,7 @@ def analyze_with_claude(tweets):
             "content-type": "application/json",
         },
     )
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urllib.request.urlopen(req, timeout=120) as resp:
         analysis = json.loads(resp.read())
 
     raw_text = analysis["content"][0]["text"].strip()
