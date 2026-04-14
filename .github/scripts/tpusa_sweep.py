@@ -57,7 +57,7 @@ def search_tweets():
         print(f"Searching: {query}")
         result = mcp_call("tools/call", {
             "name": "search_recent_tweets",
-            "arguments": {"query": query, "max_results": 30, "start_time": start_time},
+            "arguments": {"query": query, "max_results": 100, "start_time": start_time},
         })
         tweets = result.get("data", [])
         users = {u["id"]: u for u in result.get("includes", {}).get("users", [])}
@@ -108,16 +108,19 @@ def analyze_with_claude(tweets):
     """Use Claude API to intelligently filter and categorize tweets."""
     tweets_json = json.dumps(tweets, indent=2)
     prompt = (
-        "You are a TPUSA monitoring analyst. Review these tweets and flag only those "
-        "that are newsworthy and directly relevant to:\n"
+        "You are a TPUSA monitoring analyst. Review these tweets and flag those "
+        "that are relevant to:\n"
         "- TPUSA org news or staff acting in TPUSA capacity\n"
-        "- Erika Kirk\n"
+        "- Erika Kirk (any mention)\n"
         "- Charlie Kirk murder investigation or trial\n"
         "- Tyler Bowyer legal threats\n"
         "- nihiloX TPUSA posts\n\n"
-        "EXCLUDE: Trump/MAGA general, Swalwell, ranked choice voting, foreign policy, "
-        "AZ state benefits/policy.\n"
-        "THRESHOLD: Only flag if author has >25K followers OR high impressions.\n\n"
+        "EXCLUDE: Trump/MAGA general politics unrelated to TPUSA, Swalwell, "
+        "ranked choice voting, foreign policy, AZ state benefits/policy, "
+        "generic conservative content with only passing TPUSA mention.\n"
+        "THRESHOLD: Flag if author has >5K followers OR content is highly relevant "
+        "regardless of follower count (e.g. direct Erika Kirk or legal content).\n"
+        "AIM for 20-50 flagged posts per sweep — be inclusive rather than exclusive.\n\n"
         'For each flagged tweet return a JSON array with objects:\n'
         '{"handle": "@username", "excerpt": "tweet text", '
         '"category": "legal|mention|org|flag", "tags": ["tag1"], '
@@ -129,7 +132,7 @@ def analyze_with_claude(tweets):
 
     api_payload = json.dumps({
         "model": "claude-sonnet-4-6",
-        "max_tokens": 2000,
+        "max_tokens": 4000,
         "messages": [{"role": "user", "content": prompt}],
     }).encode()
 
