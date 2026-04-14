@@ -314,6 +314,10 @@ TOOLS = [
                     "type": "string",
                     "description": "Full X post URL, e.g. 'https://x.com/username/status/12345'",
                 },
+                "tweet_created_at": {
+                    "type": "string",
+                    "description": "ISO 8601 timestamp of when the tweet was originally posted",
+                },
             },
         },
     ),
@@ -479,6 +483,8 @@ async def _write_flagged_post(args: dict[str, Any]) -> dict[str, Any]:
         payload["media_url"] = args["media_url"]
     if args.get("media_type"):
         payload["media_type"] = args["media_type"]
+    if args.get("tweet_created_at"):
+        payload["tweet_created_at"] = args["tweet_created_at"]
 
     async with httpx.AsyncClient() as client:
         resp = await client.post(

@@ -174,17 +174,17 @@ def analyze_simple(tweets):
 
 
 def enrich_with_media(flagged, tweets):
-    """Attach media_url and media_type from the raw tweet data to each flagged post."""
-    # Build lookup by tweet ID from source_url
-    media_by_id = {t["id"]: (t.get("media_url"), t.get("media_type")) for t in tweets}
+    """Attach media_url, media_type, and tweet_created_at from raw tweet data."""
+    tweet_by_id = {t["id"]: t for t in tweets}
     for post in flagged:
-        # Extract tweet ID from source_url (last path segment)
         tweet_id = post.get("source_url", "").rstrip("/").split("/")[-1]
-        if tweet_id in media_by_id:
-            media_url, media_type = media_by_id[tweet_id]
-            if media_url:
-                post["media_url"] = media_url
-                post["media_type"] = media_type
+        tweet = tweet_by_id.get(tweet_id)
+        if tweet:
+            if tweet.get("media_url"):
+                post["media_url"] = tweet["media_url"]
+                post["media_type"] = tweet.get("media_type")
+            if tweet.get("created_at"):
+                post["tweet_created_at"] = tweet["created_at"]
     return flagged
 
 
@@ -236,6 +236,8 @@ def main():
         if post.get("media_url"):
             args["media_url"] = post["media_url"]
             args["media_type"] = post["media_type"] or "photo"
+        if post.get("tweet_created_at"):
+            args["tweet_created_at"] = post["tweet_created_at"]
         mcp_call("tools/call", {
             "name": "write_flagged_post",
             "arguments": args,
