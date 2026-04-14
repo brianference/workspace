@@ -7,9 +7,10 @@ from typing import Any
 import httpx
 
 # Default tweet fields to request on every tweet object
-_TWEET_FIELDS = "id,text,author_id,created_at,public_metrics,lang,conversation_id,referenced_tweets"
+_TWEET_FIELDS = "id,text,author_id,created_at,public_metrics,lang,conversation_id,referenced_tweets,attachments"
 _USER_FIELDS = "id,name,username,description,public_metrics,verified,created_at,location"
-_EXPANSIONS_TWEET = "author_id,referenced_tweets.id"
+_EXPANSIONS_TWEET = "author_id,referenced_tweets.id,attachments.media_keys"
+_MEDIA_FIELDS = "media_key,type,url,preview_image_url,duration_ms,public_metrics"
 
 _BASE = "https://api.twitter.com/2"
 
@@ -47,6 +48,7 @@ class XClient:
             "tweet.fields": _TWEET_FIELDS,
             "user.fields": _USER_FIELDS,
             "expansions": _EXPANSIONS_TWEET,
+            "media.fields": _MEDIA_FIELDS,
             "sort_order": sort_order,
         }
         if next_token:
@@ -77,6 +79,7 @@ class XClient:
             "tweet.fields": _TWEET_FIELDS,
             "user.fields": _USER_FIELDS,
             "expansions": _EXPANSIONS_TWEET,
+            "media.fields": _MEDIA_FIELDS,
             "sort_order": sort_order,
         }
         if next_token:

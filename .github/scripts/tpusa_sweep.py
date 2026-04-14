@@ -1,13 +1,14 @@
-"""TPUSA Monitor sweep script -- runs via GitHub Actions every 6 hours."""
+"""TPUSA Monitor sweep script -- runs via GitHub Actions every 3 hours."""
 
 import json
 import os
-import sys
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
 MCP_URL = os.environ["MCP_URL"]
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+
+SWEEP_HOURS = 3  # Match the GitHub Actions cron interval
 
 
 def mcp_call(method, params, call_id=1):
@@ -39,11 +40,11 @@ def mcp_call(method, params, call_id=1):
 
 
 def search_tweets():
-    """Run all three searches and return deduplicated tweet list."""
-    start_time = (datetime.now(timezone.utc) - timedelta(hours=12)).strftime(
+    """Run all three searches and return deduplicated tweet list with media info."""
+    start_time = (datetime.now(timezone.utc) - timedelta(hours=SWEEP_HOURS)).strftime(
         "%Y-%m-%dT%H:%M:%SZ"
     )
-    print(f"Searching from {start_time}")
+    print(f"Searching from {start_time} ({SWEEP_HOURS}h window)")
 
     queries = [
         "turning point usa OR TPUSA -is:reply lang:en",
@@ -60,8 +61,26 @@ def search_tweets():
         })
         tweets = result.get("data", [])
         users = {u["id"]: u for u in result.get("includes", {}).get("users", [])}
+
+        # Build media lookup: media_key -> media object
+        media_map = {
+            m["media_key"]: m
+            for m in result.get("includes", {}).get("media", [])
+        }
+
         for tweet in tweets:
             author = users.get(tweet.get("author_id"), {})
+
+            # Extract first media attachment if present
+            media_url = None
+            media_type = None
+            attachment_keys = tweet.get("attachments", {}).get("media_keys", [])
+            if attachment_keys:
+                media_obj = media_map.get(attachment_keys[0], {})
+                media_type = media_obj.get("type")  # photo, video, animated_gif
+                # Videos use preview_image_url; photos use url
+                media_url = media_obj.get("url") or media_obj.get("preview_image_url")
+
             all_tweets.append({
                 "id": tweet["id"],
                 "text": tweet["text"],
@@ -69,10 +88,12 @@ def search_tweets():
                 "followers": author.get("public_metrics", {}).get("followers_count", 0),
                 "impressions": tweet.get("public_metrics", {}).get("impression_count", 0),
                 "created_at": tweet.get("created_at", ""),
+                "media_url": media_url,
+                "media_type": media_type,
             })
-        print(f"  Got {len(tweets)} tweets")
+        print(f"  Got {len(tweets)} tweets ({sum(1 for t in tweets if t.get('attachments'))} with media)")
 
-    # Deduplicate
+    # Deduplicate by tweet ID
     seen = set()
     unique = []
     for tweet in all_tweets:
@@ -101,6 +122,7 @@ def analyze_with_claude(tweets):
         '{"handle": "@username", "excerpt": "tweet text", '
         '"category": "legal|mention|org|flag", "tags": ["tag1"], '
         '"source_url": "https://x.com/USERNAME/status/ID"}\n\n'
+        "Preserve the tweet ID from source_url — use the actual numeric ID from the data.\n\n"
         f"Tweets:\n{tweets_json}\n\n"
         "Return ONLY the JSON array, no other text. If nothing is newsworthy return []."
     )
@@ -148,6 +170,21 @@ def analyze_simple(tweets):
     return flagged
 
 
+def enrich_with_media(flagged, tweets):
+    """Attach media_url and media_type from the raw tweet data to each flagged post."""
+    # Build lookup by tweet ID from source_url
+    media_by_id = {t["id"]: (t.get("media_url"), t.get("media_type")) for t in tweets}
+    for post in flagged:
+        # Extract tweet ID from source_url (last path segment)
+        tweet_id = post.get("source_url", "").rstrip("/").split("/")[-1]
+        if tweet_id in media_by_id:
+            media_url, media_type = media_by_id[tweet_id]
+            if media_url:
+                post["media_url"] = media_url
+                post["media_type"] = media_type
+    return flagged
+
+
 def main():
     tweets = search_tweets()
 
@@ -161,6 +198,11 @@ def main():
         flagged = analyze_simple(tweets)
         summary = f"Keyword-filtered sweep: {len(tweets)} tweets reviewed, {len(flagged)} flagged."
         print(f"Keyword filter flagged {len(flagged)} posts")
+
+    # Attach media data to flagged posts
+    flagged = enrich_with_media(flagged, tweets)
+    video_count = sum(1 for f in flagged if f.get("media_type") == "video")
+    print(f"Posts with media: {sum(1 for f in flagged if f.get('media_url'))}, video: {video_count}")
 
     legal_count = sum(1 for f in flagged if f.get("category") == "legal")
     mention_count = sum(1 for f in flagged if f.get("category") == "mention")
@@ -180,16 +222,20 @@ def main():
     print(f"Sweep written: {sweep_id}")
 
     for i, post in enumerate(flagged):
+        args = {
+            "sweep_id": sweep_id,
+            "handle": post["handle"],
+            "excerpt": post["excerpt"],
+            "category": post.get("category", "flag"),
+            "tags": post.get("tags", ["tpusa"]),
+            "source_url": post["source_url"],
+        }
+        if post.get("media_url"):
+            args["media_url"] = post["media_url"]
+            args["media_type"] = post["media_type"] or "photo"
         mcp_call("tools/call", {
             "name": "write_flagged_post",
-            "arguments": {
-                "sweep_id": sweep_id,
-                "handle": post["handle"],
-                "excerpt": post["excerpt"],
-                "category": post.get("category", "flag"),
-                "tags": post.get("tags", ["tpusa"]),
-                "source_url": post["source_url"],
-            },
+            "arguments": args,
         }, call_id=20 + i)
 
     print(f"Wrote {len(flagged)} flagged posts")

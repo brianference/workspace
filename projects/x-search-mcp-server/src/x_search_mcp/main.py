@@ -475,6 +475,10 @@ async def _write_flagged_post(args: dict[str, Any]) -> dict[str, Any]:
         "tags": args.get("tags", []),
         "source_url": args["source_url"],
     }
+    if args.get("media_url"):
+        payload["media_url"] = args["media_url"]
+    if args.get("media_type"):
+        payload["media_type"] = args["media_type"]
 
     async with httpx.AsyncClient() as client:
         resp = await client.post(
