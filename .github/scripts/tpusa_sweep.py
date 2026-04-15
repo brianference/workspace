@@ -106,19 +106,24 @@ def search_tweets():
 
 def analyze_with_claude(tweets):
     """Use Claude API to intelligently filter and categorize tweets."""
-    # Pre-filter: keep tweets with >=1K followers or any Erika Kirk mention,
-    # then cap at 120 by follower count to avoid token/timeout limits
+    # Pre-filter: keep tweets with >=5K followers or direct Erika Kirk mention,
+    # cap at 60 -- keeps payload small enough for Claude to complete in <120s
     prefiltered = [
         t for t in tweets
-        if t.get("followers", 0) >= 1000
+        if t.get("followers", 0) >= 5000
         or "erika" in t["text"].lower()
-        or "kirk" in t["text"].lower()
     ]
     prefiltered.sort(key=lambda t: t.get("followers", 0), reverse=True)
-    prefiltered = prefiltered[:120]
+    prefiltered = prefiltered[:60]
     print(f"Pre-filtered to {len(prefiltered)} tweets for Claude analysis")
 
-    tweets_json = json.dumps(prefiltered, indent=2)
+    # Send only the fields Claude needs -- strip media/timestamp bloat
+    slim = [
+        {"id": t["id"], "author": t["author"], "followers": t["followers"],
+         "impressions": t.get("impressions", 0), "text": t["text"]}
+        for t in prefiltered
+    ]
+    tweets_json = json.dumps(slim, indent=2)
     prompt = (
         "You are a TPUSA monitoring analyst. Review these tweets and flag those "
         "that are relevant to:\n"
@@ -157,8 +162,19 @@ def analyze_with_claude(tweets):
             "content-type": "application/json",
         },
     )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        analysis = json.loads(resp.read())
+    last_err = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                analysis = json.loads(resp.read())
+            break
+        except Exception as e:
+            last_err = e
+            print(f"Claude attempt {attempt + 1} failed: {e}")
+            if attempt < 2:
+                import time; time.sleep(10)
+    else:
+        raise RuntimeError(f"Claude API failed after 3 attempts: {last_err}")
 
     raw_text = analysis["content"][0]["text"].strip()
     # Strip markdown code fences if present
